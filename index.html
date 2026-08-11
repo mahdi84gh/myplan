@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>دفترچه برنامه‌ریزی</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3E7A54">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دفترچه">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Noto+Naskh+Arabic:wght@500;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cover:#3E7A54;
+    --cover-deep:#255339;
+    --cover-hi:#5CA173;
+    --paper:#FBFAF2;
+    --paper-deep:#F1F3E4;
+    --paper-line:#DCE4C8;
+    --margin:#C3773B;
+    --ink:#22331F;
+    --ink-soft:#5C6E52;
+    --ink-faint:#98A78B;
+    --blue:#3E8F5B;
+    --blue-deep:#2A6B41;
+    --blue-tint:#E4F1E1;
+    --gold:#D6963E;
+    --gold-tint:#FBEDD3;
+    --green:#4E9A5F;
+    --green-tint:#E5F3E3;
+    --red:#BE5B44;
+    --red-tint:#FBEAE2;
+    --desk:#DEE7D1;
+    --desk-deep:#C7D6B7;
+    --shadow-sm: 0 2px 8px rgba(30,50,20,.10);
+    --shadow-md: 0 20px 46px rgba(20,40,20,.22);
+    --font-ui:'Vazirmatn', Tahoma, sans-serif;
+    --font-head:'Noto Naskh Arabic', 'Vazirmatn', serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  [data-theme="dark"]{
+    --cover:#16301F;
+    --cover-deep:#0B1A11;
+    --cover-hi:#254D30;
+    --paper:#141F17;
+    --paper-deep:#1B2A1E;
+    --paper-line:#2E4531;
+    --margin:#D08C58;
+    --ink:#E7F0E2;
+    --ink-soft:#A7C09E;
+    --ink-faint:#67805F;
+    --blue:#6FCB8A;
+    --blue-deep:#93E0A9;
+    --blue-tint:#1D3A24;
+    --gold:#E3B564;
+    --gold-tint:#3A2E17;
+    --green:#6FCB8A;
+    --green-tint:#1A3322;
+    --red:#E28B72;
+    --red-tint:#3A241D;
+    --desk:#0A130C;
+    --desk-deep:#050A06;
+    --shadow-sm: 0 2px 12px rgba(0,0,0,.45);
+    --shadow-md: 0 24px 60px rgba(0,5,2,.65);
+  }
+  [data-theme="dark"] body{
+    background: radial-gradient(ellipse at 50% -10%, #0F1F13, var(--desk) 55%, var(--desk-deep) 100%);
+  }
+  [data-theme="dark"] .book{
+    box-shadow: var(--shadow-md), 0 0 0 1px rgba(111,203,138,.06);
+  }
+  [data-theme="dark"] .spiral{
+    background:linear-gradient(180deg, var(--cover-hi), var(--cover) 55%, var(--cover-deep));
+    box-shadow: inset 0 -2px 10px rgba(0,0,0,.5), 0 2px 14px rgba(37,77,48,.35);
+  }
+  [data-theme="dark"] .day-head{
+    background:linear-gradient(135deg, rgba(111,203,138,.16), rgba(227,181,100,.05) 70%);
+  }
+  [data-theme="dark"] .progress-fill{
+    background:linear-gradient(90deg, var(--blue), #8FD49E 55%, var(--gold));
+  }
+  [data-theme="dark"] .task-check.done{
+    background:linear-gradient(135deg, var(--green), #3FA98A);
+  }
+  [data-theme="dark"] .icon-btn, [data-theme="dark"] .flip-btn{
+    border-color: rgba(255,255,255,.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--font-ui);
+    color:var(--ink);
+    min-height:100vh;
+    background: radial-gradient(ellipse at 50% -10%, var(--desk-deep), var(--desk) 62%);
+    transition:background .35s ease, color .35s ease;
+    padding:26px 14px 50px;
+  }
+  .wrap{max-width:800px; margin:0 auto; position:relative;}
+
+  .float-controls{position:absolute; top:-6px; left:0; display:flex; gap:8px; z-index:5;}
+  @media(max-width:520px){ .float-controls{position:static; justify-content:flex-end; display:flex; margin-bottom:10px;} }
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; border:1px solid rgba(0,0,0,.08);
+    background:var(--paper); color:var(--ink-soft); cursor:pointer; box-shadow:var(--shadow-sm);
+    display:flex; align-items:center; justify-content:center; transition:.18s;
+  }
+  .icon-btn:hover{color:var(--blue-deep); transform:translateY(-1px);}
+  .icon-btn:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+
+  .book{
+    position:relative;
+    background:var(--paper);
+    border-radius:8px 8px 22px 22px;
+    box-shadow:var(--shadow-md);
+    padding-top:66px;
+    margin-top:34px;
+  }
+  .torn-strip{
+    position:absolute; top:16px; left:0; right:0; height:14px; z-index:2;
+    background-color:var(--cover);
+    background-image:
+      linear-gradient(45deg, var(--paper) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--paper) 25%, transparent 25%);
+    background-size:14px 14px;
+    background-position:0 -7px;
+  }
+  .book-decor{position:absolute; pointer-events:none; z-index:2; opacity:.9;}
+  .book-decor.corner-br{right:-6px; bottom:-8px; width:96px; height:auto; opacity:.85;}
+  .book-decor.corner-tl{left:14px; top:20px; width:30px; height:auto; opacity:.85;}
+  [data-theme="dark"] .book-decor{opacity:.55;}
+  .spiral{
+    position:absolute; top:-24px; left:14px; right:14px; height:40px;
+    background:linear-gradient(180deg, var(--cover-hi), var(--cover) 55%, var(--cover-deep));
+    border-radius:12px 12px 0 0;
+    display:flex; align-items:flex-end; justify-content:space-evenly; padding-bottom:6px;
+    box-shadow: inset 0 -2px 6px rgba(0,0,0,.3);
+    z-index:3;
+  }
+  .spiral .ring{
+    width:13px; height:13px; border-radius:50%;
+    border:3px solid var(--cover-deep);
+    background: radial-gradient(circle at 35% 30%, #fff5 0%, transparent 55%), var(--desk);
+    transform:translateY(50%);
+    box-shadow:0 1px 2px rgba(0,0,0,.35);
+  }
+  [data-theme="dark"] .spiral .ring{ background: radial-gradient(circle at 35% 30%, #fff2 0%, transparent 55%), #1a2338; }
+
+  .tabs{display:flex; gap:6px; padding:0 18px; position:relative; z-index:2;}
+  .tab{
+    font-family:var(--font-ui); font-weight:700; font-size:13.5px; cursor:pointer;
+    border:none; padding:11px 20px 10px; border-radius:12px 12px 0 0;
+    background:var(--paper-deep); color:var(--ink-faint);
+    display:flex; align-items:center; gap:7px; transition:.15s; position:relative; top:2px;
+  }
+  .tab .dot{width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.55;}
+  .tab.active{background:var(--paper); color:var(--ink); box-shadow:0 -3px 10px rgba(0,0,0,.05);}
+  .tab.active .dot{background:var(--blue); opacity:1; box-shadow:0 0 0 3px var(--blue-tint);}
+  .tab[data-tab="calendar"].active .dot{background:var(--gold); box-shadow:0 0 0 3px var(--gold-tint);}
+  .tab:hover:not(.active){color:var(--ink-soft);}
+  .tab:focus-visible{outline:2px solid var(--blue); outline-offset:-2px;}
+
+  .page{
+    background:var(--paper);
+    border-radius:0 0 22px 22px;
+    padding:22px 22px 30px;
+    position:relative;
+    z-index:1;
+    animation: fadeIn .25s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+  @media(max-width:560px){ .page{padding:18px 14px 24px;} }
+
+  .day-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px;
+    background:linear-gradient(135deg, var(--blue-tint), transparent 70%);
+    border-radius:18px; padding:14px 8px; position:relative; overflow:hidden;
+  }
+  .day-head::after{
+    content:""; position:absolute; inset:0; border-radius:18px; box-shadow:inset 0 0 0 1px var(--paper-line); pointer-events:none;
+  }
+  .flip-btn{
+    width:38px; height:38px; border-radius:50%; border:1px solid var(--paper-line); background:var(--paper);
+    color:var(--ink-soft); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.15s; flex:none; z-index:1;
+  }
+  .flip-btn:hover{border-color:var(--blue); color:var(--blue-deep); background:var(--blue-tint);}
+  .day-head-center{text-align:center; flex:1; z-index:1;}
+  .day-weekday{font-family:var(--font-head); font-size:15px; color:var(--blue-deep); font-weight:700; letter-spacing:.3px;}
+  .day-num-big{font-family:var(--font-mono); font-size:48px; font-weight:800; line-height:1; margin:2px 0; color:var(--cover); letter-spacing:-1px;}
+  [data-theme="dark"] .day-num-big{color:var(--blue-deep);}
+  .day-month-line{font-family:var(--font-head); font-size:16px; color:var(--ink-soft);}
+  .day-alt-line{font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono); margin-top:3px;}
+  .jump-today{
+    display:inline-block; margin-top:8px; font-size:11.5px; font-weight:700; color:#fff;
+    background:var(--blue); border:none; border-radius:20px; padding:5px 14px; cursor:pointer;
+  }
+  .today-badge{
+    display:inline-block; margin-top:8px; font-size:11px; font-weight:800; color:#fff; letter-spacing:.5px;
+    background:var(--gold); border-radius:20px; padding:4px 13px;
+  }
+
+  .progress-wrap{margin:16px 0 4px; display:flex; align-items:center; gap:10px;}
+  .progress-track{flex:1; height:10px; border-radius:20px; background:var(--paper-deep); overflow:hidden; border:1px solid var(--paper-line);}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--blue), var(--gold)); border-radius:20px; transition:width .35s ease; width:0%;}
+  .progress-label{font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--blue-deep); flex:none; min-width:48px; text-align:left;}
+
+  .divider{display:flex; align-items:center; gap:10px; margin:22px 0 13px; color:var(--ink-faint);}
+  .divider .line{flex:1; height:1px; background:var(--paper-line);}
+  .divider .lbl{font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:7px;}
+  .divider .lbl .icon-badge{width:24px; height:24px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex:none;}
+
+  .carry-banner{
+    display:flex; align-items:center; gap:10px; background:var(--gold-tint); border:1px solid var(--gold);
+    border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:12.5px; color:var(--ink-soft);
+  }
+  .carry-banner b{color:var(--gold);}
+
+  /* ---------- Weekday row ---------- */
+  .weekday-row{display:flex; justify-content:space-between; gap:5px; margin:14px 0 4px;}
+  .wk-chip{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 2px 7px;
+    border-radius:14px; border:1px solid var(--paper-line); background:var(--paper-deep); cursor:pointer; transition:.15s;
+  }
+  .wk-chip:hover{border-color:var(--blue);}
+  .wk-chip.today{box-shadow:inset 0 0 0 2px var(--gold);}
+  .wk-chip.selected{background:var(--blue-tint); border-color:var(--blue-deep);}
+  .wk-chip .wk-name{font-size:9.5px; color:var(--ink-faint); font-weight:700;}
+  .wk-chip .wk-num{
+    width:24px; height:24px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:11px; font-weight:800; color:var(--blue-deep);
+  }
+  .wk-chip.selected .wk-num{background:var(--blue); color:#fff;}
+  @media(max-width:400px){ .wk-chip .wk-name{display:none;} }
+
+  /* ---------- Lined mini-sections (photo-style boxes) ---------- */
+  .mini-grid{display:grid; gap:10px; margin-bottom:12px;}
+  .mini-grid.cols-2{grid-template-columns:1fr 1fr;}
+  .mini-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .lined-box{
+    background: repeating-linear-gradient(var(--paper-deep), var(--paper-deep) 26px, var(--paper-line) 27px);
+    border:1px solid var(--paper-line); border-radius:12px; padding:10px 12px; margin-bottom:12px; position:relative;
+  }
+  .mini-grid .lined-box{margin-bottom:0;}
+  .lined-box-label{
+    font-family:var(--font-head); font-size:12.5px; font-weight:700; color:var(--blue-deep);
+    margin-bottom:6px; display:flex; align-items:center; gap:5px;
+  }
+  .lined-textarea{
+    width:100%; border:none; background:transparent; resize:vertical; min-height:56px;
+    font-family:var(--font-ui); font-size:13px; line-height:27px; color:var(--ink); padding:0; display:block;
+  }
+  .lined-textarea:focus{outline:none;}
+  .lined-textarea::placeholder{color:var(--ink-faint); line-height:normal;}
+  .lined-input{
+    width:100%; border:none; background:transparent; font-family:var(--font-ui); font-size:13px;
+    color:var(--ink); padding:2px 0; box-sizing:border-box;
+  }
+  .lined-input:focus{outline:none;}
+  .sleep-range{display:flex; align-items:center; gap:6px;}
+  .sleep-input{text-align:center;}
+
+  /* ---------- Mood / energy dropdown ---------- */
+  .tl-icon{display:inline-block;}
+  .mood-select{position:relative;}
+  .mood-trigger{
+    width:100%; display:flex; align-items:center; gap:8px; border:none; background:transparent;
+    font-family:var(--font-ui); font-size:13px; color:var(--ink); padding:3px 0; cursor:pointer; text-align:right;
+  }
+  .mood-trigger-emoji{font-size:16px; line-height:1;}
+  .mood-trigger-label{flex:1;}
+  .mood-trigger.placeholder .mood-trigger-label{color:var(--ink-faint);}
+  .mood-chevron{color:var(--ink-faint); flex:none; transition:transform .15s;}
+  .mood-select.open .mood-chevron{transform:rotate(180deg);}
+  .mood-menu{
+    position:absolute; top:calc(100% + 6px); right:0; left:0; z-index:20;
+    background:var(--paper); border:1px solid var(--paper-line); border-radius:12px;
+    box-shadow:var(--shadow-md); padding:6px; max-height:250px; overflow-y:auto;
+  }
+  .mood-option{
+    display:flex; align-items:center; gap:9px; padding:8px 9px; border-radius:9px; cursor:pointer;
+    font-size:13px; color:var(--ink); transition:.12s;
+  }
+  .mood-option:hover, .mood-option.active{background:var(--blue-tint); color:var(--blue-deep);}
+  .mood-option .mo-emoji{font-size:17px; line-height:1;}
+
+  /* ---------- Title editing (settings) ---------- */
+  .title-edit-list{display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto; padding-left:2px;}
+  .title-edit-row{display:flex; align-items:center; gap:8px;}
+  .title-edit-row .te-icon{width:22px; text-align:center; font-size:14px; flex:none;}
+  .title-edit-row input{
+    flex:1; border:1px solid var(--paper-line); background:var(--paper-deep); border-radius:9px;
+    padding:8px 10px; font-family:var(--font-ui); font-size:12.5px; color:var(--ink);
+  }
+  .title-edit-row input:focus{outline:2px solid var(--blue); outline-offset:0;}
+
+  /* ---------- Goals tab ---------- */
+  .goal-card{
+    background: repeating-linear-gradient(var(--paper-deep), var(--paper-deep) 26px, var(--paper-line) 27px);
+    border:1px solid var(--paper-line); border-radius:12px; padding:12px 14px; margin-bottom:10px; position:relative; transition:opacity .2s;
+  }
+  .goal-card.done{opacity:.62;}
+  .goal-top{display:flex; align-items:center; gap:9px;}
+  .goal-title{flex:1; font-family:var(--font-ui); font-weight:700; font-size:13.5px; color:var(--ink); border:none; background:transparent; padding:2px 0; width:100%;}
+  .goal-title:focus{outline:none;}
+  .goal-card.done .goal-title{text-decoration:line-through; color:var(--ink-faint);}
+  .goal-del{background:none; border:none; cursor:pointer; color:var(--ink-faint); font-size:15px; flex:none; padding:2px;}
+  .goal-del:hover{color:var(--red);}
+  .goal-progress-row{display:flex; align-items:center; gap:8px; margin-top:11px;}
+  .goal-step-btn{
+    width:23px; height:23px; border-radius:50%; border:1px solid var(--paper-line); background:var(--paper);
+    color:var(--ink-soft); cursor:pointer; font-size:14px; line-height:1; display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .goal-step-btn:hover{border-color:var(--blue); color:var(--blue-deep);}
+  .goal-progress-track{flex:1; height:8px; border-radius:20px; background:var(--paper-line); overflow:hidden;}
+  .goal-progress-fill{height:100%; background:linear-gradient(90deg, var(--blue), var(--gold)); border-radius:20px; transition:width .3s ease;}
+  .goal-progress-pct{font-family:var(--font-mono); font-size:11px; color:var(--blue-deep); font-weight:700; min-width:30px; text-align:left; flex:none;}
+  .goal-meta-row{display:flex; align-items:center; gap:7px; margin-top:9px;}
+  .goal-meta-icon{font-size:11px; color:var(--ink-faint); flex:none;}
+  .goal-deadline{
+    font-size:11.5px; color:var(--ink-soft); font-family:var(--font-mono); border:none; background:transparent; flex:1; padding:0;
+  }
+  .goal-deadline:focus{outline:none;}
+
+  /* ---------- Shopping list ---------- */
+  #shopList{display:flex; flex-direction:column; gap:7px; margin-bottom:8px;}
+  .shop-item{
+    display:flex; align-items:center; gap:8px; padding:9px 11px; border-radius:11px;
+    border:1px solid var(--paper-line); background:var(--paper-deep);
+  }
+  .shop-item.done{background:var(--green-tint); border-color:var(--green);}
+  .shop-check{
+    width:19px; height:19px; border-radius:6px; border:2px solid var(--blue); flex:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; background:var(--paper); color:#fff; font-size:11px; font-weight:800;
+  }
+  .shop-check.done{background:var(--green); border-color:var(--green);}
+  .shop-text{flex:1; font-size:13px; color:var(--ink); border:none; background:transparent; font-family:var(--font-ui);}
+  .shop-text:focus{outline:none;}
+  .shop-text.done{text-decoration:line-through; color:var(--ink-faint);}
+  .shop-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:15px; flex:none; padding:2px;}
+  .shop-del:hover{color:var(--red);}
+  .shop-add-row{margin-bottom:16px;}
+
+  /* ---------- Water tracker ---------- */
+  .water-row{display:flex; gap:9px; flex-wrap:wrap; justify-content:center; padding:4px 0 2px;}
+  .water-drop{cursor:pointer; opacity:.3; transition:.15s; flex:none;}
+  .water-drop.filled{opacity:1; transform:scale(1.06);}
+  .water-label{text-align:center; font-size:11px; color:var(--ink-faint); margin-top:4px; font-family:var(--font-mono);}
+
+  /* ---------- Task rows (cards) ---------- */
+  #taskList{display:flex; flex-direction:column; gap:9px;}
+  .task-row{
+    display:flex; align-items:flex-start; gap:9px; padding:11px 12px;
+    border-radius:14px; border:1px solid var(--paper-line); background:var(--paper-deep);
+    transition:background .15s, box-shadow .15s, transform .1s, border-color .15s;
+  }
+  .task-row:hover{box-shadow:var(--shadow-sm); border-color:var(--blue);}
+  .task-row.drag-over{background:var(--blue-tint); border-color:var(--blue);}
+  .task-row.dragging{opacity:.4;}
+  .task-row.done{background:var(--green-tint); border-color:var(--green);}
+  .drag-handle{
+    cursor:grab; color:var(--ink-faint); font-size:13px; line-height:1; padding:6px 2px; flex:none; user-select:none; margin-top:3px;
+    touch-action:none;
+  }
+  .drag-handle:hover{color:var(--blue);}
+  .task-num{
+    font-family:var(--font-mono); font-size:13px; font-weight:800; color:var(--blue-deep);
+    width:24px; flex:none; text-align:center; margin-top:6px; background:var(--paper); border-radius:8px; padding:3px 0;
+  }
+  .task-check{
+    width:22px; height:22px; border-radius:7px; border:2px solid var(--blue); flex:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; background:var(--paper); margin-top:4px; color:#fff; font-size:13px; font-weight:800;
+  }
+  .task-check.done{background:var(--green); border-color:var(--green);}
+  .task-body{flex:1; min-width:0;}
+  .task-text-input{
+    width:100%; border:none; background:transparent; font-family:var(--font-ui); font-weight:700; font-size:14.5px; color:var(--ink);
+    padding:4px 2px; border-radius:6px;
+  }
+  .task-text-input:focus{outline:none; background:var(--paper);}
+  .task-text-input::placeholder{color:var(--ink-faint); font-weight:400;}
+  .task-text-input.done{text-decoration:line-through; color:var(--ink-faint); font-weight:400;}
+  .desc-panel{margin-top:5px;}
+  .task-desc-input{
+    width:100%; border:1px dashed var(--paper-line); background:var(--paper); color:var(--ink-soft);
+    font-family:var(--font-ui); font-weight:400; font-size:12.5px; line-height:1.6;
+    padding:8px 10px; border-radius:9px; resize:vertical; min-height:44px; box-sizing:border-box;
+  }
+  .task-desc-input:focus{outline:none; border-color:var(--blue); border-style:solid; background:var(--paper);}
+  .task-desc-input::placeholder{color:var(--ink-faint);}
+  .task-row.empty-slot{opacity:.5; background:transparent; border-style:dashed;}
+  .task-row.empty-slot:hover{opacity:.85;}
+  .task-row.empty-slot .task-check{opacity:.25; pointer-events:none;}
+  .task-row.p3{background:var(--red-tint); border-color:var(--red);}
+  .task-row.p2{background:var(--gold-tint); border-color:var(--gold);}
+  .task-row.p1{background:var(--green-tint); border-color:var(--green);}
+  .task-row.p3 .task-num, .task-row.p2 .task-num, .task-row.p1 .task-num{background:var(--paper);}
+
+  .task-meta{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:7px;}
+  .time-toggle{
+    font-family:var(--font-ui); font-size:11.5px; font-weight:700; color:var(--blue-deep); background:var(--blue-tint);
+    border:1px solid var(--blue); border-radius:20px; padding:4px 11px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;
+  }
+  .time-toggle:hover{background:var(--blue); color:#fff;}
+  .time-panel{display:flex; align-items:center; gap:6px; flex-wrap:wrap; background:var(--paper); border:1px solid var(--paper-line); border-radius:12px; padding:8px; margin-top:6px; width:100%;}
+  .time-select-group{display:inline-flex; align-items:center; gap:1px; background:var(--paper-deep); border:1px solid var(--paper-line); border-radius:9px; padding:3px 6px; direction:ltr;}
+  .time-select-group select{
+    font-family:var(--font-ui); font-size:12.5px; font-weight:700; color:var(--ink); background:transparent;
+    border:none; padding:5px 2px; border-radius:6px; cursor:pointer; appearance:none; -webkit-appearance:none;
+    text-align:center; direction:ltr; text-align-last:center;
+  }
+  .time-select-group select:focus{outline:none; background:var(--blue-tint); color:var(--blue-deep);}
+  .time-select-group .sel-hour{width:28px;}
+  .time-select-group .sel-min{width:30px;}
+  .time-select-group .sel-ampm{width:46px; font-size:11.5px; color:var(--blue-deep); font-weight:700;}
+  .time-select-group .colon{color:var(--ink-faint); font-family:var(--font-ui); font-size:12px; font-weight:700;}
+  .meta-sep{color:var(--ink-faint); font-size:11px;}
+  .dur-chips{display:flex; gap:3px; flex-wrap:wrap;}
+  .dur-chip{
+    font-family:var(--font-mono); font-size:10.5px; padding:4px 8px; border-radius:20px; border:1px solid var(--paper-line);
+    background:var(--paper-deep); color:var(--ink-soft); cursor:pointer;
+  }
+  .dur-chip:hover{border-color:var(--blue); color:var(--blue-deep);}
+  .dur-chip.def{border-color:var(--blue); color:var(--blue-deep); font-weight:700; background:var(--blue-tint);}
+  .dur-custom{display:flex; align-items:center; gap:4px;}
+  .dur-custom input{
+    width:56px; padding:5px 6px; font-size:11.5px; text-align:center; font-family:var(--font-mono);
+  }
+  .dur-custom button{
+    font-family:var(--font-mono); font-size:10.5px; padding:5px 9px; border-radius:8px; border:1px solid var(--blue);
+    background:var(--blue); color:#fff; cursor:pointer; font-weight:700;
+  }
+  .mini-icon-btn{
+    width:26px; height:26px; border-radius:8px; border:1px solid var(--paper-line); background:var(--paper-deep);
+    color:var(--ink-faint); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; flex:none;
+  }
+  .mini-icon-btn.on{background:var(--gold); color:#fff; border-color:var(--gold);}
+  .mini-icon-btn.alarm-on{background:var(--blue); color:#fff; border-color:var(--blue);}
+  .gcal-link{font-size:10.5px; color:var(--blue-deep); text-decoration:none; display:inline-flex; align-items:center; gap:3px; border-bottom:1px dotted var(--blue-deep);}
+  .time-chip{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:700; color:var(--blue-deep); background:var(--blue-tint);
+    border:1px solid var(--blue); border-radius:20px; padding:4px 11px; cursor:pointer;
+  }
+  .carried-tag{font-size:10.5px; color:var(--gold); font-weight:700;}
+
+  .row-menu{position:relative; flex:none;}
+  .kebab{
+    width:26px; height:26px; border-radius:8px; border:none; background:transparent; color:var(--ink-faint); cursor:pointer;
+    font-size:16px; display:flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+  .kebab:hover{color:var(--ink); background:var(--paper);}
+  .dropdown{
+    position:absolute; top:28px; left:0; background:var(--paper); border:1px solid var(--paper-line); border-radius:12px;
+    box-shadow:var(--shadow-md); z-index:10; min-width:172px; padding:6px; display:flex; flex-direction:column; gap:2px;
+  }
+  .dropdown .dd-label{font-size:10.5px; color:var(--ink-faint); padding:4px 8px 2px;}
+  .dropdown button{
+    text-align:right; border:none; background:transparent; font-family:var(--font-ui); font-size:12.5px; color:var(--ink);
+    padding:7px 8px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:7px;
+  }
+  .dropdown button:hover{background:var(--paper-deep);}
+  .dropdown button.danger{color:var(--red);}
+  .dropdown hr{border:none; border-top:1px solid var(--paper-line); margin:4px 0;}
+  .p-dot{width:8px; height:8px; border-radius:50%; flex:none;}
+  .p-dot.p3{background:var(--red);} .p-dot.p2{background:var(--gold);} .p-dot.p1{background:var(--green);} .p-dot.p0{background:var(--ink-faint);}
+
+  .add-row-line{display:flex; justify-content:center; margin-top:8px;}
+  .btn-add-slot{
+    font-family:var(--font-ui); font-size:12px; color:var(--blue-deep); background:none; border:1px dashed var(--paper-line);
+    border-radius:9px; padding:8px 16px; cursor:pointer; width:100%; text-align:center;
+  }
+  .btn-add-slot:hover{border-color:var(--blue);}
+
+  /* ---------- Notes ---------- */
+  textarea{
+    font-family:var(--font-ui); font-size:13.5px; padding:10px 12px; border-radius:9px;
+    border:1px solid var(--paper-line); background:var(--paper-deep); color:var(--ink);
+    width:100%; resize:vertical; min-height:70px;
+  }
+  input[type=text], input[type=time]{
+    font-family:var(--font-ui); font-size:13.5px; padding:9px 12px; border-radius:9px;
+    border:1px solid var(--paper-line); background:var(--paper-deep); color:var(--ink);
+  }
+  .upload-row{display:flex; align-items:center; gap:10px; margin:10px 0 14px; flex-wrap:wrap;}
+  .upload-label{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:7px 13px; border-radius:20px;
+    border:1px dashed var(--paper-line); cursor:pointer; color:var(--ink-soft); background:var(--paper-deep);
+  }
+  .upload-label:hover{border-color:var(--blue); color:var(--blue-deep);}
+  .thumb-preview{display:flex; gap:7px; flex-wrap:wrap;}
+  .thumb-preview .t{position:relative;}
+  .thumb-preview img{width:46px; height:46px; object-fit:cover; border-radius:6px; border:2px solid #fff; box-shadow:var(--shadow-sm);}
+  .thumb-remove{position:absolute; top:-6px; left:-6px; width:17px; height:17px; border-radius:50%; background:var(--red); color:#fff; border:none; font-size:10px; cursor:pointer; line-height:1;}
+
+  .notes-grid{display:flex; flex-direction:column; gap:12px; margin-top:6px;}
+  .note-card{
+    background:var(--paper-deep); border-radius:10px; padding:12px 14px; position:relative;
+    box-shadow:var(--shadow-sm); border:1px solid var(--paper-line);
+  }
+  .note-card:nth-child(3n+1){transform:rotate(-.4deg);}
+  .note-card:nth-child(3n+2){transform:rotate(.5deg);}
+  .note-card:nth-child(3n){transform:rotate(-.2deg);}
+  .note-text{font-size:13.5px; line-height:1.65; white-space:pre-wrap; color:var(--ink);}
+  .note-images{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .note-images img{
+    width:66px; height:66px; object-fit:cover; border-radius:4px; border:3px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,.18);
+    cursor:pointer; transition:.2s;
+  }
+  [data-theme="dark"] .note-images img{border-color:#1a2338;}
+  .note-images img:hover{transform:scale(1.04);}
+  .note-foot{display:flex; justify-content:space-between; align-items:center; margin-top:9px;}
+  .note-time{font-size:10.5px; color:var(--ink-faint); font-family:var(--font-mono);}
+  .empty-hint{font-size:12.5px; color:var(--ink-faint); padding:8px 2px; font-style:italic;}
+
+  .btn{
+    font-family:var(--font-ui); border-radius:9px; border:1px solid var(--paper-line); background:var(--paper-deep);
+    color:var(--ink); cursor:pointer; padding:9px 16px; font-size:13px; font-weight:700; transition:.15s;
+    display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--blue); color:var(--blue-deep);}
+  .btn.primary{background:var(--blue); border-color:var(--blue); color:#fff;}
+  .btn.primary:hover{background:var(--blue-deep); color:#fff;}
+  .btn.danger{border-color:var(--red); color:var(--red); background:transparent;}
+  .btn.danger:hover{background:var(--red-tint);}
+  .btn.block{width:100%; justify-content:center;}
+
+  .cal-toolbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  .cal-nav{display:flex; align-items:center; gap:7px;}
+  .cal-title{font-family:var(--font-head); font-size:18px; font-weight:700;}
+  .weekdays{display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:4px;}
+  .weekdays span{text-align:center; font-size:11.5px; color:var(--ink-faint); font-weight:700; padding-bottom:4px;}
+  .grid{display:grid; grid-template-columns:repeat(7,1fr); gap:5px;}
+  .day-cell{
+    position:relative; min-height:64px; border-radius:9px; border:1px solid var(--paper-line);
+    background:var(--paper-deep); padding:6px; cursor:pointer; transition:.15s; display:flex; flex-direction:column; gap:3px;
+  }
+  .day-cell:hover{border-color:var(--blue); background:var(--blue-tint);}
+  .day-cell.out{opacity:.38;}
+  .day-cell.today{box-shadow:inset 0 0 0 2px var(--gold);}
+  .day-cell.selected{box-shadow:inset 0 0 0 2px var(--blue-deep); background:var(--blue-tint);}
+  .day-num-row{display:flex; align-items:flex-start; justify-content:space-between;}
+  .day-num{font-weight:700; font-size:14px; font-family:var(--font-mono);}
+  .day-num-alt{font-size:9.5px; color:var(--ink-faint); font-family:var(--font-mono);}
+  .day-dots{display:flex; gap:3px; margin-top:auto; flex-wrap:wrap; align-items:center;}
+  .dot2{width:5.5px; height:5.5px; border-radius:50%;}
+  .dot2.task{background:var(--blue);} .dot2.note{background:var(--gold);} .dot2.img{background:var(--red);}
+  @media(max-width:520px){ .day-cell{min-height:48px;} .day-num-alt{display:none;} }
+
+  .agenda-box{margin-top:20px; padding-top:16px; border-top:1px dashed var(--paper-line);}
+  .agenda-title{font-family:var(--font-head); font-size:14.5px; font-weight:700; margin-bottom:8px; color:var(--ink-soft);}
+  .agenda-item{display:flex; gap:9px; padding:7px 0; align-items:center;}
+  .agenda-date{font-family:var(--font-mono); font-size:10.5px; color:var(--blue-deep); background:var(--blue-tint); border-radius:7px; padding:3px 8px; flex:none;}
+  .agenda-text{font-size:12.5px; color:var(--ink-soft);}
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(6,10,20,.55); backdrop-filter:blur(2px);
+    display:flex; align-items:flex-end; justify-content:center; z-index:50; opacity:0; pointer-events:none; transition:.2s;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+  @media(min-width:700px){ .overlay{align-items:center;} }
+  .modal{
+    background:var(--paper); width:100%; max-width:480px; max-height:88vh; overflow-y:auto;
+    border-radius:18px 18px 0 0; box-shadow:var(--shadow-md); transform:translateY(30px); transition:.25s;
+    border:1px solid var(--paper-line);
+  }
+  @media(min-width:700px){ .modal{border-radius:18px; transform:translateY(0) scale(.97);} }
+  .overlay.open .modal{transform:translateY(0) scale(1);}
+  .modal-head{position:sticky; top:0; background:var(--paper); z-index:2; display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--paper-line);}
+  .modal-head h3{margin:0; font-family:var(--font-head); font-size:17px; font-weight:700;}
+  .modal-body{padding:16px 18px 22px;}
+  .close-x{background:none; border:none; font-size:20px; color:var(--ink-faint); cursor:pointer; line-height:1;}
+  .section-label{font-size:12.5px; font-weight:700; color:var(--ink-soft); margin:18px 0 8px;}
+  .section-label:first-child{margin-top:0;}
+  .segmented{display:flex; border:1px solid var(--paper-line); border-radius:10px; overflow:hidden;}
+  .segmented button{flex:1; border:none; background:var(--paper-deep); color:var(--ink-soft); font-family:var(--font-ui); font-size:12.5px; font-weight:700; padding:9px 4px; cursor:pointer; border-inline-start:1px solid var(--paper-line);}
+  .segmented button:first-child{border-inline-start:none;}
+  .segmented button.active{background:var(--blue); color:#fff;}
+  .toggle-row{display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--paper-line);}
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-row .lbl{font-size:13px; font-weight:600;}
+  .toggle-row .hint{font-size:11.5px; color:var(--ink-faint); margin-top:2px;}
+  .switch{position:relative; width:38px; height:22px; flex:none;}
+  .switch input{opacity:0; width:100%; height:100%; margin:0; position:absolute; cursor:pointer; z-index:1;}
+  .switch .track{position:absolute; inset:0; background:var(--paper-line); border-radius:20px; transition:.2s;}
+  .switch .thumb{position:absolute; top:2px; right:2px; width:18px; height:18px; background:#fff; border-radius:50%; transition:.2s; box-shadow:var(--shadow-sm);}
+  .switch input:checked + .track{background:var(--blue);}
+  .switch input:checked ~ .thumb{transform:translateX(-16px);}
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--cover-deep); color:#F0F4FC;
+    padding:11px 18px; border-radius:10px; font-size:13px; box-shadow:var(--shadow-md); z-index:100; opacity:0; pointer-events:none; transition:.25s;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  .footer-note{text-align:center; font-size:11px; color:var(--ink-faint); margin-top:20px; line-height:1.9; max-width:620px; margin-inline:auto;}
+  .footer-note b{color:var(--ink-soft);}
+  ::-webkit-scrollbar{width:9px; height:9px;}
+  ::-webkit-scrollbar-thumb{background:var(--paper-line); border-radius:20px;}
+  [hidden]{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="float-controls">
+    <button class="icon-btn" id="btnTheme" title="حالت شب/روز" aria-label="تغییر پوسته">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+    <button class="icon-btn" id="btnSettings" title="تنظیمات" aria-label="تنظیمات">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V19.6a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H4.4a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1.1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H10a1.7 1.7 0 0 0 1-1.55V4.4a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V10a1.7 1.7 0 0 0 1.55 1H19.6a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1Z"/></svg>
+    </button>
+  </div>
+
+  <div class="book">
+    <div class="spiral" id="spiral"></div>
+    <div class="torn-strip" aria-hidden="true"></div>
+    <svg class="book-decor corner-tl" viewBox="0 0 70 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M22 66 L48 66 L44 84 L26 84 Z" fill="var(--margin)"/>
+      <rect x="18" y="60" width="34" height="8" rx="3" fill="var(--margin)"/>
+      <rect x="27" y="24" width="16" height="42" rx="8" fill="var(--green)"/>
+      <path d="M27 38 q-12 0 -12 -11 q0 -7 6 -7 q6 0 6 6 v12 q0 4 4 4 z" fill="var(--green)"/>
+      <circle cx="35" cy="20" r="4" fill="var(--gold)"/>
+      <circle cx="16" cy="26" r="3" fill="var(--gold)"/>
+    </svg>
+    <svg class="book-decor corner-br" viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M40 108 L100 108 L92 128 L48 128 Z" fill="var(--margin)"/>
+      <rect x="34" y="100" width="72" height="12" rx="5" fill="var(--margin)"/>
+      <rect x="58" y="46" width="24" height="60" rx="12" fill="var(--green)"/>
+      <path d="M58 66 q-18 0 -18 -16 q0 -10 8 -10 q8 0 8 8 v18 q0 5 5 5 z" fill="var(--green)"/>
+      <path d="M82 58 q18 0 18 -14 q0 -9 -7 -9 q-7 0 -7 7 v16 q0 4 -4 4 z" fill="var(--green)"/>
+      <circle cx="70" cy="40" r="6" fill="var(--gold)"/>
+      <circle cx="38" cy="52" r="4.5" fill="var(--gold)"/>
+      <circle cx="102" cy="42" r="4.5" fill="var(--gold)"/>
+      <g stroke="var(--paper)" stroke-width="1.6" opacity=".45">
+        <line x1="66" y1="52" x2="66" y2="100"/>
+        <line x1="74" y1="52" x2="74" y2="100"/>
+      </g>
+    </svg>
+    <div class="tabs">
+      <button class="tab active" data-tab="today"><span class="dot"></span>امروز</button>
+      <button class="tab" data-tab="goals"><span class="dot"></span>اهداف</button>
+      <button class="tab" data-tab="calendar"><span class="dot"></span>تقویم</button>
+    </div>
+
+    <div class="page" id="pageToday">
+      <div class="day-head">
+        <button class="flip-btn" id="prevDay" aria-label="روز قبل">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="day-head-center">
+          <div class="day-weekday" id="dWeekday">—</div>
+          <div class="day-num-big" id="dNumBig">--</div>
+          <div class="day-month-line" id="dMonthLine">—</div>
+          <div class="day-alt-line" id="dAltLine"></div>
+          <div id="dBadgeSlot"></div>
+        </div>
+        <button class="flip-btn" id="nextDay" aria-label="روز بعد">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="weekday-row" id="weekdayRow"></div>
+
+      <div class="progress-wrap">
+        <span class="progress-label" id="progressLabel">۰/۱۰</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="mini-grid cols-2">
+        <div class="lined-box">
+          <div class="lined-box-label"><span class="tl-icon">📋</span><span class="tl-text" data-title-key="dailyProgram">برنامه روزانه</span></div>
+          <textarea class="lined-textarea" id="secDailyProgram" placeholder="برنامهٔ امروزت رو بنویس…"></textarea>
+        </div>
+        <div class="lined-box">
+          <div class="lined-box-label"><span class="tl-icon">💰</span><span class="tl-text" data-title-key="expenses">هزینه‌های امروز</span></div>
+          <textarea class="lined-textarea" id="secExpenses" placeholder="خرج‌های امروز…"></textarea>
+        </div>
+      </div>
+
+      <div class="mini-grid cols-2">
+        <div class="lined-box">
+          <div class="lined-box-label"><span class="tl-icon">🔥</span><span class="tl-text" data-title-key="calories">کالری</span></div>
+          <input type="text" class="lined-input" id="secCalories" placeholder="مثلاً ۱۸۰۰">
+        </div>
+        <div class="lined-box">
+          <div class="lined-box-label"><span class="tl-icon">⚡</span><span class="tl-text" data-title-key="energy">انرژی</span></div>
+          <div class="mood-select" id="energyMoodSelect">
+            <button type="button" class="mood-trigger" id="energyTrigger">
+              <span class="mood-trigger-emoji" id="energyTriggerEmoji">〰️</span>
+              <span class="mood-trigger-label" id="energyTriggerLabel">انتخاب حالت</span>
+              <svg class="mood-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="mood-menu" id="energyMenu" hidden></div>
+          </div>
+          <input type="hidden" id="secEnergy">
+        </div>
+      </div>
+
+      <div class="lined-box">
+        <div class="lined-box-label"><span class="tl-icon">🙏</span><span class="tl-text" data-title-key="gratitude">سپاسگزاری</span></div>
+        <textarea class="lined-textarea" id="secGratitude" placeholder="امروز بابت چی سپاسگزاری؟"></textarea>
+      </div>
+
+      <div class="divider">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--blue-tint);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue-deep)" stroke-width="2.4"><path d="M9 11l3 3 7-7M21 12a9 9 0 1 1-3.5-7.1"/></svg></span>
+          <span class="tl-text" data-title-key="tasksTitle">کارهای انجام‌دادنی</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <div id="carryBannerSlot"></div>
+      <div id="taskList"></div>
+      <div class="add-row-line"><button class="btn-add-slot" id="addSlotBtn">+ افزودن ردیف</button></div>
+
+      <div class="divider">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--gold-tint);">🛒</span>
+          <span class="tl-text" data-title-key="shoppingTitle">لیست خرید</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <div id="shopList"></div>
+      <div class="shop-add-row">
+        <input type="text" class="lined-input" id="shopNewItem" placeholder="افزودن آیتم خرید و اینتر بزن…" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+      </div>
+
+      <div class="lined-box">
+        <div class="lined-box-label"><span class="tl-icon">✨</span><span class="tl-text" data-title-key="happened">اتفاقات امروز</span></div>
+        <textarea class="lined-textarea" id="secHappened" placeholder="امروز چه اتفاقی افتاد؟"></textarea>
+      </div>
+
+      <div class="mini-grid cols-3">
+        <div class="lined-box"><div class="lined-box-label"><span class="tl-icon">🍳</span><span class="tl-text" data-title-key="breakfast">صبحانه</span></div><input type="text" class="lined-input" id="secBreakfast"></div>
+        <div class="lined-box"><div class="lined-box-label"><span class="tl-icon">🍲</span><span class="tl-text" data-title-key="lunch">ناهار</span></div><input type="text" class="lined-input" id="secLunch"></div>
+        <div class="lined-box"><div class="lined-box-label"><span class="tl-icon">🍽</span><span class="tl-text" data-title-key="dinner">شام</span></div><input type="text" class="lined-input" id="secDinner"></div>
+      </div>
+
+      <div class="mini-grid cols-2">
+        <div class="lined-box">
+          <div class="lined-box-label"><span class="tl-icon">🎯</span><span class="tl-text" data-title-key="goal">هدف من</span></div>
+          <input type="text" class="lined-input" id="secGoal" placeholder="هدف امروزت چیه؟">
+        </div>
+        <div class="lined-box">
+          <div class="lined-box-label"><span class="tl-icon">🛌</span><span class="tl-text" data-title-key="sleep">زمان خواب</span></div>
+          <div class="sleep-range">
+            <input type="text" class="lined-input sleep-input" id="secSleepFrom" placeholder="از">
+            <span class="meta-sep">–</span>
+            <input type="text" class="lined-input sleep-input" id="secSleepTo" placeholder="تا">
+          </div>
+        </div>
+      </div>
+
+      <div class="lined-box">
+        <div class="lined-box-label"><span class="tl-icon">💧</span><span class="tl-text" data-title-key="water">ردیاب آب</span></div>
+        <div class="water-row" id="waterRow"></div>
+        <div class="water-label" id="waterLabel"></div>
+      </div>
+
+      <div class="divider">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--gold-tint);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2.4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15Z"/></svg></span>
+          <span class="tl-text" data-title-key="notesTitle">یادداشت روز</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <textarea id="newNoteText" placeholder="یادداشتت رو همینجا بنویس…"></textarea>
+      <div class="upload-row">
+        <label class="upload-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          افزودن تصویر
+          <input type="file" id="newNoteImage" accept="image/*" multiple style="display:none;">
+        </label>
+        <div class="thumb-preview" id="newNoteThumbs"></div>
+      </div>
+      <button class="btn primary" id="addNoteBtn" style="margin-bottom:14px;">افزودن یادداشت</button>
+      <div class="notes-grid" id="noteList"></div>
+    </div>
+
+    <div class="page" id="pageGoals" hidden>
+      <div class="divider" style="margin-top:2px;">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--gold-tint);">🎯</span>
+          <span class="tl-text" data-title-key="goalsTitle">اهداف بلندمدت</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <div id="goalsList"></div>
+      <div class="add-row-line">
+        <input type="text" class="lined-input" id="newGoalTitle" placeholder="هدف جدید بنویس و اینتر بزن…" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+      </div>
+
+      <div class="divider">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--blue-tint);">📌</span>
+          <span class="tl-text" data-title-key="pinnedNotesTitle">یادداشت‌های ثابت</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <div class="footer-note" style="margin:0 0 14px;">این یادداشت‌ها به هیچ روز خاصی وابسته نیستن و همیشه اینجا می‌مونن؛ برای چیزهایی مثل آدرس‌ها، ایده‌ها، لیست کتاب یا هر چیزی که نباید گم بشه.</div>
+      <textarea id="newPinnedText" placeholder="یادداشت ثابتت رو اینجا بنویس…"></textarea>
+      <div class="upload-row">
+        <label class="upload-label">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          افزودن تصویر
+          <input type="file" id="newPinnedImage" accept="image/*" multiple style="display:none;">
+        </label>
+        <div class="thumb-preview" id="newPinnedThumbs"></div>
+      </div>
+      <button class="btn primary" id="addPinnedBtn" style="margin-bottom:14px;">افزودن یادداشت ثابت</button>
+      <div class="notes-grid" id="pinnedNoteList"></div>
+    </div>
+
+    <div class="page" id="pageCalendar" hidden>
+      <div class="cal-toolbar">
+        <div class="cal-nav">
+          <button class="flip-btn" id="prevMonth" aria-label="ماه قبل">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="flip-btn" id="nextMonth" aria-label="ماه بعد">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="cal-title" id="calTitle">—</div>
+      </div>
+      <div class="weekdays" id="weekdaysRow"></div>
+      <div class="grid" id="calGrid"></div>
+      <div class="agenda-box">
+        <div class="agenda-title">رویدادهای پیش‌رو</div>
+        <div id="agendaList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    یادآوری داخل برنامه فقط وقتی کار می‌کند که این صفحه باز باشد. برای ثبت یادآوری واقعی و همیشگی، از دکمهٔ <b>«افزودن به گوگل کلندر»</b> کنار هر تسک استفاده کن. کارهایی که «انتقال خودکار به فردا» را روشن کنی، اگر تا پایان روز انجام نشوند، خودشان به برنامهٔ فردا اضافه می‌شوند.
+  </div>
+</div>
+
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>تنظیمات</h3>
+      <button class="close-x" id="closeSettingsModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-label">نمایش تاریخ</div>
+      <div class="segmented" id="calModeSeg">
+        <button data-mode="jalali">شمسی</button>
+        <button data-mode="gregorian">میلادی</button>
+        <button data-mode="both">هر دو</button>
+      </div>
+
+      <div class="section-label">ویرایش عنوان‌ها</div>
+      <div class="title-edit-list" id="titleEditList"></div>
+      <button class="btn block" id="btnResetTitles" style="margin-top:8px;">بازگردانی عنوان‌ها به حالت پیش‌فرض</button>
+
+      <div class="section-label">سایر تنظیمات</div>
+      <div class="toggle-row">
+        <div><div class="lbl">حالت شب</div><div class="hint">تعویض پوستهٔ روشن/تیره</div></div>
+        <span class="switch"><input type="checkbox" id="darkToggle"><span class="track"></span><span class="thumb"></span></span>
+      </div>
+      <div class="toggle-row">
+        <div><div class="lbl">اعلان مرورگر برای یادآوری‌ها</div><div class="hint">لازمهٔ باز بودن این صفحه است</div></div>
+        <button class="btn" id="btnEnableNotif">فعال‌سازی</button>
+      </div>
+
+      <div class="section-label">پشتیبان‌گیری</div>
+      <button class="btn block" id="btnBackup" style="margin-bottom:8px;">دریافت فایل پشتیبان (JSON)</button>
+      <label class="btn block" style="justify-content:center; cursor:pointer;">
+        بازیابی از فایل
+        <input type="file" id="restoreFile" accept="application/json" style="display:none;">
+      </label>
+
+      <div class="section-label">داده‌ها</div>
+      <button class="btn danger block" id="btnClearAll">پاک کردن همهٔ اطلاعات</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+function div(a,b){ return ~~(a/b); }
+function mod(a,b){ return a - ~~(a/b)*b; }
+var JCAL_BREAKS = [-61,9,38,199,426,686,756,818,1111,1181,1210,1635,2060,2097,2192,2262,2324,2394,2456,3178];
+
+function jalCal(jy){
+  var bl = JCAL_BREAKS.length, gy = jy+621, leapJ=-14, jp=JCAL_BREAKS[0], jm,jump,leap,n,i,leapG,march;
+  for(i=1;i<bl;i++){
+    jm = JCAL_BREAKS[i];
+    jump = jm - jp;
+    if(jy < jm) break;
+    leapJ = leapJ + div(jump,33)*8 + div(mod(jump,33),4);
+    jp = jm;
+  }
+  n = jy - jp;
+  leapJ = leapJ + div(n,33)*8 + div(mod(n,33)+3,4);
+  if(mod(jump,33)===4 && jump-n===4) leapJ += 1;
+  leapG = div(gy,4) - div((div(gy,100)+1)*3,4) - 150;
+  march = 20 + leapJ - leapG;
+  if(jump - n < 6) n = n - jump + div(jump+4,33)*33;
+  leap = mod(mod(n+1,33)-1,4);
+  if(leap === -1) leap = 4;
+  return {leap:leap, gy:gy, march:march};
+}
+function g2d(gy,gm,gd){
+  var d = div((gy+div(gm-8,6)+100100)*1461,4) + div(153*mod(gm+9,12)+2,5) + gd - 34840408;
+  d = d - div(div(gy+100100+div(gm-8,6),100)*3,4) + 752;
+  return d;
+}
+function d2g(jdn){
+  var j,i,gd,gm,gy;
+  j = 4*jdn + 139361631;
+  j = j + div(div(4*jdn+183187720,146097)*3,4)*4 - 3908;
+  i = div(mod(j,1461),4)*5 + 308;
+  gd = div(mod(i,153),5) + 1;
+  gm = mod(div(i,153),12) + 1;
+  gy = div(j,1461) - 100100 + div(8-gm,6);
+  return [gy,gm,gd];
+}
+function j2d(jy,jm,jd){
+  var r = jalCal(jy);
+  return g2d(r.gy,3,r.march) + (jm-1)*31 - div(jm,7)*(jm-7) + jd - 1;
+}
+function d2j(jdn){
+  var gy = d2g(jdn)[0], jy = gy-621, r = jalCal(jy), jdn1f = g2d(gy,3,r.march), jd,jm,k;
+  k = jdn - jdn1f;
+  if(k >= 0){
+    if(k <= 185){ jm = 1+div(k,31); jd = mod(k,31)+1; return [jy,jm,jd]; }
+    else k -= 186;
+  } else {
+    jy -= 1; k += 179;
+    if(r.leap === 1) k += 1;
+  }
+  jm = 7+div(k,30); jd = mod(k,30)+1;
+  return [jy,jm,jd];
+}
+function toJalali(gy,gm,gd){ return d2j(g2d(gy,gm,gd)); }
+function toGregorian(jy,jm,jd){ return d2g(j2d(jy,jm,jd)); }
+function jalaliMonthLength(jy,jm){
+  if(jm <= 6) return 31;
+  if(jm <= 11) return 30;
+  return jalCal(jy).leap === 1 ? 30 : 29;
+}
+
+var JMONTHS = ["فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور","مهر","آبان","آذر","دی","بهمن","اسفند"];
+var GMONTHS_FA = ["ژانویه","فوریه","مارس","آوریل","مه","ژوئن","ژوئیه","اوت","سپتامبر","اکتبر","نوامبر","دسامبر"];
+var WEEKDAYS_SAT = ["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
+var FA_DIGITS = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+function faDigits(n){ return String(n).replace(/[0-9]/g, function(d){ return FA_DIGITS[+d]; }); }
+function pad2(n){ return (n<10?"0":"")+n; }
+
+function to12(t){
+  if(!t) return {h:9, m:0, ap:"AM"};
+  var parts = t.split(":"); var h=+parts[0], m=+parts[1];
+  var ap = h>=12 ? "PM" : "AM";
+  var h12 = h%12; if(h12===0) h12=12;
+  return {h:h12, m:m, ap:ap};
+}
+function to24(h12,m,ap){
+  var h = h12%12;
+  if(ap==="PM") h += 12;
+  return pad2(h)+":"+pad2(m);
+}
+function fmtChipTime(t){
+  if(!t) return "--:--";
+  var p = to12(t);
+  return faDigits(p.h)+":"+faDigits(pad2(p.m))+" "+(p.ap==="AM"?"ق.ظ":"ب.ظ");
+}
+function hourOptionsHtml(sel){
+  var s="";
+  for(var h=1;h<=12;h++){ s += "<option value='"+h+"'"+(h===sel?" selected":"")+">"+faDigits(h)+"</option>"; }
+  return s;
+}
+function minuteOptionsHtml(sel){
+  var s="";
+  for(var m=0;m<60;m+=5){ s += "<option value='"+m+"'"+(m===sel?" selected":"")+">"+faDigits(pad2(m))+"</option>"; }
+  if(sel%5!==0){ s += "<option value='"+sel+"' selected>"+faDigits(pad2(sel))+"</option>"; }
+  return s;
+}
+function ampmOptionsHtml(sel){
+  return "<option value='AM'"+(sel==="AM"?" selected":"")+">ق.ظ</option>"+
+         "<option value='PM'"+(sel==="PM"?" selected":"")+">ب.ظ</option>";
+}
+function renderTimeSelectGroup(taskId, field, value){
+  var p = to12(value);
+  return "<span class='time-select-group' data-id='"+taskId+"' data-field='"+field+"'>"+
+    "<select class='sel-hour' dir='ltr' aria-label='ساعت'>"+hourOptionsHtml(p.h)+"</select>"+
+    "<span class='colon'>:</span>"+
+    "<select class='sel-min' dir='ltr' aria-label='دقیقه'>"+minuteOptionsHtml(p.m)+"</select>"+
+    "<select class='sel-ampm' dir='ltr' aria-label='قبل یا بعد از ظهر'>"+ampmOptionsHtml(p.ap)+"</select>"+
+  "</span>";
+}
+
+function dateKeyOf(gy,gm,gd){ return gy+"-"+pad2(gm)+"-"+pad2(gd); }
+function keyToParts(key){ var p = key.split("-"); return {gy:+p[0], gm:+p[1], gd:+p[2]}; }
+function todayParts(){ var d = new Date(); return {gy:d.getFullYear(), gm:d.getMonth()+1, gd:d.getDate()}; }
+function satWeekdayIndex(gy,gm,gd){ var d = new Date(gy,gm-1,gd); return (d.getDay()+1)%7; }
+function addDaysToKey(key, delta){
+  var p = keyToParts(key);
+  var d = new Date(p.gy, p.gm-1, p.gd + delta);
+  return dateKeyOf(d.getFullYear(), d.getMonth()+1, d.getDate());
+}
+
+var LS_PREFIX = "plannerApp:";
+var memoryFallback = {};
+var LS_OK = (function(){
+  try{ var t="__lsTest__"; localStorage.setItem(t,"1"); localStorage.removeItem(t); return true; }
+  catch(e){ return false; }
+})();
+
+async function storeGet(key){
+  if(!LS_OK){ return memoryFallback[key] !== undefined ? memoryFallback[key] : null; }
+  try{ var v = localStorage.getItem(LS_PREFIX+key); return v===null ? null : JSON.parse(v); }
+  catch(e){ console.error("storage get failed", key, e); return null; }
+}
+async function storeSet(key, value){
+  if(!LS_OK){ memoryFallback[key] = value; return true; }
+  try{ localStorage.setItem(LS_PREFIX+key, JSON.stringify(value)); return true; }
+  catch(e){
+    console.error("storage set failed", key, e);
+    if(e && e.name === "QuotaExceededError"){
+      try{ showToast("حافظهٔ ذخیره‌سازی گوشی پر شده؛ عکس‌های اضافه رو حذف کن"); }catch(_){}
+    }
+    return false;
+  }
+}
+async function storeDelete(key){
+  if(!LS_OK){ delete memoryFallback[key]; return true; }
+  try{ localStorage.removeItem(LS_PREFIX+key); return true; } catch(e){ return false; }
+}
+async function storeListDayKeys(){
+  if(!LS_OK){ return Object.keys(memoryFallback).filter(function(k){ return k.indexOf("day:")===0; }); }
+  try{
+    var keys = [];
+    for(var i=0;i<localStorage.length;i++){
+      var k = localStorage.key(i);
+      if(k && k.indexOf(LS_PREFIX+"day:")===0){ keys.push(k.slice(LS_PREFIX.length)); }
+    }
+    return keys;
+  } catch(e){ return []; }
+}
+
+var DEFAULT_SETTINGS = { calendarMode:"both", theme:"light", notifEnabled:false, titles:{} };
+var settings = Object.assign({}, DEFAULT_SETTINGS);
+var indexData = {};
+var DEFAULT_SECTIONS = { dailyProgram:"", expenses:"", calories:"", energy:"", gratitude:"", happened:"", breakfast:"", lunch:"", dinner:"", goal:"", sleepFrom:"", sleepTo:"" };
+var WATER_TOTAL = 8;
+
+var TITLE_DEFAULTS = {
+  dailyProgram:{icon:"📋", text:"برنامه روزانه"},
+  expenses:{icon:"💰", text:"هزینه‌های امروز"},
+  calories:{icon:"🔥", text:"کالری"},
+  energy:{icon:"⚡", text:"انرژی"},
+  gratitude:{icon:"🙏", text:"سپاسگزاری"},
+  tasksTitle:{icon:"✅", text:"کارهای انجام‌دادنی"},
+  shoppingTitle:{icon:"🛒", text:"لیست خرید"},
+  happened:{icon:"✨", text:"اتفاقات امروز"},
+  breakfast:{icon:"🍳", text:"صبحانه"},
+  lunch:{icon:"🍲", text:"ناهار"},
+  dinner:{icon:"🍽", text:"شام"},
+  goal:{icon:"🎯", text:"هدف من"},
+  sleep:{icon:"🛌", text:"زمان خواب"},
+  water:{icon:"💧", text:"ردیاب آب"},
+  notesTitle:{icon:"📝", text:"یادداشت روز"},
+  goalsTitle:{icon:"🎯", text:"اهداف بلندمدت"},
+  pinnedNotesTitle:{icon:"📌", text:"یادداشت‌های ثابت"}
+};
+
+var MOOD_OPTIONS = [
+  {key:"amazing", emoji:"🤩", label:"فوق‌العاده"},
+  {key:"great", emoji:"😄", label:"عالی"},
+  {key:"good", emoji:"🙂", label:"خوب"},
+  {key:"calm", emoji:"😌", label:"آرام"},
+  {key:"motivated", emoji:"🔥", label:"با انگیزه"},
+  {key:"energetic", emoji:"💪", label:"پرانرژی"},
+  {key:"neutral", emoji:"😐", label:"معمولی"},
+  {key:"lowenergy", emoji:"🥱", label:"کم‌انرژی"},
+  {key:"tired", emoji:"😴", label:"خسته"},
+  {key:"stressed", emoji:"😰", label:"استرس‌دار"},
+  {key:"anxious", emoji:"😟", label:"نگران"},
+  {key:"sad", emoji:"😢", label:"غمگین"},
+  {key:"angry", emoji:"😡", label:"عصبی"},
+  {key:"sick", emoji:"🤒", label:"بیمار"},
+  {key:"relaxed", emoji:"🧘", label:"ریلکس"}
+];
+function moodByKey(key){ for(var i=0;i<MOOD_OPTIONS.length;i++){ if(MOOD_OPTIONS[i].key===key) return MOOD_OPTIONS[i]; } return null; }
+
+function applyTitles(){
+  Object.keys(TITLE_DEFAULTS).forEach(function(key){
+    var val = (settings.titles && settings.titles[key]) || TITLE_DEFAULTS[key].text;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-title-key='"+key+"']"), function(node){ node.textContent = val; });
+  });
+}
+
+function renderTitleEditList(){
+  var keys = Object.keys(TITLE_DEFAULTS);
+  el.titleEditList.innerHTML = keys.map(function(key){
+    var def = TITLE_DEFAULTS[key];
+    var val = (settings.titles && settings.titles[key]!==undefined) ? settings.titles[key] : def.text;
+    return "<div class='title-edit-row'><span class='te-icon'>"+def.icon+"</span><input type='text' data-title-input='"+key+"' value='"+escapeAttr(val)+"'></div>";
+  }).join("");
+  Array.prototype.forEach.call(el.titleEditList.querySelectorAll("[data-title-input]"), function(inp){
+    inp.addEventListener("input", function(){ debounceSaveTitle(inp.getAttribute("data-title-input"), inp.value); });
+  });
+}
+
+var titleDebounceTimers = {};
+function debounceSaveTitle(key, value){
+  clearTimeout(titleDebounceTimers[key]);
+  titleDebounceTimers[key] = setTimeout(async function(){
+    if(!settings.titles) settings.titles = {};
+    var def = TITLE_DEFAULTS[key];
+    if(!value || !value.trim() || value===def.text){ delete settings.titles[key]; }
+    else { settings.titles[key] = value; }
+    await saveSettings();
+    applyTitles();
+  }, 300);
+}
+
+function renderEnergyMenu(){
+  el.energyMenu.innerHTML = MOOD_OPTIONS.map(function(m){
+    return "<div class='mood-option' data-key='"+m.key+"'><span class='mo-emoji'>"+m.emoji+"</span><span>"+m.label+"</span></div>";
+  }).join("");
+  Array.prototype.forEach.call(el.energyMenu.querySelectorAll(".mood-option"), function(node){
+    node.addEventListener("click", function(){
+      selectEnergy(node.getAttribute("data-key"));
+      closeEnergyMenu();
+    });
+  });
+}
+function updateEnergyTrigger(key){
+  var m = moodByKey(key);
+  if(m){
+    el.energyTriggerEmoji.textContent = m.emoji;
+    el.energyTriggerLabel.textContent = m.label;
+    el.energyTrigger.classList.remove("placeholder");
+  } else {
+    el.energyTriggerEmoji.textContent = "〰️";
+    el.energyTriggerLabel.textContent = "انتخاب حالت";
+    el.energyTrigger.classList.add("placeholder");
+  }
+  Array.prototype.forEach.call(el.energyMenu.querySelectorAll(".mood-option"), function(node){
+    node.classList.toggle("active", node.getAttribute("data-key")===key);
+  });
+}
+function selectEnergy(key){
+  el.secEnergy.value = key;
+  updateEnergyTrigger(key);
+  el.secEnergy.dispatchEvent(new Event("input", {bubbles:true}));
+}
+function openEnergyMenu(){ el.energyMenu.hidden=false; el.energyMoodSelect.classList.add("open"); }
+function closeEnergyMenu(){ el.energyMenu.hidden=true; el.energyMoodSelect.classList.remove("open"); }
+
+async function loadSettings(){ var s = await storeGet("settings"); if(s) settings = Object.assign({}, DEFAULT_SETTINGS, s); }
+async function saveSettings(){ await storeSet("settings", settings); }
+async function loadIndex(){ var idx = await storeGet("index"); indexData = idx || {}; }
+async function saveIndex(){ await storeSet("index", indexData); }
+var goalsData = [];
+var pinnedNotesData = [];
+async function loadGoals(){ var g = await storeGet("goals"); goalsData = g || []; }
+async function saveGoals(){ await storeSet("goals", goalsData); }
+async function loadPinnedNotes(){ var n = await storeGet("pinnedNotes"); pinnedNotesData = n || []; }
+async function savePinnedNotes(){ await storeSet("pinnedNotes", pinnedNotesData); }
+async function loadDay(key){ var d = await storeGet("day:"+key); return d || {tasks:[], notes:[], extraSlots:0, sections:Object.assign({},DEFAULT_SECTIONS), shopping:[], water:0}; }
+async function saveDay(key, data){
+  if(data.extraSlots === undefined) data.extraSlots = 0;
+  await storeSet("day:"+key, data);
+  var t = data.tasks.length, td = data.tasks.filter(function(x){return x.done;}).length;
+  var n = data.notes.length, hasImg = data.notes.some(function(nt){ return nt.images && nt.images.length; });
+  if(t===0 && n===0){ delete indexData[key]; } else { indexData[key] = {t:t, td:td, n:n, img:hasImg}; }
+  await saveIndex();
+}
+
+var MIN_SLOTS = 10;
+var view = { jy:0, jm:0, gy:0, gm:0 };
+var pageKey = null;
+var todayKey = null;
+var activeTab = "today";
+var openMenuId = null;
+var openTimeId = null;
+
+function primaryIsGregorian(){ return settings.calendarMode === "gregorian"; }
+function initToToday(){
+  var t = todayParts();
+  var j = toJalali(t.gy,t.gm,t.gd);
+  view.jy=j[0]; view.jm=j[1]; view.gy=t.gy; view.gm=t.gm;
+  todayKey = dateKeyOf(t.gy,t.gm,t.gd);
+  pageKey = todayKey;
+}
+function setViewMonthFromKey(key){
+  var p = keyToParts(key);
+  var j = toJalali(p.gy,p.gm,p.gd);
+  view.jy=j[0]; view.jm=j[1]; view.gy=p.gy; view.gm=p.gm;
+}
+
+var el = {};
+function q(id){ return document.getElementById(id); }
+function cacheEls(){
+  ["dWeekday","dNumBig","dMonthLine","dAltLine","dBadgeSlot","prevDay","nextDay",
+   "taskList","addSlotBtn","progressFill","progressLabel","carryBannerSlot",
+   "newNoteText","newNoteImage","newNoteThumbs","addNoteBtn","noteList",
+   "calTitle","weekdaysRow","calGrid","agendaList","prevMonth","nextMonth",
+   "settingsOverlay","closeSettingsModal","calModeSeg","darkToggle","btnEnableNotif","btnClearAll",
+   "btnBackup","restoreFile","toast","btnTheme","btnSettings","spiral",
+   "weekdayRow","secDailyProgram","secExpenses","secCalories","secEnergy","secGratitude","secHappened",
+   "secBreakfast","secLunch","secDinner","secGoal","secSleepFrom","secSleepTo",
+   "waterRow","waterLabel","shopList","shopNewItem",
+   "energyMoodSelect","energyTrigger","energyTriggerEmoji","energyTriggerLabel","energyMenu",
+   "titleEditList","btnResetTitles",
+   "pageGoals","goalsList","newGoalTitle",
+   "newPinnedText","newPinnedImage","newPinnedThumbs","addPinnedBtn","pinnedNoteList"
+  ].forEach(function(id){ el[id]=q(id); });
+}
+
+function switchTab(name){
+  activeTab = name;
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+    t.classList.toggle("active", t.getAttribute("data-tab")===name);
+  });
+  q("pageToday").hidden = name!=="today";
+  q("pageGoals").hidden = name!=="goals";
+  q("pageCalendar").hidden = name!=="calendar";
+  if(name==="calendar"){ setViewMonthFromKey(pageKey); renderCalendarTab(); }
+  if(name==="goals"){ renderGoals(); renderPinnedNotes(); }
+}
+
+var pendingImages = [];
+var currentDayData = {tasks:[], notes:[], extraSlots:0};
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+function renderDayHead(){
+  var p = keyToParts(pageKey);
+  var j = toJalali(p.gy,p.gm,p.gd);
+  var wd = WEEKDAYS_SAT[satWeekdayIndex(p.gy,p.gm,p.gd)];
+  el.dWeekday.textContent = wd;
+  var mode = settings.calendarMode;
+  if(mode==="gregorian"){
+    el.dNumBig.textContent = p.gd;
+    el.dMonthLine.textContent = GMONTHS_FA[p.gm-1]+" "+p.gy;
+    el.dAltLine.textContent = "";
+  } else if(mode==="jalali"){
+    el.dNumBig.textContent = faDigits(j[2]);
+    el.dMonthLine.textContent = JMONTHS[j[1]-1]+" "+faDigits(j[0]);
+    el.dAltLine.textContent = "";
+  } else {
+    el.dNumBig.textContent = faDigits(j[2]);
+    el.dMonthLine.textContent = JMONTHS[j[1]-1]+" "+faDigits(j[0]);
+    el.dAltLine.textContent = p.gd+" "+GMONTHS_FA[p.gm-1]+" "+p.gy;
+  }
+  el.dBadgeSlot.innerHTML = pageKey===todayKey ? "<span class='today-badge'>امروز</span>" : "<button class='jump-today' id='jumpTodayBtn'>برو به امروز</button>";
+  if(pageKey!==todayKey){ q("jumpTodayBtn").addEventListener("click", function(){ pageKey=todayKey; loadAndRenderDay(); }); }
+}
+
+async function loadAndRenderDay(){
+  renderDayHead();
+  currentDayData = await loadDay(pageKey);
+  if(currentDayData.extraSlots===undefined) currentDayData.extraSlots = 0;
+  currentDayData.sections = Object.assign({}, DEFAULT_SECTIONS, currentDayData.sections||{});
+  if(!currentDayData.shopping) currentDayData.shopping = [];
+  if(currentDayData.water===undefined) currentDayData.water = 0;
+  pendingImages = [];
+  el.newNoteThumbs.innerHTML = "";
+  el.newNoteText.value="";
+  openMenuId = null;
+  openTimeId = null;
+  renderTasks(); renderNotes(); renderCarryBanner();
+  renderWeekdayRow(); renderSectionInputs(); renderShopList(); renderWaterRow();
+}
+
+function weekStartKey(key){
+  var p = keyToParts(key);
+  var idx = satWeekdayIndex(p.gy,p.gm,p.gd);
+  return addDaysToKey(key, -idx);
+}
+function miniDayNum(key){
+  var p = keyToParts(key);
+  if(settings.calendarMode==="gregorian") return p.gd;
+  var j = toJalali(p.gy,p.gm,p.gd);
+  return faDigits(j[2]);
+}
+function renderWeekdayRow(){
+  var startKey = weekStartKey(pageKey);
+  var html = "";
+  for(var i=0;i<7;i++){
+    var k = addDaysToKey(startKey,i);
+    var cls = "wk-chip"+(k===todayKey?" today":"")+(k===pageKey?" selected":"");
+    html += "<div class='"+cls+"' data-key='"+k+"'>"+
+      "<span class='wk-name'>"+WEEKDAYS_SAT[i]+"</span>"+
+      "<span class='wk-num'>"+miniDayNum(k)+"</span>"+
+    "</div>";
+  }
+  el.weekdayRow.innerHTML = html;
+  Array.prototype.forEach.call(el.weekdayRow.querySelectorAll(".wk-chip"), function(node){
+    node.addEventListener("click", function(){
+      pageKey = node.getAttribute("data-key");
+      loadAndRenderDay();
+    });
+  });
+}
+
+function renderSectionInputs(){
+  var s = currentDayData.sections;
+  el.secDailyProgram.value = s.dailyProgram||"";
+  el.secExpenses.value = s.expenses||"";
+  el.secCalories.value = s.calories||"";
+  el.secEnergy.value = s.energy||"";
+  updateEnergyTrigger(s.energy||"");
+  el.secGratitude.value = s.gratitude||"";
+  el.secHappened.value = s.happened||"";
+  el.secBreakfast.value = s.breakfast||"";
+  el.secLunch.value = s.lunch||"";
+  el.secDinner.value = s.dinner||"";
+  el.secGoal.value = s.goal||"";
+  el.secSleepFrom.value = s.sleepFrom||"";
+  el.secSleepTo.value = s.sleepTo||"";
+}
+
+var sectionDebounceTimers = {};
+function debounceSaveSection(field, value){
+  clearTimeout(sectionDebounceTimers[field]);
+  sectionDebounceTimers[field] = setTimeout(async function(){
+    currentDayData.sections[field] = value;
+    await saveDay(pageKey, currentDayData);
+  }, 260);
+}
+function bindSectionField(elKey, field){
+  el[elKey].addEventListener("input", function(){ debounceSaveSection(field, el[elKey].value); });
+}
+
+function renderShopList(){
+  var items = currentDayData.shopping;
+  if(items.length===0){ el.shopList.innerHTML = "<div class='empty-hint'>چیزی به لیست خرید اضافه نشده.</div>"; return; }
+  el.shopList.innerHTML = items.map(function(it){
+    return "<div class='shop-item"+(it.done?" done":"")+"' data-id='"+it.id+"'>"+
+      "<button type='button' class='shop-check"+(it.done?" done":"")+"' data-action='shoptoggle' data-id='"+it.id+"'>"+(it.done?"✓":"")+"</button>"+
+      "<input type='text' class='shop-text"+(it.done?" done":"")+"' data-action='shoptext' data-id='"+it.id+"' value='"+escapeAttr(it.text)+"'>"+
+      "<button type='button' class='shop-del' data-action='shopdel' data-id='"+it.id+"'>✕</button>"+
+    "</div>";
+  }).join("");
+  bindShopEvents();
+}
+function bindShopEvents(){
+  Array.prototype.forEach.call(el.shopList.querySelectorAll("[data-action='shoptoggle']"), function(b){
+    b.addEventListener("click", function(){ toggleShopItem(b.getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(el.shopList.querySelectorAll("[data-action='shoptext']"), function(inp){
+    inp.addEventListener("input", function(){ debounceSaveShopText(inp.getAttribute("data-id"), inp.value); });
+    inp.addEventListener("blur", function(){ if(!inp.value.trim()) deleteShopItem(inp.getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(el.shopList.querySelectorAll("[data-action='shopdel']"), function(b){
+    b.addEventListener("click", function(){ deleteShopItem(b.getAttribute("data-id")); });
+  });
+}
+async function addShopItem(text){
+  currentDayData.shopping.push({id:uid(), text:text, done:false});
+  await saveDay(pageKey, currentDayData);
+  renderShopList();
+}
+async function toggleShopItem(id){
+  var it = currentDayData.shopping.find(function(x){return x.id===id;});
+  if(!it) return;
+  it.done = !it.done;
+  await saveDay(pageKey, currentDayData);
+  renderShopList();
+}
+async function deleteShopItem(id){
+  currentDayData.shopping = currentDayData.shopping.filter(function(x){return x.id!==id;});
+  await saveDay(pageKey, currentDayData);
+  renderShopList();
+}
+var shopTextDebounce = null;
+function debounceSaveShopText(id, val){
+  clearTimeout(shopTextDebounce);
+  shopTextDebounce = setTimeout(async function(){
+    var it = currentDayData.shopping.find(function(x){return x.id===id;});
+    if(!it) return;
+    it.text = val;
+    await saveDay(pageKey, currentDayData);
+  }, 260);
+}
+
+function renderWaterRow(){
+  var count = currentDayData.water||0;
+  var html = "";
+  for(var i=0;i<WATER_TOTAL;i++){
+    html += "<svg class='water-drop"+(i<count?" filled":"")+"' data-idx='"+i+"' width='24' height='30' viewBox='0 0 24 30' xmlns='http://www.w3.org/2000/svg'>"+
+      "<path d='M12 1 C12 1 3 13 3 19 a9 9 0 0 0 18 0 C21 13 12 1 12 1 Z' fill='var(--blue)'/>"+
+    "</svg>";
+  }
+  el.waterRow.innerHTML = html;
+  el.waterLabel.textContent = faDigits(count)+" / "+faDigits(WATER_TOTAL)+" لیوان";
+  Array.prototype.forEach.call(el.waterRow.querySelectorAll(".water-drop"), function(node){
+    node.addEventListener("click", function(){
+      var idx = +node.getAttribute("data-idx");
+      setWater(idx+1===currentDayData.water ? idx : idx+1);
+    });
+  });
+}
+async function setWater(val){
+  currentDayData.water = Math.max(0, Math.min(WATER_TOTAL, val));
+  await saveDay(pageKey, currentDayData);
+  renderWaterRow();
+}
+
+function renderCarryBanner(){
+  var carriedIn = currentDayData.tasks.filter(function(t){ return t.carriedFrom; });
+  if(carriedIn.length===0){ el.carryBannerSlot.innerHTML=""; return; }
+  el.carryBannerSlot.innerHTML = "<div class='carry-banner'>"+
+    "<svg width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='var(--gold)' stroke-width='2.2'><path d='M3 12h14M12 5l7 7-7 7'/></svg>"+
+    "<span>"+faDigits(carriedIn.length)+" کار از روزهای قبل به اینجا منتقل شده <b>(انجام‌نشده)</b></span>"+
+  "</div>";
+}
+
+function fmtTime(t){ return t ? t : ""; }
+function computeSlots(){
+  var n = Math.max(MIN_SLOTS + (currentDayData.extraSlots||0), currentDayData.tasks.length);
+  var slots = [];
+  for(var i=0;i<n;i++){ slots.push(i < currentDayData.tasks.length ? currentDayData.tasks[i] : null); }
+  return slots;
+}
+
+function renderTasks(){
+  var slots = computeSlots();
+  el.taskList.innerHTML = slots.map(function(t, idx){
+    var num = faDigits(idx+1);
+    if(!t){
+      return "<div class='task-row empty-slot' data-idx='"+idx+"'>"+
+        "<span class='drag-handle'>⋮⋮</span>"+
+        "<span class='task-num'>"+num+"</span>"+
+        "<div class='task-check' aria-hidden='true'></div>"+
+        "<div class='task-body'><input class='task-text-input' data-action='newtext' data-idx='"+idx+"' type='text' placeholder='عنوان کار #"+num+" را بنویس…'></div>"+
+      "</div>";
+    }
+    var pClass = "p"+(t.priority||0);
+    var gcalLink = t.start ? buildGoogleCalendarLink(t) : "";
+    var hasTime = !!(t.start || t.end);
+    var timePanelOpen = hasTime || openTimeId===t.id;
+    var timeEntry;
+    if(!timePanelOpen){
+      timeEntry = "<button type='button' class='time-toggle' data-action='opentime' data-id='"+t.id+"'>"+
+        "<svg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></svg> افزودن زمان"+
+      "</button>";
+    } else if(!openTimeId || openTimeId!==t.id){
+      var rangeLabel = fmtChipTime(t.start)+" – "+fmtChipTime(t.end);
+      timeEntry = "<button type='button' class='time-chip' data-action='opentime' data-id='"+t.id+"'>"+
+        "<svg width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' style='vertical-align:-1px; margin-left:3px;'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 3'/></svg>"+rangeLabel+
+      "</button>";
+    } else {
+      timeEntry = "<div class='time-panel'>"+
+        renderTimeSelectGroup(t.id,"start",t.start)+
+        "<span class='meta-sep'>–</span>"+
+        renderTimeSelectGroup(t.id,"end",t.end)+
+        "<span class='dur-chips'>"+
+          [15,30,45,60].map(function(m){ return "<button type='button' class='dur-chip"+(m===45?" def":"")+"' data-action='dur' data-min='"+m+"' data-id='"+t.id+"'>"+faDigits(m)+"د</button>"; }).join("")+
+        "</span>"+
+        "<span class='dur-custom'>"+
+          "<input type='number' min='1' max='600' class='dur-custom-input' data-id='"+t.id+"' placeholder='دلخواه'>"+
+          "<button type='button' data-action='durcustom' data-id='"+t.id+"'>اعمال</button>"+
+        "</span>"+
+      "</div>";
+    }
+    var descBox = "<div class='desc-panel'>"+
+        "<textarea class='task-desc-input' data-action='desc' data-id='"+t.id+"' placeholder='توضیحات این کار را بنویس…'>"+escapeHtml(t.desc||"")+"</textarea>"+
+      "</div>";
+    var metaExtra = "<button type='button' class='mini-icon-btn"+(t.alarm?" alarm-on":"")+"' data-action='alarm' data-id='"+t.id+"' title='یادآوری'>"+
+        "<svg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0'/></svg>"+
+      "</button>"+
+      "<button type='button' class='mini-icon-btn"+(t.carryOver?" on":"")+"' data-action='carry' data-id='"+t.id+"' title='انتقال خودکار به فردا اگر انجام نشد'>"+
+        "<svg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'><path d='M3 12h14M12 5l7 7-7 7'/></svg>"+
+      "</button>"+
+      (gcalLink ? "<a class='gcal-link' href='"+gcalLink+"' target='_blank' rel='noopener'>+ گوگل‌کلندر</a>" : "")+
+      (t.carriedFrom ? "<span class='carried-tag'>از روز قبل</span>" : "")+
+      (t.migrated ? "<span class='carried-tag'>→ فردا منتقل شد</span>" : "");
+    var timeMeta = "<span class='task-meta'>"+timeEntry+metaExtra+"</span>";
+    return "<div class='task-row "+pClass+(t.done?" done":"")+"' data-id='"+t.id+"' draggable='true'>"+
+      "<span class='drag-handle' data-action='drag'>⋮⋮</span>"+
+      "<span class='task-num'>"+num+"</span>"+
+      "<button class='task-check "+(t.done?"done":"")+"' data-action='toggle' data-id='"+t.id+"' aria-label='انجام شد'>"+(t.done?"✓":"")+"</button>"+
+      "<div class='task-body'>"+
+        "<input class='task-text-input "+(t.done?"done":"")+"' data-action='text' data-id='"+t.id+"' type='text' value='"+escapeAttr(t.text)+"' placeholder='عنوان کار…'>"+
+        descBox+
+        timeMeta+
+      "</div>"+
+      "<div class='row-menu'>"+
+        "<button class='kebab' data-action='menu' data-id='"+t.id+"'>⋮</button>"+
+        (openMenuId===t.id ? renderDropdown(t) : "")+
+      "</div>"+
+    "</div>";
+  }).join("");
+  bindTaskEvents();
+  renderProgress();
+}
+
+function renderDropdown(t){
+  return "<div class='dropdown'>"+
+    "<div class='dd-label'>اولویت</div>"+
+    "<button data-action='pri' data-val='3' data-id='"+t.id+"'><span class='p-dot p3'></span> فوری</button>"+
+    "<button data-action='pri' data-val='2' data-id='"+t.id+"'><span class='p-dot p2'></span> متوسط</button>"+
+    "<button data-action='pri' data-val='1' data-id='"+t.id+"'><span class='p-dot p1'></span> کم‌اهمیت</button>"+
+    "<button data-action='pri' data-val='0' data-id='"+t.id+"'><span class='p-dot p0'></span> بدون اولویت</button>"+
+    "<hr>"+
+    "<button data-action='moveup' data-id='"+t.id+"'>↑ انتقال به بالا</button>"+
+    "<button data-action='movedown' data-id='"+t.id+"'>↓ انتقال به پایین</button>"+
+    "<button data-action='delete' class='danger' data-id='"+t.id+"'>✕ حذف ردیف</button>"+
+  "</div>";
+}
+
+function renderProgress(){
+  var total = currentDayData.tasks.length;
+  var done = currentDayData.tasks.filter(function(t){return t.done;}).length;
+  var pct = total>0 ? Math.round(done/total*100) : 0;
+  el.progressFill.style.width = pct+"%";
+  el.progressLabel.textContent = faDigits(done)+"/"+faDigits(total);
+}
+
+function findTask(id){ return currentDayData.tasks.find(function(x){return x.id===id;}); }
+
+function bindTaskEvents(){
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='newtext']"), function(inp){
+    inp.addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); commitNewText(inp); } });
+    inp.addEventListener("blur", function(){ commitNewText(inp); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='text']"), function(inp){
+    inp.addEventListener("input", function(){ debounceSaveText(inp.getAttribute("data-id"), inp.value); });
+    inp.addEventListener("keydown", function(e){
+      if(e.key==="Enter"){
+        e.preventDefault();
+        var row = inp.closest(".task-row");
+        var idx = row ? Array.prototype.indexOf.call(el.taskList.children, row) : -1;
+        var nextIdx = idx+1;
+        var nextRow = el.taskList.children[nextIdx];
+        if(nextRow){
+          var nextField = nextRow.querySelector("[data-action='newtext'], [data-action='text']");
+          if(nextField) nextField.focus();
+        }
+      }
+    });
+    inp.addEventListener("blur", function(){
+      var t = findTask(inp.getAttribute("data-id"));
+      if(t && !inp.value.trim() && !t.start && !t.end && !t.alarm && !t.carryOver && !(t.desc&&t.desc.trim())){ removeTask(t.id); }
+    });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='desc']"), function(ta){
+    ta.addEventListener("input", function(){ debounceSaveDesc(ta.getAttribute("data-id"), ta.value); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='toggle']"), function(b){
+    b.addEventListener("click", function(){ toggleTask(b.getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll(".time-select-group"), function(grp){
+    var selects = grp.querySelectorAll("select");
+    Array.prototype.forEach.call(selects, function(sel){
+      sel.addEventListener("change", function(){
+        var h = +grp.querySelector(".sel-hour").value;
+        var m = +grp.querySelector(".sel-min").value;
+        var ap = grp.querySelector(".sel-ampm").value;
+        setTaskField(grp.getAttribute("data-id"), grp.getAttribute("data-field"), to24(h,m,ap));
+      });
+    });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='dur']"), function(b){
+    b.addEventListener("click", function(){ applyDuration(b.getAttribute("data-id"), +b.getAttribute("data-min")); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='opentime']"), function(b){
+    b.addEventListener("click", function(e){ e.stopPropagation(); var id=b.getAttribute("data-id"); openTimeId = openTimeId===id?null:id; renderTasks(); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='durcustom']"), function(b){
+    b.addEventListener("click", function(){
+      var id = b.getAttribute("data-id");
+      var inp = el.taskList.querySelector(".dur-custom-input[data-id='"+id+"']");
+      var minutes = inp ? parseInt(inp.value,10) : 0;
+      if(minutes>0) applyDuration(id, minutes);
+    });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='alarm']"), function(b){
+    b.addEventListener("click", function(){ toggleField(b.getAttribute("data-id"),"alarm"); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='carry']"), function(b){
+    b.addEventListener("click", function(){ toggleField(b.getAttribute("data-id"),"carryOver"); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='menu']"), function(b){
+    b.addEventListener("click", function(e){ e.stopPropagation(); var id=b.getAttribute("data-id"); openMenuId = openMenuId===id?null:id; renderTasks(); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='pri']"), function(b){
+    b.addEventListener("click", function(e){ e.stopPropagation(); setPriority(b.getAttribute("data-id"), +b.getAttribute("data-val")); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='moveup']"), function(b){
+    b.addEventListener("click", function(e){ e.stopPropagation(); moveTask(b.getAttribute("data-id"),-1); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='movedown']"), function(b){
+    b.addEventListener("click", function(e){ e.stopPropagation(); moveTask(b.getAttribute("data-id"),1); });
+  });
+  Array.prototype.forEach.call(el.taskList.querySelectorAll("[data-action='delete']"), function(b){
+    b.addEventListener("click", function(e){ e.stopPropagation(); removeTask(b.getAttribute("data-id")); });
+  });
+  var rows = el.taskList.querySelectorAll(".task-row[draggable='true']");
+  Array.prototype.forEach.call(rows, function(row){
+    row.addEventListener("dragstart", function(){ row.classList.add("dragging"); row.dataset.dragging="1"; });
+    row.addEventListener("dragend", function(){ row.classList.remove("dragging"); Array.prototype.forEach.call(rows, function(r){r.classList.remove("drag-over");}); });
+    row.addEventListener("dragover", function(e){ e.preventDefault(); row.classList.add("drag-over"); });
+    row.addEventListener("dragleave", function(){ row.classList.remove("drag-over"); });
+    row.addEventListener("drop", function(e){
+      e.preventDefault();
+      var draggingRow = el.taskList.querySelector(".dragging");
+      if(!draggingRow || draggingRow===row) return;
+      reorderTasks(draggingRow.getAttribute("data-id"), row.getAttribute("data-id"));
+    });
+  });
+}
+
+var textDebounceTimer = null;
+function debounceSaveText(id, value){
+  clearTimeout(textDebounceTimer);
+  textDebounceTimer = setTimeout(function(){ setTaskField(id,"text",value); }, 260);
+}
+var descDebounceTimer = null;
+function debounceSaveDesc(id, value){
+  clearTimeout(descDebounceTimer);
+  descDebounceTimer = setTimeout(function(){ setTaskField(id,"desc",value); }, 260);
+}
+
+async function commitNewText(inp){
+  var text = inp.value.trim();
+  if(!text) return;
+  var idx = +inp.getAttribute("data-idx");
+  inp.value = "";
+  var isFirstTask = currentDayData.tasks.length===0;
+  var task = { id:uid(), text:text, desc:"", start:isFirstTask?"09:00":"", end:"", priority:0, alarm:false, fired:false, carryOver:false, done:false, migrated:false };
+  currentDayData.tasks.push(task);
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+  if(activeTab==="calendar") renderCalendarTab();
+  var nextInput = el.taskList.querySelector("[data-idx='"+(idx+1)+"'][data-action='newtext']");
+  if(nextInput) nextInput.focus();
+}
+async function setTaskField(id, field, value){
+  var t = findTask(id); if(!t) return;
+  t[field] = value;
+  await saveDay(pageKey, currentDayData);
+  if(field==="start" || field==="end") renderTasks();
+}
+async function applyDuration(id, minutes){
+  var t = findTask(id); if(!t) return;
+  if(!t.start){ showToast("اول ساعت شروع را وارد کن"); return; }
+  var parts = t.start.split(":"); var h=+parts[0], m=+parts[1];
+  var d = new Date(2000,0,1,h,m + minutes);
+  t.end = pad2(d.getHours())+":"+pad2(d.getMinutes());
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+}
+async function toggleField(id, field){
+  var t = findTask(id); if(!t) return;
+  t[field] = !t[field];
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+}
+async function toggleTask(id){
+  var t = findTask(id); if(!t) return;
+  t.done = !t.done;
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+  if(activeTab==="calendar") renderCalendarTab();
+}
+async function removeTask(id){
+  currentDayData.tasks = currentDayData.tasks.filter(function(x){return x.id!==id;});
+  openMenuId = null;
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+  if(activeTab==="calendar") renderCalendarTab();
+}
+async function setPriority(id, val){
+  var t = findTask(id); if(!t) return;
+  t.priority = val;
+  currentDayData.tasks.sort(function(a,b){ return (b.priority||0)-(a.priority||0); });
+  openMenuId = null;
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+  showToast("اولویت به‌روز شد");
+}
+async function moveTask(id, dir){
+  var idx = currentDayData.tasks.findIndex(function(x){return x.id===id;});
+  var swapIdx = idx+dir;
+  if(idx<0 || swapIdx<0 || swapIdx>=currentDayData.tasks.length) return;
+  var tmp = currentDayData.tasks[idx];
+  currentDayData.tasks[idx] = currentDayData.tasks[swapIdx];
+  currentDayData.tasks[swapIdx] = tmp;
+  openMenuId = null;
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+}
+async function reorderTasks(draggedId, targetId){
+  var fromIdx = currentDayData.tasks.findIndex(function(x){return x.id===draggedId;});
+  var toIdx = currentDayData.tasks.findIndex(function(x){return x.id===targetId;});
+  if(fromIdx<0 || toIdx<0) return;
+  var item = currentDayData.tasks.splice(fromIdx,1)[0];
+  currentDayData.tasks.splice(toIdx,0,item);
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+}
+
+document.addEventListener("click", function(e){
+  var changed = false;
+  if(openMenuId && !e.target.closest(".row-menu")){ openMenuId=null; changed = true; }
+  if(openTimeId && !e.target.closest(".task-meta")){ openTimeId=null; changed = true; }
+  if(changed) renderTasks();
+});
+
+function renderNotes(){
+  if(currentDayData.notes.length===0){ el.noteList.innerHTML = "<div class='empty-hint'>هنوز یادداشتی اضافه نشده.</div>"; return; }
+  el.noteList.innerHTML = currentDayData.notes.map(function(n){
+    var imgs = (n.images||[]).map(function(src){ return "<img src='"+src+"' alt='تصویر یادداشت'>"; }).join("");
+    return "<div class='note-card' data-id='"+n.id+"'>"+
+      "<div class='note-text'>"+escapeHtml(n.text)+"</div>"+
+      (imgs?"<div class='note-images'>"+imgs+"</div>":"")+
+      "<div class='note-foot'><span class='note-time'>"+n.created+"</span><button class='del-btn' data-action='delete-note' title='حذف' style='background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:15px;'>✕</button></div>"+
+    "</div>";
+  }).join("");
+  Array.prototype.forEach.call(el.noteList.querySelectorAll("[data-action='delete-note']"), function(btn){
+    btn.addEventListener("click", function(){ deleteNote(btn.closest(".note-card").getAttribute("data-id")); });
+  });
+}
+async function addNote(){
+  var text = el.newNoteText.value.trim();
+  if(!text && pendingImages.length===0) return;
+  var now = new Date();
+  currentDayData.notes.push({ id:uid(), text:text, images:pendingImages.slice(), created:pad2(now.getHours())+":"+pad2(now.getMinutes()) });
+  await saveDay(pageKey, currentDayData);
+  el.newNoteText.value=""; pendingImages=[]; el.newNoteThumbs.innerHTML="";
+  renderNotes();
+  if(activeTab==="calendar") renderCalendarTab();
+  showToast("یادداشت اضافه شد");
+}
+async function deleteNote(id){
+  currentDayData.notes = currentDayData.notes.filter(function(x){return x.id!==id;});
+  await saveDay(pageKey, currentDayData);
+  renderNotes();
+  if(activeTab==="calendar") renderCalendarTab();
+}
+
+/* ---------- Goals ---------- */
+function renderGoals(){
+  if(goalsData.length===0){ el.goalsList.innerHTML = "<div class='empty-hint'>هنوز هدفی اضافه نشده. یکی بنویس و شروع کن.</div>"; return; }
+  el.goalsList.innerHTML = goalsData.map(function(g){
+    return "<div class='goal-card "+(g.done?"done":"")+"' data-id='"+g.id+"'>"+
+      "<div class='goal-top'>"+
+        "<button class='task-check "+(g.done?"done":"")+"' data-action='goal-toggle' aria-label='تکمیل هدف'>"+(g.done?"✓":"")+"</button>"+
+        "<input type='text' class='goal-title' data-action='goal-title' value='"+escapeAttr(g.title||"")+"' placeholder='عنوان هدف'>"+
+        "<button class='goal-del' data-action='goal-delete' title='حذف'>✕</button>"+
+      "</div>"+
+      "<div class='goal-progress-row'>"+
+        "<button class='goal-step-btn' data-action='goal-dec' aria-label='کاهش'>−</button>"+
+        "<div class='goal-progress-track'><div class='goal-progress-fill' style='width:"+g.progress+"%'></div></div>"+
+        "<span class='goal-progress-pct'>"+faDigits(g.progress)+"٪</span>"+
+        "<button class='goal-step-btn' data-action='goal-inc' aria-label='افزایش'>+</button>"+
+      "</div>"+
+      "<div class='goal-meta-row'>"+
+        "<span class='goal-meta-icon'>⏳ مهلت:</span>"+
+        "<input type='text' class='goal-deadline' data-action='goal-deadline' value='"+escapeAttr(g.deadline||"")+"' placeholder='مثلاً پایان ۱۴۰۴ یا بدون مهلت'>"+
+      "</div>"+
+    "</div>";
+  }).join("");
+
+  Array.prototype.forEach.call(el.goalsList.querySelectorAll("[data-action='goal-toggle']"), function(b){
+    b.addEventListener("click", function(){ toggleGoalDone(b.closest(".goal-card").getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(el.goalsList.querySelectorAll("[data-action='goal-delete']"), function(b){
+    b.addEventListener("click", function(){ deleteGoal(b.closest(".goal-card").getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(el.goalsList.querySelectorAll("[data-action='goal-inc']"), function(b){
+    b.addEventListener("click", function(){ stepGoalProgress(b.closest(".goal-card").getAttribute("data-id"), 10); });
+  });
+  Array.prototype.forEach.call(el.goalsList.querySelectorAll("[data-action='goal-dec']"), function(b){
+    b.addEventListener("click", function(){ stepGoalProgress(b.closest(".goal-card").getAttribute("data-id"), -10); });
+  });
+  Array.prototype.forEach.call(el.goalsList.querySelectorAll("[data-action='goal-title']"), function(inp){
+    inp.addEventListener("input", function(){ debounceSaveGoalField(inp.closest(".goal-card").getAttribute("data-id"), "title", inp.value); });
+  });
+  Array.prototype.forEach.call(el.goalsList.querySelectorAll("[data-action='goal-deadline']"), function(inp){
+    inp.addEventListener("input", function(){ debounceSaveGoalField(inp.closest(".goal-card").getAttribute("data-id"), "deadline", inp.value); });
+  });
+}
+
+var goalDebounceTimers = {};
+function debounceSaveGoalField(id, field, value){
+  var key = id+":"+field;
+  clearTimeout(goalDebounceTimers[key]);
+  goalDebounceTimers[key] = setTimeout(async function(){
+    var g = goalsData.find(function(x){ return x.id===id; });
+    if(!g) return;
+    g[field] = value;
+    await saveGoals();
+  }, 260);
+}
+async function addGoal(title){
+  goalsData.unshift({ id:uid(), title:title, progress:0, done:false, deadline:"", createdAt:Date.now() });
+  await saveGoals();
+  renderGoals();
+  showToast("هدف اضافه شد");
+}
+async function deleteGoal(id){
+  goalsData = goalsData.filter(function(x){ return x.id!==id; });
+  await saveGoals();
+  renderGoals();
+}
+async function toggleGoalDone(id){
+  var g = goalsData.find(function(x){ return x.id===id; });
+  if(!g) return;
+  g.done = !g.done;
+  if(g.done) g.progress = 100;
+  await saveGoals();
+  renderGoals();
+}
+async function stepGoalProgress(id, delta){
+  var g = goalsData.find(function(x){ return x.id===id; });
+  if(!g) return;
+  g.progress = Math.max(0, Math.min(100, (g.progress||0)+delta));
+  if(g.progress===100) g.done = true; else if(g.done) g.done = false;
+  await saveGoals();
+  renderGoals();
+}
+
+/* ---------- Pinned notes ---------- */
+var pendingPinnedImages = [];
+function renderPinnedNotes(){
+  if(pinnedNotesData.length===0){ el.pinnedNoteList.innerHTML = "<div class='empty-hint'>هنوز یادداشت ثابتی اضافه نشده.</div>"; return; }
+  el.pinnedNoteList.innerHTML = pinnedNotesData.map(function(n){
+    var imgs = (n.images||[]).map(function(src){ return "<img src='"+src+"' alt='تصویر یادداشت'>"; }).join("");
+    return "<div class='note-card' data-id='"+n.id+"'>"+
+      "<div class='note-text'>"+escapeHtml(n.text)+"</div>"+
+      (imgs?"<div class='note-images'>"+imgs+"</div>":"")+
+      "<div class='note-foot'><span class='note-time'>"+escapeHtml(n.created||"")+"</span><button class='del-btn' data-action='delete-pinned' title='حذف' style='background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:15px;'>✕</button></div>"+
+    "</div>";
+  }).join("");
+  Array.prototype.forEach.call(el.pinnedNoteList.querySelectorAll("[data-action='delete-pinned']"), function(btn){
+    btn.addEventListener("click", function(){ deletePinnedNote(btn.closest(".note-card").getAttribute("data-id")); });
+  });
+}
+async function addPinnedNote(){
+  var text = el.newPinnedText.value.trim();
+  if(!text && pendingPinnedImages.length===0) return;
+  var t = todayParts();
+  var now = new Date();
+  var dateLbl = faDigits(t.gy)+"/"+faDigits(pad2(t.gm))+"/"+faDigits(pad2(t.gd))+" "+pad2(now.getHours())+":"+pad2(now.getMinutes());
+  pinnedNotesData.unshift({ id:uid(), text:text, images:pendingPinnedImages.slice(), created:dateLbl });
+  await savePinnedNotes();
+  el.newPinnedText.value=""; pendingPinnedImages=[]; el.newPinnedThumbs.innerHTML="";
+  renderPinnedNotes();
+  showToast("یادداشت ثابت اضافه شد");
+}
+async function deletePinnedNote(id){
+  pinnedNotesData = pinnedNotesData.filter(function(x){ return x.id!==id; });
+  await savePinnedNotes();
+  renderPinnedNotes();
+}
+async function handlePinnedImageInput(fileList){
+  var files = Array.prototype.slice.call(fileList);
+  for(var i=0;i<files.length;i++){
+    try{ pendingPinnedImages.push(await fileToCompressedDataUrl(files[i],1000,0.72)); } catch(e){ console.error(e); }
+  }
+  renderPendingPinnedThumbs();
+}
+function renderPendingPinnedThumbs(){
+  el.newPinnedThumbs.innerHTML = pendingPinnedImages.map(function(src,idx){
+    return "<div class='t'><img src='"+src+"'><button class='thumb-remove' data-idx='"+idx+"'>✕</button></div>";
+  }).join("");
+  Array.prototype.forEach.call(el.newPinnedThumbs.querySelectorAll(".thumb-remove"), function(btn){
+    btn.addEventListener("click", function(){ pendingPinnedImages.splice(+btn.getAttribute("data-idx"),1); renderPendingPinnedThumbs(); });
+  });
+}
+
+function fileToCompressedDataUrl(file, maxDim, quality){
+  return new Promise(function(resolve, reject){
+    var reader = new FileReader();
+    reader.onload = function(){
+      var img = new Image();
+      img.onload = function(){
+        var w=img.width, h=img.height, scale=Math.min(1, maxDim/Math.max(w,h));
+        var cw=Math.round(w*scale), ch=Math.round(h*scale);
+        var canvas=document.createElement("canvas"); canvas.width=cw; canvas.height=ch;
+        canvas.getContext("2d").drawImage(img,0,0,cw,ch);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror=reject; img.src=reader.result;
+    };
+    reader.onerror=reject; reader.readAsDataURL(file);
+  });
+}
+async function handleNoteImageInput(fileList){
+  var files = Array.prototype.slice.call(fileList);
+  for(var i=0;i<files.length;i++){
+    try{ pendingImages.push(await fileToCompressedDataUrl(files[i],1000,0.72)); } catch(e){ console.error(e); }
+  }
+  renderPendingThumbs();
+}
+function renderPendingThumbs(){
+  el.newNoteThumbs.innerHTML = pendingImages.map(function(src,idx){
+    return "<div class='t'><img src='"+src+"'><button class='thumb-remove' data-idx='"+idx+"'>✕</button></div>";
+  }).join("");
+  Array.prototype.forEach.call(el.newNoteThumbs.querySelectorAll(".thumb-remove"), function(btn){
+    btn.addEventListener("click", function(){ pendingImages.splice(+btn.getAttribute("data-idx"),1); renderPendingThumbs(); });
+  });
+}
+
+function buildGoogleCalendarLink(task){
+  var p = keyToParts(pageKey);
+  var hh=0, mm=0;
+  if(task.start){ var parts=task.start.split(":"); hh=+parts[0]; mm=+parts[1]; }
+  var start = new Date(p.gy, p.gm-1, p.gd, hh, mm);
+  var endD;
+  if(task.end){ var ep=task.end.split(":"); endD = new Date(p.gy,p.gm-1,p.gd,+ep[0],+ep[1]); }
+  else { endD = new Date(start.getTime()+30*60000); }
+  function fmt(d){ return d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+"T"+pad2(d.getHours())+pad2(d.getMinutes())+"00"; }
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE"
+    + "&text=" + encodeURIComponent(task.text)
+    + "&dates=" + fmt(start) + "/" + fmt(endD)
+    + "&details=" + encodeURIComponent((task.desc&&task.desc.trim()) ? task.desc : "ایجاد شده در دفترچه برنامه‌ریزی");
+}
+
+function renderWeekdaysRow(){ el.weekdaysRow.innerHTML = WEEKDAYS_SAT.map(function(w){return "<span>"+w+"</span>";}).join(""); }
+function makeCell(gy,gm,gd, jy,jm,jd, inMonth){ return {gy:gy,gm:gm,gd:gd, jy:jy,jm:jm,jd:jd, key:dateKeyOf(gy,gm,gd), inMonth:inMonth}; }
+
+function buildMonthCells(){
+  var cells = [];
+  if(!primaryIsGregorian()){
+    var jy=view.jy, jm=view.jm;
+    var len = jalaliMonthLength(jy,jm);
+    var firstG = toGregorian(jy,jm,1);
+    var firstIdx = satWeekdayIndex(firstG[0],firstG[1],firstG[2]);
+    var prevJm=jm-1, prevJy=jy; if(prevJm<1){prevJm=12; prevJy=jy-1;}
+    var prevLen = jalaliMonthLength(prevJy,prevJm);
+    for(var i=firstIdx-1;i>=0;i--){ var jd=prevLen-i; var g=toGregorian(prevJy,prevJm,jd); cells.push(makeCell(g[0],g[1],g[2],prevJy,prevJm,jd,false)); }
+    for(var d=1; d<=len; d++){ var gg=toGregorian(jy,jm,d); cells.push(makeCell(gg[0],gg[1],gg[2],jy,jm,d,true)); }
+    var nextJm=jm+1, nextJy=jy; if(nextJm>12){nextJm=1; nextJy=jy+1;}
+    var rem=(7-(cells.length%7))%7;
+    for(var k=1;k<=rem;k++){ var g2=toGregorian(nextJy,nextJm,k); cells.push(makeCell(g2[0],g2[1],g2[2],nextJy,nextJm,k,false)); }
+  } else {
+    var gy=view.gy, gm=view.gm;
+    var glen = new Date(gy,gm,0).getDate();
+    var firstIdx2 = satWeekdayIndex(gy,gm,1);
+    var pgy=gy, pgm=gm-1; if(pgm<1){pgm=12; pgy=gy-1;}
+    var plen = new Date(pgy,pgm,0).getDate();
+    for(var ii=firstIdx2-1; ii>=0; ii--){ var gd=plen-ii; var j2=toJalali(pgy,pgm,gd); cells.push(makeCell(pgy,pgm,gd,j2[0],j2[1],j2[2],false)); }
+    for(var dd=1; dd<=glen; dd++){ var j3=toJalali(gy,gm,dd); cells.push(makeCell(gy,gm,dd,j3[0],j3[1],j3[2],true)); }
+    var ngy=gy, ngm=gm+1; if(ngm>12){ngm=1; ngy=gy+1;}
+    var rem2=(7-(cells.length%7))%7;
+    for(var kk=1; kk<=rem2; kk++){ var j4=toJalali(ngy,ngm,kk); cells.push(makeCell(ngy,ngm,kk,j4[0],j4[1],j4[2],false)); }
+  }
+  return cells;
+}
+function GMONTHS_FA_RANGE(){ var f=toGregorian(view.jy,view.jm,1); return GMONTHS_FA[f[1]-1]+" "+f[0]; }
+function renderCalTitle(){
+  if(primaryIsGregorian()){ el.calTitle.textContent = GMONTHS_FA[view.gm-1]+" "+view.gy; }
+  else { el.calTitle.textContent = JMONTHS[view.jm-1]+" "+faDigits(view.jy)+(settings.calendarMode==="both"?"  ·  "+GMONTHS_FA_RANGE():""); }
+}
+function renderGrid(){
+  var cells = buildMonthCells();
+  var html = "";
+  cells.forEach(function(c){
+    var classes=["day-cell"];
+    if(!c.inMonth) classes.push("out");
+    if(c.key===todayKey) classes.push("today");
+    if(c.key===pageKey) classes.push("selected");
+    var mainNum, altNum;
+    if(primaryIsGregorian()){ mainNum=c.gd; altNum = settings.calendarMode==="both" ? faDigits(c.jd)+" "+JMONTHS[c.jm-1].slice(0,3) : ""; }
+    else { mainNum=faDigits(c.jd); altNum = settings.calendarMode==="both" ? c.gd : ""; }
+    var info = indexData[c.key];
+    var dots="";
+    if(info){
+      if(info.t>0) dots += "<span class='dot2 task'></span>";
+      if(info.n>0) dots += "<span class='dot2 note'></span>";
+      if(info.img) dots += "<span class='dot2 img'></span>";
+    }
+    html += "<div class='"+classes.join(" ")+"' data-key='"+c.key+"' tabindex='0' role='button'>"+
+      "<div class='day-num-row'><span class='day-num'>"+mainNum+"</span></div>"+
+      (altNum!==""?"<span class='day-num-alt'>"+altNum+"</span>":"")+
+      "<div class='day-dots'>"+dots+"</div>"+
+    "</div>";
+  });
+  el.calGrid.innerHTML = html;
+  Array.prototype.forEach.call(el.calGrid.querySelectorAll(".day-cell"), function(node){
+    node.addEventListener("click", function(){
+      pageKey = node.getAttribute("data-key");
+      switchTab("today");
+      loadAndRenderDay();
+    });
+    node.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); node.click(); } });
+  });
+}
+function renderAgenda(){
+  var t = todayParts();
+  var todayJdn = g2d(t.gy,t.gm,t.gd);
+  var items = [];
+  Object.keys(indexData).forEach(function(key){
+    var p = keyToParts(key); var jdn = g2d(p.gy,p.gm,p.gd);
+    if(jdn >= todayJdn) items.push({key:key, jdn:jdn, info:indexData[key]});
+  });
+  items.sort(function(a,b){return a.jdn-b.jdn;});
+  items = items.slice(0,8);
+  if(items.length===0){ el.agendaList.innerHTML="<div class='empty-hint'>چیزی برای روزهای پیش‌رو ثبت نشده.</div>"; return; }
+  el.agendaList.innerHTML = items.map(function(it){
+    var p = keyToParts(it.key); var j = toJalali(p.gy,p.gm,p.gd);
+    var label = it.key===todayKey ? "امروز" : faDigits(j[2])+" "+JMONTHS[j[1]-1].slice(0,4);
+    var desc=[];
+    if(it.info.t>0) desc.push(faDigits(it.info.t)+"/"+faDigits(it.info.td||0)+" تسک");
+    if(it.info.n>0) desc.push(faDigits(it.info.n)+" یادداشت");
+    return "<div class='agenda-item'><span class='agenda-date'>"+label+"</span><span class='agenda-text'>"+desc.join(" · ")+"</span></div>";
+  }).join("");
+}
+function renderCalendarTab(){ renderWeekdaysRow(); renderCalTitle(); renderGrid(); renderAgenda(); }
+
+function goPrevMonth(){
+  if(primaryIsGregorian()){ view.gm--; if(view.gm<1){view.gm=12; view.gy--;} var j=toJalali(view.gy,view.gm,1); view.jy=j[0]; view.jm=j[1]; }
+  else { view.jm--; if(view.jm<1){view.jm=12; view.jy--;} var g=toGregorian(view.jy,view.jm,1); view.gy=g[0]; view.gm=g[1]; }
+  renderCalendarTab();
+}
+function goNextMonth(){
+  if(primaryIsGregorian()){ view.gm++; if(view.gm>12){view.gm=1; view.gy++;} var j=toJalali(view.gy,view.gm,1); view.jy=j[0]; view.jm=j[1]; }
+  else { view.jm++; if(view.jm>12){view.jm=1; view.jy++;} var g=toGregorian(view.jy,view.jm,1); view.gy=g[0]; view.gm=g[1]; }
+  renderCalendarTab();
+}
+
+async function checkAlarmsTick(){
+  if(settings.notifEnabled){
+    var now = new Date();
+    var hh=pad2(now.getHours()), mm=pad2(now.getMinutes());
+    var data = await loadDay(todayKey);
+    var changed=false;
+    data.tasks.forEach(function(task){
+      if(task.alarm && !task.done && !task.fired && task.start===(hh+":"+mm)){
+        task.fired=true; changed=true;
+        fireNotification("یادآوری: "+task.text, "ساعت "+task.start);
+      }
+    });
+    if(changed){ await saveDay(todayKey, data); if(pageKey===todayKey) renderTasks(); }
+  }
+  await runCarryOverMigration();
+}
+function fireNotification(title, body){
+  if("Notification" in window && Notification.permission==="granted"){ try{ new Notification(title,{body:body}); }catch(e){} }
+  showToast(title);
+}
+
+async function runCarryOverMigration(){
+  var keys = Object.keys(indexData).filter(function(k){ return k < todayKey; }).sort();
+  var touchedToday = false;
+  for(var i=0;i<keys.length;i++){
+    var key = keys[i];
+    var data = await loadDay(key);
+    var changed = false;
+    for(var j=0;j<data.tasks.length;j++){
+      var t = data.tasks[j];
+      if(t.carryOver && !t.done && !t.migrated){
+        var nextKey = addDaysToKey(key,1);
+        var nextData = await loadDay(nextKey);
+        nextData.tasks.push({ id:uid(), text:t.text, desc:t.desc||"", start:"", end:"", priority:t.priority||0, alarm:false, fired:false, carryOver:true, done:false, migrated:false, carriedFrom:key });
+        await saveDay(nextKey, nextData);
+        t.migrated = true; t.migratedTo = nextKey;
+        changed = true;
+        if(nextKey === todayKey) touchedToday = true;
+      }
+    }
+    if(changed) await saveDay(key, data);
+  }
+  if(touchedToday && pageKey===todayKey){ await loadAndRenderDay(); }
+  if(activeTab==="calendar") renderCalendarTab();
+}
+
+async function doBackup(){
+  var payload = { settings:settings, index:indexData, days:{}, goals:goalsData, pinnedNotes:pinnedNotesData, exportedAt:new Date().toISOString(), version:3 };
+  var keys = await storeListDayKeys();
+  for(var i=0;i<keys.length;i++){ var v=await storeGet(keys[i]); if(v) payload.days[keys[i]]=v; }
+  var blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  var t = todayParts();
+  a.href=url; a.download="planner-backup-"+t.gy+pad2(t.gm)+pad2(t.gd)+".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("فایل پشتیبان دانلود شد");
+}
+async function doRestore(file){
+  try{
+    var text = await file.text();
+    var payload = JSON.parse(text);
+    if(!payload || !payload.days) throw new Error("bad file");
+    if(payload.settings){ settings = Object.assign({}, DEFAULT_SETTINGS, payload.settings); await saveSettings(); }
+    var dayKeys = Object.keys(payload.days);
+    for(var i=0;i<dayKeys.length;i++){ await storeSet("day:"+dayKeys[i], payload.days[dayKeys[i]]); }
+    indexData = payload.index || {};
+    await saveIndex();
+    goalsData = payload.goals || [];
+    await saveGoals();
+    pinnedNotesData = payload.pinnedNotes || [];
+    await savePinnedNotes();
+    applyTheme(); syncSettingsUI(); applyTitles(); renderTitleEditList();
+    initToToday();
+    await loadAndRenderDay();
+    renderGoals(); renderPinnedNotes();
+    renderCalendarTab();
+    showToast("بازیابی با موفقیت انجام شد");
+  }catch(e){ console.error(e); showToast("فایل پشتیبان نامعتبر است"); }
+}
+
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme", settings.theme==="dark"?"dark":"light");
+  el.darkToggle.checked = settings.theme==="dark";
+}
+function syncSettingsUI(){
+  Array.prototype.forEach.call(el.calModeSeg.querySelectorAll("button"), function(b){
+    b.classList.toggle("active", b.getAttribute("data-mode")===settings.calendarMode);
+  });
+  el.darkToggle.checked = settings.theme==="dark";
+  el.btnEnableNotif.textContent = (("Notification" in window) && Notification.permission==="granted") ? "فعال است ✓" : "فعال‌سازی";
+}
+var toastTimer=null;
+function showToast(msg){
+  el.toast.textContent = msg;
+  el.toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.toast.classList.remove("show"); }, 2400);
+}
+
+function bindEvents(){
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+    t.addEventListener("click", function(){ switchTab(t.getAttribute("data-tab")); });
+  });
+
+  el.prevDay.addEventListener("click", function(){ pageKey = addDaysToKey(pageKey,-1); loadAndRenderDay(); });
+  el.nextDay.addEventListener("click", function(){ pageKey = addDaysToKey(pageKey,1); loadAndRenderDay(); });
+
+  el.addSlotBtn.addEventListener("click", async function(){
+    currentDayData.extraSlots = (currentDayData.extraSlots||0)+1;
+    await saveDay(pageKey, currentDayData);
+    renderTasks();
+  });
+
+  el.addNoteBtn.addEventListener("click", addNote);
+  el.newNoteImage.addEventListener("change", function(e){ handleNoteImageInput(e.target.files); e.target.value=""; });
+
+  el.newGoalTitle.addEventListener("keydown", function(e){
+    if(e.key==="Enter"){
+      e.preventDefault();
+      var v = el.newGoalTitle.value.trim();
+      if(v){ addGoal(v); el.newGoalTitle.value=""; }
+    }
+  });
+  el.addPinnedBtn.addEventListener("click", addPinnedNote);
+  el.newPinnedImage.addEventListener("change", function(e){ handlePinnedImageInput(e.target.files); e.target.value=""; });
+
+  [
+    ["secDailyProgram","dailyProgram"],["secExpenses","expenses"],["secCalories","calories"],["secEnergy","energy"],
+    ["secGratitude","gratitude"],["secHappened","happened"],["secBreakfast","breakfast"],["secLunch","lunch"],
+    ["secDinner","dinner"],["secGoal","goal"],["secSleepFrom","sleepFrom"],["secSleepTo","sleepTo"]
+  ].forEach(function(pair){ bindSectionField(pair[0], pair[1]); });
+
+  el.shopNewItem.addEventListener("keydown", function(e){
+    if(e.key==="Enter"){
+      e.preventDefault();
+      var v = el.shopNewItem.value.trim();
+      if(v){ addShopItem(v); el.shopNewItem.value=""; }
+    }
+  });
+
+  el.prevMonth.addEventListener("click", goPrevMonth);
+  el.nextMonth.addEventListener("click", goNextMonth);
+
+  el.btnSettings.addEventListener("click", function(){ syncSettingsUI(); el.settingsOverlay.classList.add("open"); });
+  el.closeSettingsModal.addEventListener("click", function(){ el.settingsOverlay.classList.remove("open"); });
+  el.settingsOverlay.addEventListener("click", function(e){ if(e.target===el.settingsOverlay) el.settingsOverlay.classList.remove("open"); });
+
+  Array.prototype.forEach.call(el.calModeSeg.querySelectorAll("button"), function(b){
+    b.addEventListener("click", async function(){
+      settings.calendarMode = b.getAttribute("data-mode");
+      await saveSettings();
+      syncSettingsUI();
+      renderDayHead();
+      renderWeekdayRow();
+      if(activeTab==="calendar"){ setViewMonthFromKey(pageKey); renderCalendarTab(); }
+    });
+  });
+
+  el.btnTheme.addEventListener("click", async function(){ settings.theme = settings.theme==="dark"?"light":"dark"; await saveSettings(); applyTheme(); });
+  el.darkToggle.addEventListener("change", async function(){ settings.theme = el.darkToggle.checked?"dark":"light"; await saveSettings(); applyTheme(); });
+
+  el.btnEnableNotif.addEventListener("click", async function(){
+    if(!("Notification" in window)){ showToast("مرورگر شما از اعلان پشتیبانی نمی‌کند"); return; }
+    var perm = await Notification.requestPermission();
+    settings.notifEnabled = perm==="granted";
+    await saveSettings(); syncSettingsUI();
+    showToast(settings.notifEnabled ? "اعلان فعال شد" : "اجازه داده نشد");
+  });
+
+  el.btnClearAll.addEventListener("click", async function(){
+    if(!confirm("همهٔ تسک‌ها، یادداشت‌ها، اهداف و تصاویر برای همیشه پاک می‌شوند. مطمئنید؟")) return;
+    var keys = await storeListDayKeys();
+    for(var i=0;i<keys.length;i++){ await storeDelete(keys[i]); }
+    indexData = {}; await saveIndex();
+    goalsData = []; await saveGoals();
+    pinnedNotesData = []; await savePinnedNotes();
+    el.settingsOverlay.classList.remove("open");
+    await loadAndRenderDay();
+    renderGoals(); renderPinnedNotes();
+    if(activeTab==="calendar") renderCalendarTab();
+    showToast("همهٔ اطلاعات پاک شد");
+  });
+
+  el.btnBackup.addEventListener("click", doBackup);
+  el.restoreFile.addEventListener("change", function(e){ if(e.target.files && e.target.files[0]) doRestore(e.target.files[0]); e.target.value=""; });
+
+  el.btnResetTitles.addEventListener("click", async function(){
+    settings.titles = {};
+    await saveSettings();
+    applyTitles();
+    renderTitleEditList();
+    showToast("عنوان‌ها به حالت پیش‌فرض بازگشت");
+  });
+
+  el.energyTrigger.addEventListener("click", function(e){
+    e.stopPropagation();
+    if(el.energyMenu.hidden) openEnergyMenu(); else closeEnergyMenu();
+  });
+  document.addEventListener("click", function(e){
+    if(el.energyMoodSelect && !el.energyMoodSelect.contains(e.target)) closeEnergyMenu();
+  });
+
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ el.settingsOverlay.classList.remove("open"); closeEnergyMenu(); openMenuId=null; openTimeId=null; renderTasks(); } });
+}
+
+function buildSpiral(){
+  var html = "";
+  for(var i=0;i<16;i++){ html += "<span class='ring'></span>"; }
+  el.spiral.innerHTML = html;
+}
+
+async function boot(){
+  cacheEls();
+  buildSpiral();
+  renderEnergyMenu();
+  await loadSettings();
+  applyTitles();
+  renderTitleEditList();
+  await loadIndex();
+  applyTheme();
+  initToToday();
+  bindEvents();
+  await runCarryOverMigration();
+  await loadAndRenderDay();
+  await loadGoals();
+  await loadPinnedNotes();
+  syncSettingsUI();
+  setInterval(checkAlarmsTick, 20000);
+}
+document.addEventListener("DOMContentLoaded", boot);
+})();
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("service-worker.js").catch(function(){});
+    });
+  }
+</script>
+</body>
+</html>
