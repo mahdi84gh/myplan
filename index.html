@@ -348,6 +348,27 @@
   .shop-text.done{text-decoration:line-through; color:var(--ink-faint);}
   .shop-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:15px; flex:none; padding:2px;}
   .shop-del:hover{color:var(--red);}
+  #expenseList{display:flex; flex-direction:column; gap:6px; margin-bottom:6px;}
+  .exp-item{
+    display:flex; align-items:center; gap:7px; background:var(--paper); border:1px solid var(--paper-line);
+    border-radius:9px; padding:6px 9px;
+  }
+  .exp-item.done{background:var(--green-tint); border-color:var(--green);}
+  .exp-num{
+    width:18px; height:18px; border-radius:50%; background:var(--paper-deep); flex:none;
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono);
+    font-size:10px; font-weight:700; color:var(--ink-faint);
+  }
+  .exp-check{
+    width:18px; height:18px; border-radius:5px; border:1.6px solid var(--blue); background:var(--paper);
+    flex:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; font-size:11px;
+  }
+  .exp-check.done{background:var(--blue); border-color:var(--blue);}
+  .exp-text{flex:1; font-size:12.5px; color:var(--ink); border:none; background:transparent; font-family:var(--font-ui); min-width:0;}
+  .exp-text:focus{outline:none;}
+  .exp-text.done{text-decoration:line-through; color:var(--ink-faint);}
+  .exp-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:14px; flex:none; padding:2px;}
+  .exp-del:hover{color:var(--red);}
   .shop-add-row{margin-bottom:16px;}
 
   /* ---------- Water tracker ---------- */
@@ -651,9 +672,23 @@
   .cactus-mascot .eye-r{ animation-delay:.05s; }
   .cactus-mascot .cheek{ opacity:.55; }
   .cactus-mascot .pot-shine{ opacity:.5; }
-  .cactus-mascot .face-happy{ opacity:0; }
-  .cactus-mascot.happy-face .face-normal{ opacity:0; }
-  .cactus-mascot.happy-face .face-happy{ opacity:1; }
+  .cactus-mascot .face-happy, .cactus-mascot .face-calm, .cactus-mascot .face-tired, .cactus-mascot .face-worried, .cactus-mascot .face-sad{ opacity:0; }
+  .cactus-mascot[data-face="happy"] .face-normal,
+  .cactus-mascot[data-face="calm"] .face-normal,
+  .cactus-mascot[data-face="tired"] .face-normal,
+  .cactus-mascot[data-face="worried"] .face-normal,
+  .cactus-mascot[data-face="sad"] .face-normal{ opacity:0; }
+  .cactus-mascot[data-face="happy"] .face-happy{ opacity:1; }
+  .cactus-mascot[data-face="calm"] .face-calm{ opacity:1; }
+  .cactus-mascot[data-face="tired"] .face-tired{ opacity:1; }
+  .cactus-mascot[data-face="worried"] .face-worried{ opacity:1; }
+  .cactus-mascot[data-face="sad"] .face-sad{ opacity:1; }
+  .cactus-mascot.happy-face .face-normal,
+  .cactus-mascot.happy-face .face-calm,
+  .cactus-mascot.happy-face .face-tired,
+  .cactus-mascot.happy-face .face-worried,
+  .cactus-mascot.happy-face .face-sad{ opacity:0 !important; }
+  .cactus-mascot.happy-face .face-happy{ opacity:1 !important; }
   .cactus-wrap.poked{ animation:cactusPoke .6s ease; }
   @keyframes cactusSway{
     0%,100%{ transform:rotate(-3deg); }
@@ -764,6 +799,31 @@
             <path d="M53.5 41 Q57 36.5 60.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
             <path d="M44 46 Q50 55 56 46" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
           </g>
+          <g class="face-calm">
+            <path d="M40 40 Q43 37.8 46 40" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M54 40 Q57 37.8 60 40" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M45.5 47 Q50 49.3 54.5 47" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g class="face-tired">
+            <path d="M40 41.5 Q43 43.5 46 41.5" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M54 41.5 Q57 43.5 60 41.5" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M46 48 Q50 47 54 48" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <text x="64" y="28" font-size="7" fill="#2E3B32" opacity=".5" font-family="sans-serif">z</text>
+            <text x="69" y="22" font-size="5.5" fill="#2E3B32" opacity=".4" font-family="sans-serif">z</text>
+          </g>
+          <g class="face-worried">
+            <path d="M39.5 37 L46 39.7" stroke="#2E3B32" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+            <path d="M60.5 37 L54 39.7" stroke="#2E3B32" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+            <ellipse cx="43" cy="41.5" rx="2.3" ry="3" fill="#2E3B32"/>
+            <ellipse cx="57" cy="41.5" rx="2.3" ry="3" fill="#2E3B32"/>
+            <path d="M45 49.3 Q50 45.8 55 49.3" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g class="face-sad">
+            <ellipse cx="43" cy="41.5" rx="2.3" ry="3" fill="#2E3B32"/>
+            <ellipse cx="57" cy="41.5" rx="2.3" ry="3" fill="#2E3B32"/>
+            <path d="M45 50.5 Q50 46.5 55 50.5" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M43.5 44.5 Q43 48 42 49.8" stroke="#6FA9DE" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".8"/>
+          </g>
           <circle cx="44" cy="30" r="1.1" fill="#EFD9A3"/>
           <circle cx="52" cy="26" r="1.1" fill="#EFD9A3"/>
           <circle cx="47" cy="60" r="1.1" fill="#EFD9A3"/>
@@ -784,7 +844,8 @@
         </div>
         <div class="lined-box">
           <div class="lined-box-label"><span class="tl-icon">💰</span><span class="tl-text" data-title-key="expenses">هزینه‌های امروز</span></div>
-          <textarea class="lined-textarea" id="secExpenses" placeholder="خرج‌های امروز…"></textarea>
+          <div id="expenseList"></div>
+          <input type="text" class="lined-input" id="expenseNewItem" placeholder="افزودن هزینه و اینتر بزن…" style="border:1px dashed var(--paper-line); border-radius:9px; padding:8px 10px; margin-top:2px;">
         </div>
       </div>
 
@@ -1185,7 +1246,7 @@ async function storeListDayKeys(){
 var DEFAULT_SETTINGS = { calendarMode:"both", theme:"light", notifEnabled:false, titles:{} };
 var settings = Object.assign({}, DEFAULT_SETTINGS);
 var indexData = {};
-var DEFAULT_SECTIONS = { dailyProgram:"", expenses:"", calories:"", energy:"", gratitude:"", happened:"", breakfast:"", lunch:"", dinner:"", goal:"", sleepFrom:"", sleepTo:"" };
+var DEFAULT_SECTIONS = { dailyProgram:"", calories:"", energy:"", gratitude:"", happened:"", breakfast:"", lunch:"", dinner:"", goal:"", sleepFrom:"", sleepTo:"" };
 var WATER_TOTAL = 8;
 
 var TITLE_DEFAULTS = {
@@ -1226,6 +1287,19 @@ var MOOD_OPTIONS = [
   {key:"relaxed", emoji:"🧘", label:"ریلکس"}
 ];
 function moodByKey(key){ for(var i=0;i<MOOD_OPTIONS.length;i++){ if(MOOD_OPTIONS[i].key===key) return MOOD_OPTIONS[i]; } return null; }
+
+var MOOD_FACE_MAP = {
+  amazing:"happy", great:"happy", good:"happy", motivated:"happy", energetic:"happy",
+  calm:"calm", relaxed:"calm",
+  neutral:"normal",
+  lowenergy:"tired", tired:"tired", sick:"tired",
+  stressed:"worried", anxious:"worried", angry:"worried",
+  sad:"sad"
+};
+function applyMascotFace(key){
+  if(!el.cactusMascot) return;
+  el.cactusMascot.setAttribute("data-face", MOOD_FACE_MAP[key] || "normal");
+}
 
 function applyTitles(){
   Object.keys(TITLE_DEFAULTS).forEach(function(key){
@@ -1284,6 +1358,7 @@ function updateEnergyTrigger(key){
   Array.prototype.forEach.call(el.energyMenu.querySelectorAll(".mood-option"), function(node){
     node.classList.toggle("active", node.getAttribute("data-key")===key);
   });
+  applyMascotFace(key);
 }
 function selectEnergy(key){
   el.secEnergy.value = key;
@@ -1303,7 +1378,7 @@ async function loadGoals(){ var g = await storeGet("goals"); goalsData = g || []
 async function saveGoals(){ await storeSet("goals", goalsData); }
 async function loadPinnedNotes(){ var n = await storeGet("pinnedNotes"); pinnedNotesData = n || []; }
 async function savePinnedNotes(){ await storeSet("pinnedNotes", pinnedNotesData); }
-async function loadDay(key){ var d = await storeGet("day:"+key); return d || {tasks:[], notes:[], extraSlots:0, sections:Object.assign({},DEFAULT_SECTIONS), shopping:[], water:0}; }
+async function loadDay(key){ var d = await storeGet("day:"+key); return d || {tasks:[], notes:[], extraSlots:0, sections:Object.assign({},DEFAULT_SECTIONS), shopping:[], expenses:[], water:0}; }
 async function saveDay(key, data){
   if(data.extraSlots === undefined) data.extraSlots = 0;
   await storeSet("day:"+key, data);
@@ -1343,10 +1418,10 @@ function cacheEls(){
    "newNoteText","newNoteImage","newNoteThumbs","addNoteBtn","noteList",
    "calTitle","weekdaysRow","calGrid","agendaList","prevMonth","nextMonth",
    "settingsOverlay","closeSettingsModal","calModeSeg","darkToggle","btnEnableNotif","btnClearAll",
-   "btnBackup","restoreFile","toast","btnTheme","btnSettings","spiral",
-   "weekdayRow","secDailyProgram","secExpenses","secCalories","secEnergy","secGratitude","secHappened",
+   "btnBackup","restoreFile","toast","btnTheme","btnSettings","spiral","cactusMascot",
+   "weekdayRow","secDailyProgram","secCalories","secEnergy","secGratitude","secHappened",
    "secBreakfast","secLunch","secDinner","secGoal","secSleepFrom","secSleepTo",
-   "waterRow","waterLabel","shopList","shopNewItem",
+   "waterRow","waterLabel","shopList","shopNewItem","expenseList","expenseNewItem",
    "energyMoodSelect","energyTrigger","energyTriggerEmoji","energyTriggerLabel","energyMenu",
    "titleEditList","btnResetTitles",
    "pageGoals","goalsList","newGoalTitle",
@@ -1406,13 +1481,20 @@ async function loadAndRenderDay(){
   currentDayData.sections = Object.assign({}, DEFAULT_SECTIONS, currentDayData.sections||{});
   if(!currentDayData.shopping) currentDayData.shopping = [];
   if(currentDayData.water===undefined) currentDayData.water = 0;
+  if(!currentDayData.expenses) currentDayData.expenses = [];
+  if(currentDayData.expenses.length===0 && currentDayData.sections && typeof currentDayData.sections.expenses === "string" && currentDayData.sections.expenses.trim()){
+    var legacyLines = currentDayData.sections.expenses.split("\n").map(function(l){return l.trim();}).filter(Boolean);
+    currentDayData.expenses = legacyLines.map(function(l){ return {id:uid(), text:l, done:false}; });
+    delete currentDayData.sections.expenses;
+    await saveDay(pageKey, currentDayData);
+  }
   pendingImages = [];
   el.newNoteThumbs.innerHTML = "";
   el.newNoteText.value="";
   openMenuId = null;
   openTimeId = null;
   renderTasks(); renderNotes(); renderCarryBanner();
-  renderWeekdayRow(); renderSectionInputs(); renderShopList(); renderWaterRow();
+  renderWeekdayRow(); renderSectionInputs(); renderShopList(); renderExpenseList(); renderWaterRow();
 }
 
 function weekStartKey(key){
@@ -1449,7 +1531,6 @@ function renderWeekdayRow(){
 function renderSectionInputs(){
   var s = currentDayData.sections;
   el.secDailyProgram.value = s.dailyProgram||"";
-  el.secExpenses.value = s.expenses||"";
   el.secCalories.value = s.calories||"";
   el.secEnergy.value = s.energy||"";
   updateEnergyTrigger(s.energy||"");
@@ -1521,6 +1602,59 @@ function debounceSaveShopText(id, val){
   clearTimeout(shopTextDebounce);
   shopTextDebounce = setTimeout(async function(){
     var it = currentDayData.shopping.find(function(x){return x.id===id;});
+    if(!it) return;
+    it.text = val;
+    await saveDay(pageKey, currentDayData);
+  }, 260);
+}
+
+function renderExpenseList(){
+  var items = currentDayData.expenses;
+  if(!items || items.length===0){ el.expenseList.innerHTML = "<div class='empty-hint'>هنوز هزینه‌ای ثبت نشده.</div>"; return; }
+  el.expenseList.innerHTML = items.map(function(it, idx){
+    return "<div class='exp-item"+(it.done?" done":"")+"' data-id='"+it.id+"'>"+
+      "<span class='exp-num'>"+faDigits(idx+1)+"</span>"+
+      "<button type='button' class='exp-check"+(it.done?" done":"")+"' data-action='exptoggle' data-id='"+it.id+"'>"+(it.done?"✓":"")+"</button>"+
+      "<input type='text' class='exp-text"+(it.done?" done":"")+"' data-action='exptext' data-id='"+it.id+"' value='"+escapeAttr(it.text)+"'>"+
+      "<button type='button' class='exp-del' data-action='expdel' data-id='"+it.id+"'>✕</button>"+
+    "</div>";
+  }).join("");
+  bindExpenseEvents();
+}
+function bindExpenseEvents(){
+  Array.prototype.forEach.call(el.expenseList.querySelectorAll("[data-action='exptoggle']"), function(b){
+    b.addEventListener("click", function(){ toggleExpenseItem(b.getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(el.expenseList.querySelectorAll("[data-action='exptext']"), function(inp){
+    inp.addEventListener("input", function(){ debounceSaveExpenseText(inp.getAttribute("data-id"), inp.value); });
+    inp.addEventListener("blur", function(){ if(!inp.value.trim()) deleteExpenseItem(inp.getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(el.expenseList.querySelectorAll("[data-action='expdel']"), function(b){
+    b.addEventListener("click", function(){ deleteExpenseItem(b.getAttribute("data-id")); });
+  });
+}
+async function addExpenseItem(text){
+  currentDayData.expenses.push({id:uid(), text:text, done:false});
+  await saveDay(pageKey, currentDayData);
+  renderExpenseList();
+}
+async function toggleExpenseItem(id){
+  var it = currentDayData.expenses.find(function(x){return x.id===id;});
+  if(!it) return;
+  it.done = !it.done;
+  await saveDay(pageKey, currentDayData);
+  renderExpenseList();
+}
+async function deleteExpenseItem(id){
+  currentDayData.expenses = currentDayData.expenses.filter(function(x){return x.id!==id;});
+  await saveDay(pageKey, currentDayData);
+  renderExpenseList();
+}
+var expenseTextDebounce = null;
+function debounceSaveExpenseText(id, val){
+  clearTimeout(expenseTextDebounce);
+  expenseTextDebounce = setTimeout(async function(){
+    var it = currentDayData.expenses.find(function(x){return x.id===id;});
     if(!it) return;
     it.text = val;
     await saveDay(pageKey, currentDayData);
@@ -2610,7 +2744,7 @@ function bindEvents(){
   });
 
   [
-    ["secDailyProgram","dailyProgram"],["secExpenses","expenses"],["secCalories","calories"],["secEnergy","energy"],
+    ["secDailyProgram","dailyProgram"],["secCalories","calories"],["secEnergy","energy"],
     ["secGratitude","gratitude"],["secHappened","happened"],["secBreakfast","breakfast"],["secLunch","lunch"],
     ["secDinner","dinner"],["secGoal","goal"],["secSleepFrom","sleepFrom"],["secSleepTo","sleepTo"]
   ].forEach(function(pair){ bindSectionField(pair[0], pair[1]); });
@@ -2620,6 +2754,14 @@ function bindEvents(){
       e.preventDefault();
       var v = el.shopNewItem.value.trim();
       if(v){ addShopItem(v); el.shopNewItem.value=""; }
+    }
+  });
+
+  el.expenseNewItem.addEventListener("keydown", function(e){
+    if(e.key==="Enter"){
+      e.preventDefault();
+      var v = el.expenseNewItem.value.trim();
+      if(v){ addExpenseItem(v); el.expenseNewItem.value=""; }
     }
   });
 
