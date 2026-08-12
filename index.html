@@ -608,6 +608,31 @@
   [hidden]{display:none !important;}
 
   .cactus-wrap{ display:flex; justify-content:center; margin:2px 0 6px; }
+
+  .pinned-type-toggle{ display:flex; gap:8px; margin-bottom:8px; }
+  .ptype-btn{ flex:1; border:1px solid var(--paper-line); background:var(--paper); color:var(--ink-faint); border-radius:9px; padding:8px 6px; font-size:12.5px; cursor:pointer; font-family:inherit; }
+  .ptype-btn.active{ background:var(--blue-tint); border-color:var(--blue); color:var(--blue-deep); font-weight:700; }
+
+  .pinned-table-editor{ margin:4px 0 10px; }
+  .pinned-table-wrap{ overflow-x:auto; border:1px solid var(--paper-line); border-radius:9px; }
+  .pinned-table-wrap table{ border-collapse:collapse; width:100%; min-width:280px; }
+  .pinned-table-wrap td{ border:1px solid var(--paper-line); padding:0; }
+  .pinned-table-wrap td[contenteditable]{ padding:6px 8px; font-size:12.5px; min-width:64px; outline:none; }
+  .pinned-table-wrap td[contenteditable]:focus{ background:var(--blue-tint); }
+  .pinned-table-actions{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+  .pinned-table-actions .btn{ font-size:11.5px; padding:6px 10px; }
+
+  .pinned-reminder-row{ display:flex; align-items:center; gap:8px; margin:2px 0 10px; flex-wrap:wrap; }
+  .pinned-reminder-check{ display:flex; align-items:center; gap:5px; font-size:12.5px; cursor:pointer; user-select:none; }
+  .pinned-reminder-input{ border:1px solid var(--paper-line); border-radius:8px; padding:5px 8px; font-size:12px; font-family:inherit; background:var(--paper); color:var(--ink); }
+
+  .note-card .note-title{ font-weight:800; font-size:13.5px; margin-bottom:2px; }
+  .note-card .note-reminder-badge{ display:inline-flex; align-items:center; gap:3px; font-size:11px; background:var(--blue-tint); color:var(--blue-deep); border-radius:7px; padding:2px 7px; margin:4px 0; }
+  .note-card .note-mini-table{ border-collapse:collapse; width:100%; margin:6px 0; font-size:11.5px; }
+  .note-card .note-mini-table td{ border:1px solid var(--paper-line); padding:4px 6px; }
+  .note-card .note-actions{ display:flex; gap:10px; align-items:center; }
+  .note-card .note-actions button{ background:none; border:none; cursor:pointer; color:var(--ink-faint); font-size:13px; }
+  .note-card .gcal-link{ font-size:11px; color:var(--blue-deep); text-decoration:none; background:var(--blue-tint); border-radius:7px; padding:3px 8px; display:inline-block; margin-top:4px; }
   .cactus-mascot{ width:74px; height:74px; overflow:visible; animation:cactusSway 3.4s ease-in-out infinite; transform-origin:50% 96%; cursor:pointer; }
   .cactus-mascot .arm-l{ animation:armWaveL 3.4s ease-in-out infinite; transform-origin:38px 62px; }
   .cactus-mascot .arm-r{ animation:armWaveR 3.4s ease-in-out infinite; transform-origin:62px 58px; }
@@ -872,7 +897,35 @@
         <span class="line"></span>
       </div>
       <div class="footer-note" style="margin:0 0 14px;">این یادداشت‌ها به هیچ روز خاصی وابسته نیستن و همیشه اینجا می‌مونن؛ برای چیزهایی مثل آدرس‌ها، ایده‌ها، لیست کتاب یا هر چیزی که نباید گم بشه.</div>
-      <textarea id="newPinnedText" placeholder="یادداشت ثابتت رو اینجا بنویس…"></textarea>
+
+      <input type="text" class="lined-input" id="newPinnedTitle" placeholder="عنوان یادداشت…" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; margin-bottom:8px; width:100%;">
+
+      <div class="pinned-type-toggle" id="pinnedTypeToggle">
+        <button type="button" class="ptype-btn active" data-type="text">📝 یادداشت متنی</button>
+        <button type="button" class="ptype-btn" data-type="table">📊 جدول (اکسلی)</button>
+      </div>
+
+      <textarea id="newPinnedText" placeholder="توضیحات یادداشت رو اینجا بنویس…"></textarea>
+
+      <div id="pinnedTableEditor" class="pinned-table-editor" hidden>
+        <div class="pinned-table-wrap" id="pinnedTableWrap"></div>
+        <div class="pinned-table-actions">
+          <button type="button" class="btn" id="pinnedAddRowBtn">+ ردیف</button>
+          <button type="button" class="btn" id="pinnedAddColBtn">+ ستون</button>
+          <button type="button" class="btn" id="pinnedDelRowBtn">− ردیف</button>
+          <button type="button" class="btn" id="pinnedDelColBtn">− ستون</button>
+        </div>
+      </div>
+
+      <div class="pinned-reminder-row">
+        <label class="pinned-reminder-check">
+          <input type="checkbox" id="pinnedReminderEnable">
+          <span>⏰ یادآوری</span>
+        </label>
+        <input type="date" id="pinnedReminderDate" class="pinned-reminder-input" hidden>
+        <input type="time" id="pinnedReminderTime" class="pinned-reminder-input" hidden>
+      </div>
+
       <div class="upload-row">
         <label class="upload-label">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
@@ -881,9 +934,12 @@
         </label>
         <div class="thumb-preview" id="newPinnedThumbs"></div>
       </div>
-      <button class="btn primary" id="addPinnedBtn" style="margin-bottom:14px;">افزودن یادداشت ثابت</button>
+      <button class="btn primary" id="addPinnedBtn" style="margin-bottom:6px;">افزودن یادداشت ثابت</button>
+      <button class="btn" id="cancelPinnedEditBtn" style="margin-bottom:14px;" hidden>انصراف از ویرایش</button>
+      <div class="footer-note" style="margin:0 0 14px;">اتصال مستقیم و خودکار به گوگل کلندر/تسک به‌خاطر نیاز به ورود با اکانت گوگل توی این برنامه (که کاملاً آفلاینه) ممکن نیست؛ اما روی هر یادداشتی که یادآوری داشته باشه، دکمه‌ی «افزودن به Google Calendar» می‌بینی که با یک کلیک همون رویداد رو با جزئیات کامل توی کلندرت باز و ذخیره می‌کنه.</div>
       <div class="notes-grid" id="pinnedNoteList"></div>
     </div>
+
 
     <div class="page" id="pageCalendar" hidden>
       <div class="cal-toolbar">
@@ -1287,7 +1343,10 @@ function cacheEls(){
    "energyMoodSelect","energyTrigger","energyTriggerEmoji","energyTriggerLabel","energyMenu",
    "titleEditList","btnResetTitles",
    "pageGoals","goalsList","newGoalTitle",
-   "newPinnedText","newPinnedImage","newPinnedThumbs","addPinnedBtn","pinnedNoteList"
+   "newPinnedText","newPinnedImage","newPinnedThumbs","addPinnedBtn","pinnedNoteList",
+   "newPinnedTitle","pinnedTypeToggle","pinnedTableEditor","pinnedTableWrap",
+   "pinnedAddRowBtn","pinnedAddColBtn","pinnedDelRowBtn","pinnedDelColBtn",
+   "pinnedReminderEnable","pinnedReminderDate","pinnedReminderTime","cancelPinnedEditBtn"
   ].forEach(function(id){ el[id]=q(id); });
 }
 
@@ -1902,35 +1961,168 @@ async function stepGoalProgress(id, delta){
 
 /* ---------- Pinned notes ---------- */
 var pendingPinnedImages = [];
+var pendingPinnedType = "text";
+var pendingPinnedTable = [["","",""],["","",""],["","",""]];
+var editingPinnedId = null;
+
+function faDateTimeLbl(){
+  var t = todayParts(); var now = new Date();
+  return faDigits(t.gy)+"/"+faDigits(pad2(t.gm))+"/"+faDigits(pad2(t.gd))+" "+pad2(now.getHours())+":"+pad2(now.getMinutes());
+}
+
+function renderPinnedTableEditor(){
+  var rows = pendingPinnedTable;
+  var html = "<table><tbody>"+rows.map(function(row, ri){
+    return "<tr>"+row.map(function(cell,ci){
+      return "<td contenteditable='true' data-r='"+ri+"' data-c='"+ci+"'>"+escapeHtml(cell||"")+"</td>";
+    }).join("")+"</tr>";
+  }).join("")+"</tbody></table>";
+  el.pinnedTableWrap.innerHTML = html;
+  Array.prototype.forEach.call(el.pinnedTableWrap.querySelectorAll("td[contenteditable]"), function(td){
+    td.addEventListener("input", function(){
+      var r=+td.getAttribute("data-r"), c=+td.getAttribute("data-c");
+      pendingPinnedTable[r][c] = td.textContent;
+    });
+  });
+}
+function pinnedAddRow(){ pendingPinnedTable.push(pendingPinnedTable[0].map(function(){return "";})); renderPinnedTableEditor(); }
+function pinnedAddCol(){ pendingPinnedTable.forEach(function(row){ row.push(""); }); renderPinnedTableEditor(); }
+function pinnedDelRow(){ if(pendingPinnedTable.length>1){ pendingPinnedTable.pop(); renderPinnedTableEditor(); } }
+function pinnedDelCol(){ if(pendingPinnedTable[0].length>1){ pendingPinnedTable.forEach(function(row){ row.pop(); }); renderPinnedTableEditor(); } }
+
+function setPinnedType(type){
+  pendingPinnedType = type;
+  Array.prototype.forEach.call(el.pinnedTypeToggle.querySelectorAll(".ptype-btn"), function(b){
+    b.classList.toggle("active", b.getAttribute("data-type")===type);
+  });
+  el.pinnedTableEditor.hidden = (type!=="table");
+  if(type==="table") renderPinnedTableEditor();
+}
+
+function resetPinnedForm(){
+  editingPinnedId = null;
+  el.newPinnedTitle.value = "";
+  el.newPinnedText.value = "";
+  pendingPinnedImages = []; el.newPinnedThumbs.innerHTML = "";
+  pendingPinnedTable = [["","",""],["","",""],["","",""]];
+  setPinnedType("text");
+  el.pinnedReminderEnable.checked = false;
+  el.pinnedReminderDate.hidden = true; el.pinnedReminderTime.hidden = true;
+  el.pinnedReminderDate.value = ""; el.pinnedReminderTime.value = "";
+  el.addPinnedBtn.textContent = "افزودن یادداشت ثابت";
+  el.cancelPinnedEditBtn.hidden = true;
+}
+
+function buildGoogleCalendarUrl(n){
+  var title = encodeURIComponent(n.title || "یادداشت");
+  var details = encodeURIComponent(n.desc || "");
+  var datesParam = "";
+  if(n.reminder && n.reminder.date){
+    var d = n.reminder.date.replace(/-/g,"");
+    var tm = (n.reminder.time || "09:00").replace(":","")+"00";
+    datesParam = "&dates="+d+"T"+tm+"/"+d+"T"+tm;
+  }
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+title+"&details="+details+datesParam;
+}
+
 function renderPinnedNotes(){
   if(pinnedNotesData.length===0){ el.pinnedNoteList.innerHTML = "<div class='empty-hint'>هنوز یادداشت ثابتی اضافه نشده.</div>"; return; }
   el.pinnedNoteList.innerHTML = pinnedNotesData.map(function(n){
     var imgs = (n.images||[]).map(function(src){ return "<img src='"+src+"' alt='تصویر یادداشت'>"; }).join("");
+    var titleHtml = n.title ? "<div class='note-title'>"+escapeHtml(n.title)+"</div>" : "";
+    var descHtml = n.desc ? "<div class='note-text'>"+escapeHtml(n.desc)+"</div>" : "";
+    var tableHtml = "";
+    if(n.type==="table" && n.table){
+      tableHtml = "<table class='note-mini-table'><tbody>"+n.table.map(function(row){
+        return "<tr>"+row.map(function(c){ return "<td>"+escapeHtml(c||"")+"</td>"; }).join("")+"</tr>";
+      }).join("")+"</tbody></table>";
+    }
+    var reminderHtml = "";
+    if(n.reminder && n.reminder.date){
+      reminderHtml = "<div class='note-reminder-badge'>⏰ "+escapeHtml(n.reminder.date)+" - "+escapeHtml(n.reminder.time||"")+"</div><br>"+
+        "<a class='gcal-link' target='_blank' rel='noopener' href='"+buildGoogleCalendarUrl(n)+"'>افزودن به Google Calendar</a>";
+    }
     return "<div class='note-card' data-id='"+n.id+"'>"+
-      "<div class='note-text'>"+escapeHtml(n.text)+"</div>"+
+      titleHtml + descHtml +
+      tableHtml +
       (imgs?"<div class='note-images'>"+imgs+"</div>":"")+
-      "<div class='note-foot'><span class='note-time'>"+escapeHtml(n.created||"")+"</span><button class='del-btn' data-action='delete-pinned' title='حذف' style='background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:15px;'>✕</button></div>"+
+      reminderHtml +
+      "<div class='note-foot'><span class='note-time'>"+escapeHtml(n.created||"")+"</span>"+
+      "<span class='note-actions'>"+
+        "<button data-action='edit-pinned' title='ویرایش'>✎</button>"+
+        "<button data-action='delete-pinned' title='حذف'>✕</button>"+
+      "</span></div>"+
     "</div>";
   }).join("");
   Array.prototype.forEach.call(el.pinnedNoteList.querySelectorAll("[data-action='delete-pinned']"), function(btn){
     btn.addEventListener("click", function(){ deletePinnedNote(btn.closest(".note-card").getAttribute("data-id")); });
   });
+  Array.prototype.forEach.call(el.pinnedNoteList.querySelectorAll("[data-action='edit-pinned']"), function(btn){
+    btn.addEventListener("click", function(){ startEditPinnedNote(btn.closest(".note-card").getAttribute("data-id")); });
+  });
 }
+
+function startEditPinnedNote(id){
+  var n = pinnedNotesData.find(function(x){ return x.id===id; });
+  if(!n) return;
+  editingPinnedId = id;
+  el.newPinnedTitle.value = n.title || "";
+  el.newPinnedText.value = n.desc || "";
+  pendingPinnedImages = (n.images||[]).slice();
+  renderPendingPinnedThumbs();
+  pendingPinnedTable = n.table ? n.table.map(function(r){return r.slice();}) : [["","",""],["","",""],["","",""]];
+  setPinnedType(n.type || "text");
+  if(n.reminder && n.reminder.date){
+    el.pinnedReminderEnable.checked = true;
+    el.pinnedReminderDate.hidden = false; el.pinnedReminderTime.hidden = false;
+    el.pinnedReminderDate.value = n.reminder.date; el.pinnedReminderTime.value = n.reminder.time || "";
+  } else {
+    el.pinnedReminderEnable.checked = false;
+    el.pinnedReminderDate.hidden = true; el.pinnedReminderTime.hidden = true;
+  }
+  el.addPinnedBtn.textContent = "ذخیره تغییرات";
+  el.cancelPinnedEditBtn.hidden = false;
+  el.newPinnedTitle.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
 async function addPinnedNote(){
-  var text = el.newPinnedText.value.trim();
-  if(!text && pendingPinnedImages.length===0) return;
-  var t = todayParts();
-  var now = new Date();
-  var dateLbl = faDigits(t.gy)+"/"+faDigits(pad2(t.gm))+"/"+faDigits(pad2(t.gd))+" "+pad2(now.getHours())+":"+pad2(now.getMinutes());
-  pinnedNotesData.unshift({ id:uid(), text:text, images:pendingPinnedImages.slice(), created:dateLbl });
+  var title = el.newPinnedTitle.value.trim();
+  var desc = el.newPinnedText.value.trim();
+  var hasTableContent = pendingPinnedType==="table" && pendingPinnedTable.some(function(r){ return r.some(function(c){ return (c||"").trim(); }); });
+  if(!title && !desc && pendingPinnedImages.length===0 && !hasTableContent) return;
+
+  var reminder = null;
+  if(el.pinnedReminderEnable.checked && el.pinnedReminderDate.value){
+    reminder = { date: el.pinnedReminderDate.value, time: el.pinnedReminderTime.value || "09:00", fired:false };
+  }
+
+  if(editingPinnedId){
+    var n = pinnedNotesData.find(function(x){ return x.id===editingPinnedId; });
+    if(n){
+      n.title = title; n.desc = desc; n.type = pendingPinnedType;
+      n.images = pendingPinnedImages.slice();
+      n.table = pendingPinnedType==="table" ? pendingPinnedTable.map(function(r){return r.slice();}) : null;
+      n.reminder = reminder;
+    }
+    showToast("یادداشت به‌روزرسانی شد");
+  } else {
+    pinnedNotesData.unshift({
+      id:uid(), title:title, desc:desc, type:pendingPinnedType,
+      images:pendingPinnedImages.slice(),
+      table: pendingPinnedType==="table" ? pendingPinnedTable.map(function(r){return r.slice();}) : null,
+      reminder: reminder,
+      created: faDateTimeLbl()
+    });
+    showToast("یادداشت ثابت اضافه شد");
+  }
   await savePinnedNotes();
-  el.newPinnedText.value=""; pendingPinnedImages=[]; el.newPinnedThumbs.innerHTML="";
+  resetPinnedForm();
   renderPinnedNotes();
-  showToast("یادداشت ثابت اضافه شد");
 }
 async function deletePinnedNote(id){
   pinnedNotesData = pinnedNotesData.filter(function(x){ return x.id!==id; });
   await savePinnedNotes();
+  if(editingPinnedId===id) resetPinnedForm();
   renderPinnedNotes();
 }
 async function handlePinnedImageInput(fileList){
@@ -2104,6 +2296,7 @@ async function checkAlarmsTick(){
   if(settings.notifEnabled){
     var now = new Date();
     var hh=pad2(now.getHours()), mm=pad2(now.getMinutes());
+    var todayStr = now.getFullYear()+"-"+pad2(now.getMonth()+1)+"-"+pad2(now.getDate());
     var data = await loadDay(todayKey);
     var changed=false;
     data.tasks.forEach(function(task){
@@ -2113,6 +2306,15 @@ async function checkAlarmsTick(){
       }
     });
     if(changed){ await saveDay(todayKey, data); if(pageKey===todayKey) renderTasks(); }
+
+    var pinnedChanged=false;
+    pinnedNotesData.forEach(function(n){
+      if(n.reminder && n.reminder.date && !n.reminder.fired && n.reminder.date===todayStr && (n.reminder.time||"09:00")===(hh+":"+mm)){
+        n.reminder.fired = true; pinnedChanged = true;
+        fireNotification("یادآوری: "+(n.title||"یادداشت ثابت"), n.desc||"");
+      }
+    });
+    if(pinnedChanged){ await savePinnedNotes(); if(activeTab==="goals") renderPinnedNotes(); }
   }
   await runCarryOverMigration();
 }
@@ -2245,6 +2447,23 @@ function bindEvents(){
   });
   el.addPinnedBtn.addEventListener("click", addPinnedNote);
   el.newPinnedImage.addEventListener("change", function(e){ handlePinnedImageInput(e.target.files); e.target.value=""; });
+  el.cancelPinnedEditBtn.addEventListener("click", function(){ resetPinnedForm(); renderPinnedNotes(); });
+  Array.prototype.forEach.call(el.pinnedTypeToggle.querySelectorAll(".ptype-btn"), function(b){
+    b.addEventListener("click", function(){ setPinnedType(b.getAttribute("data-type")); });
+  });
+  el.pinnedAddRowBtn.addEventListener("click", pinnedAddRow);
+  el.pinnedAddColBtn.addEventListener("click", pinnedAddCol);
+  el.pinnedDelRowBtn.addEventListener("click", pinnedDelRow);
+  el.pinnedDelColBtn.addEventListener("click", pinnedDelCol);
+  el.pinnedReminderEnable.addEventListener("change", function(){
+    var on = el.pinnedReminderEnable.checked;
+    el.pinnedReminderDate.hidden = !on; el.pinnedReminderTime.hidden = !on;
+    if(on && !el.pinnedReminderDate.value){
+      var t = todayParts();
+      el.pinnedReminderDate.value = t.gy+"-"+pad2(t.gm)+"-"+pad2(t.gd);
+      el.pinnedReminderTime.value = "09:00";
+    }
+  });
 
   [
     ["secDailyProgram","dailyProgram"],["secExpenses","expenses"],["secCalories","calories"],["secEnergy","energy"],
