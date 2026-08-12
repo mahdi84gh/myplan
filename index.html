@@ -644,16 +644,66 @@
   .note-card .note-actions{ display:flex; gap:10px; align-items:center; }
   .note-card .note-actions button{ background:none; border:none; cursor:pointer; color:var(--ink-faint); font-size:13px; }
   .note-card .gcal-link{ font-size:11px; color:var(--blue-deep); text-decoration:none; background:var(--blue-tint); border-radius:7px; padding:3px 8px; display:inline-block; margin-top:4px; }
-  .cactus-mascot{ width:74px; height:74px; overflow:visible; animation:cactusSway 3.4s ease-in-out infinite; transform-origin:50% 96%; cursor:pointer; }
+  .cactus-mascot{
+    width:74px; height:74px; overflow:visible; animation:cactusSway 3.4s ease-in-out infinite; transform-origin:50% 96%; cursor:pointer;
+    --cactus-body:#5FAE7F; --cactus-arm:#4F9A6B;
+  }
   .cactus-mascot .arm-l{ animation:armWaveL 3.4s ease-in-out infinite; transform-origin:38px 62px; }
   .cactus-mascot .arm-r{ animation:armWaveR 3.4s ease-in-out infinite; transform-origin:62px 58px; }
   .cactus-mascot .eye{ animation:cactusBlink 4.6s ease-in-out infinite; transform-origin:center; }
   .cactus-mascot .eye-r{ animation-delay:.05s; }
-  .cactus-mascot .cheek{ opacity:.55; }
+  .cactus-mascot .cheek{ opacity:.55; transition:opacity .3s ease; }
   .cactus-mascot .pot-shine{ opacity:.5; }
-  .cactus-mascot .face-happy{ opacity:0; }
-  .cactus-mascot.happy-face .face-normal{ opacity:0; }
-  .cactus-mascot.happy-face .face-happy{ opacity:1; }
+  .cactus-mascot .body-part{ fill:var(--cactus-body); transition:fill .4s ease; }
+  .cactus-mascot .arm-part{ fill:var(--cactus-arm); transition:fill .4s ease; }
+  .cactus-mascot .face-happy,
+  .cactus-mascot .face-calm,
+  .cactus-mascot .face-tired,
+  .cactus-mascot .face-sad,
+  .cactus-mascot .face-worried,
+  .cactus-mascot .face-angry{ opacity:0; }
+  .cactus-mascot .face-normal,
+  .cactus-mascot .face-happy,
+  .cactus-mascot .face-calm,
+  .cactus-mascot .face-tired,
+  .cactus-mascot .face-sad,
+  .cactus-mascot .face-worried,
+  .cactus-mascot .face-angry{ transition:opacity .3s ease; }
+
+  /* mood states driven by the energy picker */
+  .cactus-mascot.mood-happy .face-normal{ opacity:0; }
+  .cactus-mascot.mood-happy .face-happy{ opacity:1; }
+
+  .cactus-mascot.mood-calm .face-normal{ opacity:0; }
+  .cactus-mascot.mood-calm .face-calm{ opacity:1; }
+
+  .cactus-mascot.mood-tired .face-normal{ opacity:0; }
+  .cactus-mascot.mood-tired .face-tired{ opacity:1; }
+  .cactus-mascot.mood-tired{ animation-duration:5.2s; }
+  .cactus-mascot.mood-tired .cheek{ opacity:0; }
+
+  .cactus-mascot.mood-sad .face-normal{ opacity:0; }
+  .cactus-mascot.mood-sad .face-sad{ opacity:1; }
+  .cactus-mascot.mood-sad .cheek{ opacity:0; }
+  .cactus-mascot.mood-sad{ animation-duration:5s; }
+
+  .cactus-mascot.mood-worried .face-normal{ opacity:0; }
+  .cactus-mascot.mood-worried .face-worried{ opacity:1; }
+  .cactus-mascot.mood-worried .cheek{ opacity:0; }
+
+  .cactus-mascot.mood-angry{ --cactus-body:#D0664E; --cactus-arm:#BD5640; animation-duration:2.1s; }
+  .cactus-mascot.mood-angry .face-normal{ opacity:0; }
+  .cactus-mascot.mood-angry .face-angry{ opacity:1; }
+  .cactus-mascot.mood-angry .cheek{ opacity:0; }
+
+  /* poking always shows the happy face on top of whatever mood is active */
+  .cactus-mascot.happy-face .face-normal,
+  .cactus-mascot.happy-face .face-calm,
+  .cactus-mascot.happy-face .face-tired,
+  .cactus-mascot.happy-face .face-sad,
+  .cactus-mascot.happy-face .face-worried,
+  .cactus-mascot.happy-face .face-angry{ opacity:0 !important; }
+  .cactus-mascot.happy-face .face-happy{ opacity:1 !important; }
   .cactus-wrap.poked{ animation:cactusPoke .6s ease; }
   @keyframes cactusSway{
     0%,100%{ transform:rotate(-3deg); }
@@ -747,9 +797,9 @@
           <rect x="30" y="72" width="40" height="16" rx="4" fill="#C97B4A"/>
           <rect x="30" y="72" width="40" height="5" rx="2.5" fill="#DE9563"/>
           <ellipse class="pot-shine" cx="38" cy="80" rx="3" ry="6" fill="#ffffff"/>
-          <path class="arm-r" d="M62 62 C74 62 76 50 70 44 C68 48 66 52 60 54 Z" fill="#4F9A6B"/>
-          <path class="arm-l" d="M38 58 C26 58 24 46 30 40 C32 44 34 48 40 50 Z" fill="#4F9A6B"/>
-          <path d="M35 72 C33 45 33 30 50 22 C67 30 67 45 65 72 Z" fill="#5FAE7F"/>
+          <path class="arm-r arm-part" d="M62 62 C74 62 76 50 70 44 C68 48 66 52 60 54 Z"/>
+          <path class="arm-l arm-part" d="M38 58 C26 58 24 46 30 40 C32 44 34 48 40 50 Z"/>
+          <path class="body-part" d="M35 72 C33 45 33 30 50 22 C67 30 67 45 65 72 Z"/>
           <path d="M42 70 C41 48 41.5 34 50 27 C50 27 50 27 50 27 C50 27 50 27 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
           <path d="M58 70 C59 48 58.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
           <ellipse class="cheek" cx="40" cy="45" rx="3.4" ry="2.2" fill="#F3A6A6"/>
@@ -763,6 +813,39 @@
             <path d="M39.5 41 Q43 36.5 46.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
             <path d="M53.5 41 Q57 36.5 60.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
             <path d="M44 46 Q50 55 56 46" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g class="face-calm">
+            <path d="M40 40 Q43 37.2 46 40" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M54 40 Q57 37.2 60 40" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M45 47 Q50 50 55 47" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+          </g>
+          <g class="face-tired">
+            <path d="M40 40.5 Q43 42.5 46 40.5" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M54 40.5 Q57 42.5 60 40.5" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M46 48 Q50 47 54 48" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <text x="63" y="30" font-size="7" fill="#8FA79A" font-family="sans-serif">z</text>
+            <text x="68" y="24" font-size="5" fill="#8FA79A" font-family="sans-serif">z</text>
+          </g>
+          <g class="face-sad">
+            <path d="M39 36.5 Q43 34.5 47 37" stroke="#2E3B32" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+            <path d="M53 37 Q57 34.5 61 36.5" stroke="#2E3B32" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+            <ellipse cx="43" cy="41" rx="2.4" ry="3" fill="#2E3B32"/>
+            <ellipse cx="57" cy="41" rx="2.4" ry="3" fill="#2E3B32"/>
+            <path d="M45 49.5 Q50 45.5 55 49.5" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M59 43 Q61.6 47 59 50.5 Q56.4 47 59 43 Z" fill="#3F8FE0" opacity=".85"/>
+          </g>
+          <g class="face-worried">
+            <ellipse cx="43" cy="40" rx="3" ry="3.8" fill="#2E3B32"/>
+            <ellipse cx="57" cy="40" rx="3" ry="3.8" fill="#2E3B32"/>
+            <path d="M44 48 Q47 46 50 48 Q53 50 56 48" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M64 31 Q67 35.5 64 40 Q61 35.5 64 31 Z" fill="#3F8FE0" opacity=".8"/>
+          </g>
+          <g class="face-angry">
+            <path d="M39.5 36 L46 40" stroke="#2E3B32" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M60.5 36 L54 40" stroke="#2E3B32" stroke-width="2.2" stroke-linecap="round"/>
+            <ellipse cx="43" cy="41.5" rx="2.4" ry="3" fill="#2E3B32"/>
+            <ellipse cx="57" cy="41.5" rx="2.4" ry="3" fill="#2E3B32"/>
+            <path d="M45 49 L50 46 L55 49" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
           </g>
           <circle cx="44" cy="30" r="1.1" fill="#EFD9A3"/>
           <circle cx="52" cy="26" r="1.1" fill="#EFD9A3"/>
@@ -1227,6 +1310,23 @@ var MOOD_OPTIONS = [
 ];
 function moodByKey(key){ for(var i=0;i<MOOD_OPTIONS.length;i++){ if(MOOD_OPTIONS[i].key===key) return MOOD_OPTIONS[i]; } return null; }
 
+var MOOD_FACE_MAP = {
+  amazing:"happy", great:"happy", good:"happy", motivated:"happy", energetic:"happy",
+  calm:"calm", relaxed:"calm",
+  neutral:"normal",
+  lowenergy:"tired", tired:"tired", sick:"tired",
+  stressed:"worried", anxious:"worried",
+  sad:"sad",
+  angry:"angry"
+};
+var MOOD_FACE_CLASSES = ["mood-happy","mood-calm","mood-tired","mood-sad","mood-worried","mood-angry"];
+function applyCactusMood(key){
+  if(!el.cactusMascot) return;
+  el.cactusMascot.classList.remove.apply(el.cactusMascot.classList, MOOD_FACE_CLASSES);
+  var face = MOOD_FACE_MAP[key];
+  if(face) el.cactusMascot.classList.add("mood-"+face);
+}
+
 function applyTitles(){
   Object.keys(TITLE_DEFAULTS).forEach(function(key){
     var val = (settings.titles && settings.titles[key]) || TITLE_DEFAULTS[key].text;
@@ -1284,6 +1384,7 @@ function updateEnergyTrigger(key){
   Array.prototype.forEach.call(el.energyMenu.querySelectorAll(".mood-option"), function(node){
     node.classList.toggle("active", node.getAttribute("data-key")===key);
   });
+  applyCactusMood(key);
 }
 function selectEnergy(key){
   el.secEnergy.value = key;
@@ -1347,7 +1448,7 @@ function cacheEls(){
    "weekdayRow","secDailyProgram","secExpenses","secCalories","secEnergy","secGratitude","secHappened",
    "secBreakfast","secLunch","secDinner","secGoal","secSleepFrom","secSleepTo",
    "waterRow","waterLabel","shopList","shopNewItem",
-   "energyMoodSelect","energyTrigger","energyTriggerEmoji","energyTriggerLabel","energyMenu",
+   "energyMoodSelect","energyTrigger","energyTriggerEmoji","energyTriggerLabel","energyMenu","cactusMascot",
    "titleEditList","btnResetTitles",
    "pageGoals","goalsList","newGoalTitle",
    "newPinnedText","newPinnedImage","newPinnedThumbs","addPinnedBtn","pinnedNoteList",
