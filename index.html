@@ -1092,6 +1092,9 @@
         <input type="file" id="restoreFile" accept="application/json" style="display:none;">
       </label>
 
+      <div class="section-label">به‌روزرسانی برنامه</div>
+      <button class="btn block" id="btnCheckUpdate">بررسی نسخهٔ جدید</button>
+
       <div class="section-label">داده‌ها</div>
       <button class="btn danger block" id="btnClearAll">پاک کردن همهٔ اطلاعات</button>
     </div>
@@ -1265,7 +1268,7 @@ async function storeListDayKeys(){
   } catch(e){ return []; }
 }
 
-var DEFAULT_SETTINGS = { calendarMode:"both", theme:"light", notifEnabled:false, titles:{} };
+var DEFAULT_SETTINGS = { calendarMode:"both", theme:"light", notifEnabled:false, titles:{}, boxSizes:{} };
 var settings = Object.assign({}, DEFAULT_SETTINGS);
 var indexData = {};
 var DEFAULT_SECTIONS = { dailyProgram:"", expenses:"", calories:"", energy:"", gratitude:"", happened:"", breakfast:"", lunch:"", dinner:"", goal:"", sleepFrom:"", sleepTo:"" };
@@ -1445,6 +1448,7 @@ function cacheEls(){
    "calTitle","weekdaysRow","calGrid","agendaList","prevMonth","nextMonth",
    "settingsOverlay","closeSettingsModal","calModeSeg","darkToggle","btnEnableNotif","btnClearAll",
    "btnBackup","restoreFile","toast","btnTheme","btnSettings","spiral",
+   "btnCheckUpdate",
    "weekdayRow","secDailyProgram","secExpenses","secCalories","secEnergy","secGratitude","secHappened",
    "secBreakfast","secLunch","secDinner","secGoal","secSleepFrom","secSleepTo",
    "waterRow","waterLabel","shopList","shopNewItem",
@@ -1738,6 +1742,7 @@ function renderTasks(){
   }).join("");
   bindTaskEvents();
   renderProgress();
+  applyTaskDescResizables(el.taskList);
 }
 
 function renderDropdown(t){
@@ -2789,6 +2794,49 @@ function bindEvents(){
   document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ el.settingsOverlay.classList.remove("open"); closeEnergyMenu(); openMenuId=null; openTimeId=null; renderTasks(); } });
 }
 
+/* ---------- Persist resizable box heights ---------- */
+var RESIZE_STATIC_IDS = ["secDailyProgram","secExpenses","secGratitude","secHappened","newNoteText","newPinnedText"];
+var resizeObserverInst = null;
+function applyBoxSize(elm, key){
+  var h = settings.boxSizes && settings.boxSizes[key];
+  if(h){ elm.style.height = h+"px"; }
+}
+var boxSizeSaveTimer=null;
+function saveBoxSize(key, height){
+  if(!settings.boxSizes) settings.boxSizes = {};
+  if(settings.boxSizes[key] === height) return;
+  settings.boxSizes[key] = height;
+  clearTimeout(boxSizeSaveTimer);
+  boxSizeSaveTimer = setTimeout(function(){ saveSettings(); }, 400);
+}
+function observeResizable(elm, key){
+  if(!elm) return;
+  elm._resizeKey = key;
+  applyBoxSize(elm, key);
+  if(resizeObserverInst) resizeObserverInst.observe(elm);
+}
+function initResizePersistence(){
+  if(!("ResizeObserver" in window)) return;
+  resizeObserverInst = new ResizeObserver(function(entries){
+    entries.forEach(function(entry){
+      var elm = entry.target;
+      var key = elm._resizeKey;
+      if(!key) return;
+      var h = Math.round(entry.contentRect.height);
+      if(h>0) saveBoxSize(key, h);
+    });
+  });
+  RESIZE_STATIC_IDS.forEach(function(id){
+    var elm = document.getElementById(id);
+    if(elm) observeResizable(elm, id);
+  });
+}
+function applyTaskDescResizables(container){
+  if(!container) return;
+  var boxes = container.querySelectorAll(".task-desc-input");
+  Array.prototype.forEach.call(boxes, function(b){ observeResizable(b, "taskDesc"); });
+}
+
 function buildSpiral(){
   var html = "";
   for(var i=0;i<16;i++){ html += "<span class='ring'></span>"; }
@@ -2811,6 +2859,7 @@ async function boot(){
   cacheEls();
   buildSpiral();
   renderEnergyMenu();
+  initResizePersistence();
   await requestPersistentStorage();
   await loadSettings();
   applyTitles();
@@ -2831,8 +2880,62 @@ document.addEventListener("DOMContentLoaded", boot);
 </script>
 <script>
   if ("serviceWorker" in navigator) {
+    var swReg = null;
+    var UPDATE_CHECK_INTERVAL = 3*60*60*1000; // هر ۳ ساعت
+
+    function miniToast(msg){
+      var t = document.getElementById("toast");
+      if(!t){ return; }
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(miniToast._timer);
+      miniToast._timer = setTimeout(function(){ t.classList.remove("show"); }, 2400);
+    }
+
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("service-worker.js").catch(function(){});
+      navigator.serviceWorker.register("service-worker.js").then(function(reg){
+        swReg = reg;
+        // اگر نسخهٔ جدیدی از سرویس‌ورکر پیدا شد، به محض نصب شدن از او بخواه فوراً فعال شود
+        reg.addEventListener("updatefound", function(){
+          var newWorker = reg.installing;
+          if(!newWorker) return;
+          newWorker.addEventListener("statechange", function(){
+            if(newWorker.state === "installed" && navigator.serviceWorker.controller){
+              newWorker.postMessage({type:"SKIP_WAITING"});
+            }
+          });
+        });
+        // هر بار برنامه باز/فوکوس می‌شود، چک کن که آیا نسخهٔ جدیدی روی گیت‌هاب/سرور هست
+        document.addEventListener("visibilitychange", function(){
+          if(document.visibilityState === "visible") reg.update().catch(function(){});
+        });
+        reg.update().catch(function(){});
+        setInterval(function(){ reg.update().catch(function(){}); }, UPDATE_CHECK_INTERVAL);
+      }).catch(function(){});
+
+      // وقتی سرویس‌ورکر جدید کنترل صفحه رو به دست گرفت، صفحه رو یک‌بار خودکار رفرش کن
+      var refreshed = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function(){
+        if(refreshed) return;
+        refreshed = true;
+        window.location.reload();
+      });
+
+      // دکمهٔ بررسی دستی نسخهٔ جدید (تنظیمات)
+      var btn = document.getElementById("btnCheckUpdate");
+      if(btn){
+        btn.addEventListener("click", function(){
+          if(!swReg){ miniToast("سرویس‌ورکر هنوز آماده نیست"); return; }
+          miniToast("در حال بررسی نسخهٔ جدید…");
+          swReg.update().then(function(){
+            setTimeout(function(){
+              if(!refreshed) miniToast("برنامه به‌روز است ✓");
+            }, 3000);
+          }).catch(function(){
+            miniToast("بررسی به‌روزرسانی ناموفق بود");
+          });
+        });
+      }
     });
   }
 </script>
