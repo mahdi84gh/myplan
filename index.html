@@ -616,11 +616,22 @@
   .pinned-table-editor{ margin:4px 0 10px; }
   .pinned-table-wrap{ overflow-x:auto; border:1px solid var(--paper-line); border-radius:9px; }
   .pinned-table-wrap table{ border-collapse:collapse; width:100%; min-width:280px; }
-  .pinned-table-wrap td{ border:1px solid var(--paper-line); padding:0; }
-  .pinned-table-wrap td[contenteditable]{ padding:6px 8px; font-size:12.5px; min-width:64px; outline:none; }
+  .pinned-table-wrap td{ border:1px solid var(--paper-line); padding:0; cursor:pointer; }
+  .pinned-table-wrap td[contenteditable]{ padding:6px 8px; font-size:12.5px; min-width:64px; outline:none; cursor:text; }
   .pinned-table-wrap td[contenteditable]:focus{ background:var(--blue-tint); }
-  .pinned-table-actions{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+  .pinned-table-wrap td.sel-col,.pinned-table-wrap td.sel-row{ background:var(--blue-tint); }
+  .pinned-table-wrap td.sel-col.sel-row{ background:var(--blue-tint); box-shadow:inset 0 0 0 2px var(--blue); }
+  .pinned-table-actions{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; align-items:center; }
   .pinned-table-actions .btn{ font-size:11.5px; padding:6px 10px; }
+  .pcol-btn.active{ background:var(--blue); color:#fff; border-color:var(--blue); }
+  .pinned-table-wrap td.pchk-cell{ text-align:right; padding:4px 6px; }
+  .pinned-table-wrap td.pchk-cell input[type=checkbox]{ width:16px; height:16px; cursor:pointer; flex:none; }
+  .pchk-inline{ display:flex; align-items:center; gap:6px; }
+  .pchk-text{ flex:1; outline:none; padding:2px; font-size:12.5px; min-width:40px; }
+  .pchk-text.done, .note-mini-table .pchk-cell span.done{ text-decoration:line-through; opacity:.5; }
+  .note-card .note-mini-table td.pchk-cell{ text-align:right; }
+  .note-card .note-mini-table td.pchk-cell input[type=checkbox]{ width:15px; height:15px; cursor:pointer; flex:none; }
+  .note-card .note-mini-table .pchk-inline{ display:flex; align-items:center; gap:6px; }
 
   .pinned-reminder-row{ display:flex; align-items:center; gap:8px; margin:2px 0 10px; flex-wrap:wrap; }
   .pinned-reminder-check{ display:flex; align-items:center; gap:5px; font-size:12.5px; cursor:pointer; user-select:none; }
@@ -909,12 +920,8 @@
 
       <div id="pinnedTableEditor" class="pinned-table-editor" hidden>
         <div class="pinned-table-wrap" id="pinnedTableWrap"></div>
-        <div class="pinned-table-actions">
-          <button type="button" class="btn" id="pinnedAddRowBtn">+ ردیف</button>
-          <button type="button" class="btn" id="pinnedAddColBtn">+ ستون</button>
-          <button type="button" class="btn" id="pinnedDelRowBtn">− ردیف</button>
-          <button type="button" class="btn" id="pinnedDelColBtn">− ستون</button>
-        </div>
+        <div class="footer-note" style="margin:6px 0;">روی یه خونه از جدول بزن تا انتخاب بشه (رنگی می‌شه)، بعد از ابزارهای پایین برای همون ردیف/ستون استفاده کن.</div>
+        <div class="pinned-table-actions" id="pinnedTableActions"></div>
       </div>
 
       <div class="pinned-reminder-row">
@@ -1345,7 +1352,7 @@ function cacheEls(){
    "pageGoals","goalsList","newGoalTitle",
    "newPinnedText","newPinnedImage","newPinnedThumbs","addPinnedBtn","pinnedNoteList",
    "newPinnedTitle","pinnedTypeToggle","pinnedTableEditor","pinnedTableWrap",
-   "pinnedAddRowBtn","pinnedAddColBtn","pinnedDelRowBtn","pinnedDelColBtn",
+   "pinnedTableActions",
    "pinnedReminderEnable","pinnedReminderDate","pinnedReminderTime","cancelPinnedEditBtn"
   ].forEach(function(id){ el[id]=q(id); });
 }
@@ -1963,6 +1970,9 @@ async function stepGoalProgress(id, delta){
 var pendingPinnedImages = [];
 var pendingPinnedType = "text";
 var pendingPinnedTable = [["","",""],["","",""],["","",""]];
+var pendingPinnedColMeta = [{align:"right",checklist:false},{align:"right",checklist:false},{align:"right",checklist:false}];
+var pendingPinnedSelR = 0;
+var pendingPinnedSelC = 0;
 var editingPinnedId = null;
 
 function faDateTimeLbl(){
@@ -1970,25 +1980,131 @@ function faDateTimeLbl(){
   return faDigits(t.gy)+"/"+faDigits(pad2(t.gm))+"/"+faDigits(pad2(t.gd))+" "+pad2(now.getHours())+":"+pad2(now.getMinutes());
 }
 
+function ensurePinnedColMeta(){
+  var need = pendingPinnedTable[0] ? pendingPinnedTable[0].length : 0;
+  while(pendingPinnedColMeta.length < need) pendingPinnedColMeta.push({align:"right",checklist:false});
+  while(pendingPinnedColMeta.length > need) pendingPinnedColMeta.pop();
+  if(pendingPinnedSelR > pendingPinnedTable.length-1) pendingPinnedSelR = pendingPinnedTable.length-1;
+  if(pendingPinnedSelR < 0) pendingPinnedSelR = 0;
+  if(pendingPinnedSelC > need-1) pendingPinnedSelC = need-1;
+  if(pendingPinnedSelC < 0) pendingPinnedSelC = 0;
+}
+
+function pinnedSelectCell(r,c){
+  pendingPinnedSelR = r; pendingPinnedSelC = c;
+  Array.prototype.forEach.call(el.pinnedTableWrap.querySelectorAll("td"), function(td){
+    var tr=+td.getAttribute("data-r"), tc=+td.getAttribute("data-c");
+    td.classList.toggle("sel-col", tc===c);
+    td.classList.toggle("sel-row", tr===r);
+  });
+  renderPinnedTableActions();
+}
+
+function pinnedCellObj(cell){
+  if(cell && typeof cell==="object") return {text:cell.text||"", checked:!!cell.checked};
+  if(typeof cell==="boolean") return {text:"", checked:cell};
+  return {text:String(cell||""), checked:false};
+}
+
 function renderPinnedTableEditor(){
+  ensurePinnedColMeta();
   var rows = pendingPinnedTable;
-  var html = "<table><tbody>"+rows.map(function(row, ri){
+  var dataRows = rows.map(function(row, ri){
     return "<tr>"+row.map(function(cell,ci){
-      return "<td contenteditable='true' data-r='"+ri+"' data-c='"+ci+"'>"+escapeHtml(cell||"")+"</td>";
+      var meta = pendingPinnedColMeta[ci] || {align:"right",checklist:false};
+      var selCls = (ri===pendingPinnedSelR?" sel-row":"")+(ci===pendingPinnedSelC?" sel-col":"");
+      if(meta.checklist){
+        var cv = pinnedCellObj(cell);
+        return "<td class='pchk-cell"+selCls+"' data-r='"+ri+"' data-c='"+ci+"'>"+
+          "<div class='pchk-inline'>"+
+            "<input type='checkbox' class='pchk-box'"+(cv.checked?" checked":"")+">"+
+            "<span class='pchk-text"+(cv.checked?" done":"")+"' contenteditable='true'>"+escapeHtml(cv.text)+"</span>"+
+          "</div></td>";
+      }
+      return "<td contenteditable='true' class='"+selCls.trim()+"' style='text-align:"+meta.align+"' data-r='"+ri+"' data-c='"+ci+"'>"+escapeHtml(cell||"")+"</td>";
     }).join("")+"</tr>";
-  }).join("")+"</tbody></table>";
-  el.pinnedTableWrap.innerHTML = html;
+  }).join("");
+  el.pinnedTableWrap.innerHTML = "<table><tbody>"+dataRows+"</tbody></table>";
   Array.prototype.forEach.call(el.pinnedTableWrap.querySelectorAll("td[contenteditable]"), function(td){
     td.addEventListener("input", function(){
       var r=+td.getAttribute("data-r"), c=+td.getAttribute("data-c");
       pendingPinnedTable[r][c] = td.textContent;
     });
+    td.addEventListener("click", function(){
+      pinnedSelectCell(+td.getAttribute("data-r"), +td.getAttribute("data-c"));
+    });
+  });
+  Array.prototype.forEach.call(el.pinnedTableWrap.querySelectorAll("td.pchk-cell"), function(td){
+    var r=+td.getAttribute("data-r"), c=+td.getAttribute("data-c");
+    var cb = td.querySelector("input[type=checkbox]");
+    var span = td.querySelector(".pchk-text");
+    cb.addEventListener("change", function(){
+      var cv = pinnedCellObj(pendingPinnedTable[r][c]);
+      cv.checked = cb.checked;
+      pendingPinnedTable[r][c] = cv;
+      span.classList.toggle("done", cv.checked);
+    });
+    span.addEventListener("input", function(){
+      var cv = pinnedCellObj(pendingPinnedTable[r][c]);
+      cv.text = span.textContent;
+      pendingPinnedTable[r][c] = cv;
+    });
+    td.addEventListener("click", function(){
+      pinnedSelectCell(r,c);
+    });
+  });
+  renderPinnedTableActions();
+}
+
+function renderPinnedTableActions(){
+  if(!el.pinnedTableActions) return;
+  var meta = pendingPinnedColMeta[pendingPinnedSelC] || {align:"right",checklist:false};
+  var colLbl = faDigits(pendingPinnedSelC+1), rowLbl = faDigits(pendingPinnedSelR+1);
+  el.pinnedTableActions.innerHTML =
+    "<div class='footer-note' style='margin:0 0 6px;width:100%;'>انتخاب‌شده: ستون "+colLbl+" — ردیف "+rowLbl+"</div>"+
+    "<button type='button' class='btn' data-act='add-row'>+ ردیف</button>"+
+    "<button type='button' class='btn' data-act='del-row'>− همین ردیف</button>"+
+    "<button type='button' class='btn' data-act='add-col'>+ ستون</button>"+
+    "<button type='button' class='btn' data-act='del-col'>− همین ستون</button>"+
+    "<button type='button' class='btn pcol-btn"+(meta.align==="right"?" active":"")+"' data-act='align-right'>راست‌چین</button>"+
+    "<button type='button' class='btn pcol-btn"+(meta.align==="center"?" active":"")+"' data-act='align-center'>وسط‌چین</button>"+
+    "<button type='button' class='btn pcol-btn"+(meta.align==="left"?" active":"")+"' data-act='align-left'>چپ‌چین</button>"+
+    "<button type='button' class='btn pcol-btn"+(meta.checklist?" active":"")+"' data-act='toggle-checklist'>☑ چک‌لیست همین ستون</button>";
+  Array.prototype.forEach.call(el.pinnedTableActions.querySelectorAll("[data-act]"), function(btn){
+    btn.addEventListener("click", function(){ pinnedTableAction(btn.getAttribute("data-act")); });
   });
 }
-function pinnedAddRow(){ pendingPinnedTable.push(pendingPinnedTable[0].map(function(){return "";})); renderPinnedTableEditor(); }
-function pinnedAddCol(){ pendingPinnedTable.forEach(function(row){ row.push(""); }); renderPinnedTableEditor(); }
-function pinnedDelRow(){ if(pendingPinnedTable.length>1){ pendingPinnedTable.pop(); renderPinnedTableEditor(); } }
-function pinnedDelCol(){ if(pendingPinnedTable[0].length>1){ pendingPinnedTable.forEach(function(row){ row.pop(); }); renderPinnedTableEditor(); } }
+
+function pinnedTableAction(act){
+  var r = pendingPinnedSelR, c = pendingPinnedSelC;
+  if(act==="add-row"){
+    var newRow = pendingPinnedColMeta.map(function(m){ return m.checklist?{text:"",checked:false}:""; });
+    pendingPinnedTable.splice(r+1,0,newRow);
+    pendingPinnedSelR = r+1;
+  } else if(act==="del-row"){
+    if(pendingPinnedTable.length>1){ pendingPinnedTable.splice(r,1); if(pendingPinnedSelR>=pendingPinnedTable.length) pendingPinnedSelR = pendingPinnedTable.length-1; }
+  } else if(act==="add-col"){
+    pendingPinnedTable.forEach(function(row){ row.splice(c+1,0,""); });
+    pendingPinnedColMeta.splice(c+1,0,{align:"right",checklist:false});
+    pendingPinnedSelC = c+1;
+  } else if(act==="del-col"){
+    if(pendingPinnedTable[0].length>1){
+      pendingPinnedTable.forEach(function(row){ row.splice(c,1); });
+      pendingPinnedColMeta.splice(c,1);
+      if(pendingPinnedSelC>=pendingPinnedColMeta.length) pendingPinnedSelC = pendingPinnedColMeta.length-1;
+    }
+  } else if(act==="align-right" || act==="align-center" || act==="align-left"){
+    pendingPinnedColMeta[c].align = act.replace("align-","");
+  } else if(act==="toggle-checklist"){
+    var meta = pendingPinnedColMeta[c];
+    meta.checklist = !meta.checklist;
+    pendingPinnedTable.forEach(function(row){
+      if(meta.checklist){ row[c] = {text: String(row[c]||"").trim(), checked:false}; }
+      else { var cv = pinnedCellObj(row[c]); row[c] = cv.text; }
+    });
+  }
+  renderPinnedTableEditor();
+}
 
 function setPinnedType(type){
   pendingPinnedType = type;
@@ -2005,6 +2121,8 @@ function resetPinnedForm(){
   el.newPinnedText.value = "";
   pendingPinnedImages = []; el.newPinnedThumbs.innerHTML = "";
   pendingPinnedTable = [["","",""],["","",""],["","",""]];
+  pendingPinnedColMeta = [{align:"right",checklist:false},{align:"right",checklist:false},{align:"right",checklist:false}];
+  pendingPinnedSelR = 0; pendingPinnedSelC = 0;
   setPinnedType("text");
   el.pinnedReminderEnable.checked = false;
   el.pinnedReminderDate.hidden = true; el.pinnedReminderTime.hidden = true;
@@ -2033,8 +2151,19 @@ function renderPinnedNotes(){
     var descHtml = n.desc ? "<div class='note-text'>"+escapeHtml(n.desc)+"</div>" : "";
     var tableHtml = "";
     if(n.type==="table" && n.table){
+      var colMeta = n.colMeta || n.table[0].map(function(){return {align:"right",checklist:false};});
       tableHtml = "<table class='note-mini-table'><tbody>"+n.table.map(function(row){
-        return "<tr>"+row.map(function(c){ return "<td>"+escapeHtml(c||"")+"</td>"; }).join("")+"</tr>";
+        return "<tr>"+row.map(function(c,ci){
+          var meta = colMeta[ci] || {align:"right",checklist:false};
+          if(meta.checklist){
+            var cv = pinnedCellObj(c);
+            return "<td class='pchk-cell'><div class='pchk-inline'>"+
+              "<input type='checkbox' data-action='table-check' data-note='"+n.id+"' data-r='"+n.table.indexOf(row)+"' data-c='"+ci+"'"+(cv.checked?" checked":"")+">"+
+              "<span class='"+(cv.checked?"done":"")+"'>"+escapeHtml(cv.text)+"</span>"+
+            "</div></td>";
+          }
+          return "<td style='text-align:"+meta.align+"'>"+escapeHtml(c||"")+"</td>";
+        }).join("")+"</tr>";
       }).join("")+"</tbody></table>";
     }
     var reminderHtml = "";
@@ -2060,6 +2189,21 @@ function renderPinnedNotes(){
   Array.prototype.forEach.call(el.pinnedNoteList.querySelectorAll("[data-action='edit-pinned']"), function(btn){
     btn.addEventListener("click", function(){ startEditPinnedNote(btn.closest(".note-card").getAttribute("data-id")); });
   });
+  Array.prototype.forEach.call(el.pinnedNoteList.querySelectorAll("[data-action='table-check']"), function(cb){
+    cb.addEventListener("change", async function(){
+      var n = pinnedNotesData.find(function(x){ return x.id===cb.getAttribute("data-note"); });
+      if(!n || !n.table) return;
+      var r = +cb.getAttribute("data-r"), c = +cb.getAttribute("data-c");
+      if(n.table[r]){
+        var cv = pinnedCellObj(n.table[r][c]);
+        cv.checked = cb.checked;
+        n.table[r][c] = cv;
+        var span = cb.parentElement.querySelector("span");
+        if(span) span.classList.toggle("done", cv.checked);
+        await savePinnedNotes();
+      }
+    });
+  });
 }
 
 function startEditPinnedNote(id){
@@ -2071,6 +2215,8 @@ function startEditPinnedNote(id){
   pendingPinnedImages = (n.images||[]).slice();
   renderPendingPinnedThumbs();
   pendingPinnedTable = n.table ? n.table.map(function(r){return r.slice();}) : [["","",""],["","",""],["","",""]];
+  pendingPinnedColMeta = n.colMeta ? n.colMeta.map(function(m){return {align:m.align||"right", checklist:!!m.checklist};}) : pendingPinnedTable[0].map(function(){return {align:"right",checklist:false};});
+  pendingPinnedSelR = 0; pendingPinnedSelC = 0;
   setPinnedType(n.type || "text");
   if(n.reminder && n.reminder.date){
     el.pinnedReminderEnable.checked = true;
@@ -2102,6 +2248,7 @@ async function addPinnedNote(){
       n.title = title; n.desc = desc; n.type = pendingPinnedType;
       n.images = pendingPinnedImages.slice();
       n.table = pendingPinnedType==="table" ? pendingPinnedTable.map(function(r){return r.slice();}) : null;
+      n.colMeta = pendingPinnedType==="table" ? pendingPinnedColMeta.map(function(m){return {align:m.align,checklist:m.checklist};}) : null;
       n.reminder = reminder;
     }
     showToast("یادداشت به‌روزرسانی شد");
@@ -2110,6 +2257,7 @@ async function addPinnedNote(){
       id:uid(), title:title, desc:desc, type:pendingPinnedType,
       images:pendingPinnedImages.slice(),
       table: pendingPinnedType==="table" ? pendingPinnedTable.map(function(r){return r.slice();}) : null,
+      colMeta: pendingPinnedType==="table" ? pendingPinnedColMeta.map(function(m){return {align:m.align,checklist:m.checklist};}) : null,
       reminder: reminder,
       created: faDateTimeLbl()
     });
@@ -2451,10 +2599,6 @@ function bindEvents(){
   Array.prototype.forEach.call(el.pinnedTypeToggle.querySelectorAll(".ptype-btn"), function(b){
     b.addEventListener("click", function(){ setPinnedType(b.getAttribute("data-type")); });
   });
-  el.pinnedAddRowBtn.addEventListener("click", pinnedAddRow);
-  el.pinnedAddColBtn.addEventListener("click", pinnedAddCol);
-  el.pinnedDelRowBtn.addEventListener("click", pinnedDelRow);
-  el.pinnedDelColBtn.addEventListener("click", pinnedDelCol);
   el.pinnedReminderEnable.addEventListener("change", function(){
     var on = el.pinnedReminderEnable.checked;
     el.pinnedReminderDate.hidden = !on; el.pinnedReminderTime.hidden = !on;
