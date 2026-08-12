@@ -2622,7 +2622,7 @@ async function doRestore(file){
     if(!payload || !payload.days) throw new Error("bad file");
     if(payload.settings){ settings = Object.assign({}, DEFAULT_SETTINGS, payload.settings); await saveSettings(); }
     var dayKeys = Object.keys(payload.days);
-    for(var i=0;i<dayKeys.length;i++){ await storeSet("day:"+dayKeys[i], payload.days[dayKeys[i]]); }
+    for(var i=0;i<dayKeys.length;i++){ var dk = dayKeys[i].indexOf("day:")===0 ? dayKeys[i] : "day:"+dayKeys[i]; await storeSet(dk, payload.days[dayKeys[i]]); }
     indexData = payload.index || {};
     await saveIndex();
     goalsData = payload.goals || [];
