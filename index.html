@@ -2859,9 +2859,9 @@ async function boot(){
   cacheEls();
   buildSpiral();
   renderEnergyMenu();
-  initResizePersistence();
   await requestPersistentStorage();
   await loadSettings();
+  initResizePersistence();
   applyTitles();
   renderTitleEditList();
   await loadIndex();
