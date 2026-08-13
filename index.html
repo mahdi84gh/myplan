@@ -156,19 +156,29 @@
   }
   [data-theme="dark"] .spiral .ring{ background: radial-gradient(circle at 35% 30%, #fff2 0%, transparent 55%), #1a2338; }
 
-  .tabs{display:flex; gap:6px; padding:0 18px; position:relative; z-index:2;}
+  .tabs{display:flex; gap:4px; padding:0 18px 0 62px; position:relative; z-index:2;}
   .tab{
     font-family:var(--font-ui); font-weight:700; font-size:13.5px; cursor:pointer;
     border:none; padding:11px 20px 10px; border-radius:12px 12px 0 0;
     background:var(--paper-deep); color:var(--ink-faint);
-    display:flex; align-items:center; gap:7px; transition:.15s; position:relative; top:2px;
+    display:flex; align-items:center; justify-content:center; gap:6px; transition:.15s; position:relative; top:2px;
+    white-space:nowrap;
   }
-  .tab .dot{width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.55;}
+  .tab .dot{width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.55; flex:none;}
   .tab.active{background:var(--paper); color:var(--ink); box-shadow:0 -3px 10px rgba(0,0,0,.05);}
   .tab.active .dot{background:var(--blue); opacity:1; box-shadow:0 0 0 3px var(--blue-tint);}
   .tab[data-tab="calendar"].active .dot{background:var(--gold); box-shadow:0 0 0 3px var(--gold-tint);}
   .tab:hover:not(.active){color:var(--ink-soft);}
   .tab:focus-visible{outline:2px solid var(--blue); outline-offset:-2px;}
+  @media(max-width:560px){
+    .tabs{gap:2px; padding:0 10px 0 64px;}
+    .tab{padding:10px 8px 9px; font-size:12.5px; gap:4px;}
+    .tab .dot{width:6px; height:6px;}
+  }
+  @media(max-width:390px){
+    .tabs{padding:0 6px 0 64px;}
+    .tab{font-size:11.5px; padding:9px 5px 8px;}
+  }
 
   .page{
     background:var(--paper);
@@ -326,6 +336,26 @@
   .goal-progress-pct{font-family:var(--font-mono); font-size:11px; color:var(--blue-deep); font-weight:700; min-width:30px; text-align:left; flex:none;}
   .goal-meta-row{display:flex; align-items:center; gap:7px; margin-top:9px;}
   .goal-meta-icon{font-size:11px; color:var(--ink-faint); flex:none;}
+  /* ---------- Practical tab: countdown ---------- */
+  .cd-card{
+    background: repeating-linear-gradient(var(--paper-deep), var(--paper-deep) 26px, var(--paper-line) 27px);
+    border:1px solid var(--paper-line); border-radius:12px; padding:12px 14px; margin-bottom:10px; position:relative; transition:opacity .2s;
+  }
+  .cd-card.done{opacity:.62;}
+  .cd-top{display:flex; align-items:center; gap:9px;}
+  .cd-title{flex:1; font-family:var(--font-ui); font-weight:700; font-size:13.5px; color:var(--ink);}
+  .cd-card.done .cd-title{text-decoration:line-through; color:var(--ink-faint);}
+  .cd-del{background:none; border:none; cursor:pointer; color:var(--ink-faint); font-size:15px; flex:none; padding:2px;}
+  .cd-del:hover{color:var(--red);}
+  .cd-progress-row{display:flex; align-items:center; gap:8px; margin-top:11px;}
+  .cd-progress-track{flex:1; height:8px; border-radius:20px; background:var(--paper-line); overflow:hidden;}
+  .cd-progress-fill{height:100%; background:linear-gradient(90deg, var(--blue), var(--gold)); border-radius:20px; transition:width .3s ease;}
+  .cd-meta-row{display:flex; align-items:center; justify-content:space-between; gap:7px; margin-top:9px;}
+  .cd-days-left{font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--blue-deep);}
+  .cd-card.done .cd-days-left{color:var(--green);}
+  .cd-sub{font-size:11px; color:var(--ink-faint);}
+  .cd-reminder-badge{ display:inline-flex; align-items:center; gap:3px; font-size:11px; background:var(--blue-tint); color:var(--blue-deep); border-radius:7px; padding:2px 7px; margin-top:8px; }
+  .cd-card .gcal-link{ font-size:11px; color:var(--blue-deep); text-decoration:none; background:var(--blue-tint); border-radius:7px; padding:3px 8px; display:inline-block; margin-top:6px; margin-inline-start:6px; border-bottom:none; }
   .goal-deadline{
     font-size:11.5px; color:var(--ink-soft); font-family:var(--font-mono); border:none; background:transparent; flex:1; padding:0;
   }
@@ -770,6 +800,7 @@
       <button class="tab active" data-tab="today"><span class="dot"></span>امروز</button>
       <button class="tab" data-tab="goals"><span class="dot"></span>اهداف</button>
       <button class="tab" data-tab="calendar"><span class="dot"></span>تقویم</button>
+      <button class="tab" data-tab="practical"><span class="dot"></span>کاربردی</button>
     </div>
 
     <div class="page" id="pageToday">
@@ -1050,10 +1081,33 @@
         <div id="agendaList"></div>
       </div>
     </div>
-  </div>
 
-  <div class="footer-note">
-    یادآوری داخل برنامه فقط وقتی کار می‌کند که این صفحه باز باشد. برای ثبت یادآوری واقعی و همیشگی، از دکمهٔ <b>«افزودن به گوگل کلندر»</b> کنار هر تسک استفاده کن. کارهایی که «انتقال خودکار به فردا» را روشن کنی، اگر تا پایان روز انجام نشوند، خودشان به برنامهٔ فردا اضافه می‌شوند.
+    <div class="page" id="pagePractical" hidden>
+      <div class="divider" style="margin-top:2px;">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--gold-tint);">📅</span>
+          <span class="tl-text" data-title-key="countdownTitle">روزشمار</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <div id="countdownList"></div>
+
+      <div class="add-row-line" style="flex-direction:column; align-items:stretch; gap:8px;">
+        <input type="text" class="lined-input" id="newCountdownTitle" placeholder="عنوان روزشمار (مثلاً: تا امتحان، تا سفر…)" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="number" min="1" id="newCountdownDays" placeholder="تعداد روز" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; font-family:var(--font-mono); text-align:center;">
+          <button class="btn primary" id="addCountdownBtn" style="flex:none;">افزودن</button>
+        </div>
+        <div class="pinned-reminder-row" style="margin:2px 0 0;">
+          <label class="pinned-reminder-check">
+            <input type="checkbox" id="cdReminderEnable">
+            <span>⏰ یادآوری</span>
+          </label>
+          <input type="date" id="cdReminderDate" class="pinned-reminder-input" hidden>
+          <input type="time" id="cdReminderTime" class="pinned-reminder-input" hidden>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1402,9 +1456,13 @@ async function saveSettings(){ await storeSet("settings", settings); }
 async function loadIndex(){ var idx = await storeGet("index"); indexData = idx || {}; }
 async function saveIndex(){ await storeSet("index", indexData); }
 var goalsData = [];
+var countdownData = [];
 var pinnedNotesData = [];
 async function loadGoals(){ var g = await storeGet("goals"); goalsData = g || []; }
 async function saveGoals(){ await storeSet("goals", goalsData); }
+
+async function loadCountdowns(){ var c = await storeGet("countdowns"); countdownData = c || []; }
+async function saveCountdowns(){ await storeSet("countdowns", countdownData); }
 async function loadPinnedNotes(){ var n = await storeGet("pinnedNotes"); pinnedNotesData = n || []; }
 async function savePinnedNotes(){ await storeSet("pinnedNotes", pinnedNotesData); }
 async function loadDay(key){ var d = await storeGet("day:"+key); return d || {tasks:[], notes:[], extraSlots:0, sections:Object.assign({},DEFAULT_SECTIONS), shopping:[], water:0}; }
@@ -1458,7 +1516,9 @@ function cacheEls(){
    "newPinnedText","newPinnedImage","newPinnedThumbs","addPinnedBtn","pinnedNoteList",
    "newPinnedTitle","pinnedTypeToggle","pinnedTableEditor","pinnedTableWrap",
    "pinnedTableActions",
-   "pinnedReminderEnable","pinnedReminderDate","pinnedReminderTime","cancelPinnedEditBtn"
+   "pinnedReminderEnable","pinnedReminderDate","pinnedReminderTime","cancelPinnedEditBtn",
+   "pagePractical","countdownList","newCountdownTitle","newCountdownDays","addCountdownBtn",
+   "cdReminderEnable","cdReminderDate","cdReminderTime"
   ].forEach(function(id){ el[id]=q(id); });
 }
 
@@ -1470,8 +1530,10 @@ function switchTab(name){
   q("pageToday").hidden = name!=="today";
   q("pageGoals").hidden = name!=="goals";
   q("pageCalendar").hidden = name!=="calendar";
+  q("pagePractical").hidden = name!=="practical";
   if(name==="calendar"){ setViewMonthFromKey(pageKey); renderCalendarTab(); }
   if(name==="goals"){ renderGoals(); renderPinnedNotes(); }
+  if(name==="practical"){ renderCountdowns(); }
 }
 
 var pendingImages = [];
@@ -2072,6 +2134,73 @@ async function stepGoalProgress(id, delta){
   renderGoals();
 }
 
+/* ---------- Practical tab: countdown ---------- */
+function daysBetweenKeys(fromKey, toKey){
+  var a = keyToParts(fromKey), b = keyToParts(toKey);
+  var ms = Date.UTC(b.gy,b.gm-1,b.gd) - Date.UTC(a.gy,a.gm-1,a.gd);
+  return Math.round(ms/86400000);
+}
+function computeCountdownRemaining(c){
+  var elapsed = daysBetweenKeys(c.startDate, todayKey);
+  var remaining = (c.totalDays||0) - elapsed;
+  if(remaining<0) remaining = 0;
+  return remaining;
+}
+function buildCountdownGoogleCalendarUrl(c){
+  var title = encodeURIComponent(c.title || "روزشمار");
+  var details = encodeURIComponent("روزشمار برنامه‌ریز: "+(c.title||"")+" ("+(c.totalDays||0)+" روزه)");
+  var datesParam = "";
+  if(c.reminder && c.reminder.date){
+    var d = c.reminder.date.replace(/-/g,"");
+    var tm = (c.reminder.time || "09:00").replace(":","")+"00";
+    datesParam = "&dates="+d+"T"+tm+"/"+d+"T"+tm;
+  }
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+title+"&details="+details+datesParam;
+}
+function renderCountdowns(){
+  if(countdownData.length===0){ el.countdownList.innerHTML = ""; return; }
+  el.countdownList.innerHTML = countdownData.map(function(c){
+    var remaining = computeCountdownRemaining(c);
+    var total = c.totalDays||1;
+    var pct = Math.max(0, Math.min(100, Math.round(((total-remaining)/total)*100)));
+    var done = remaining<=0;
+    var reminderHtml = "";
+    if(c.reminder && c.reminder.date){
+      reminderHtml = "<div class='cd-reminder-badge'>⏰ "+escapeHtml(c.reminder.date)+" - "+escapeHtml(c.reminder.time||"")+"</div>"+
+        "<a class='gcal-link' target='_blank' rel='noopener' href='"+buildCountdownGoogleCalendarUrl(c)+"'>افزودن به Google Calendar</a>";
+    }
+    return "<div class='cd-card "+(done?"done":"")+"' data-id='"+c.id+"'>"+
+      "<div class='cd-top'>"+
+        "<span class='cd-title'>"+escapeHtml(c.title||"")+"</span>"+
+        "<button class='cd-del' data-action='cd-delete' title='حذف'>✕</button>"+
+      "</div>"+
+      "<div class='cd-progress-row'>"+
+        "<div class='cd-progress-track'><div class='cd-progress-fill' style='width:"+pct+"%'></div></div>"+
+      "</div>"+
+      "<div class='cd-meta-row'>"+
+        "<span class='cd-sub'>از "+faDigits(total)+" روز</span>"+
+        "<span class='cd-days-left'>"+(done?"تموم شد 🎉":faDigits(remaining)+" روز مونده")+"</span>"+
+      "</div>"+
+      reminderHtml+
+    "</div>";
+  }).join("");
+
+  Array.prototype.forEach.call(el.countdownList.querySelectorAll("[data-action='cd-delete']"), function(b){
+    b.addEventListener("click", function(){ deleteCountdown(b.closest(".cd-card").getAttribute("data-id")); });
+  });
+}
+async function addCountdown(title, totalDays, reminder){
+  countdownData.unshift({ id:uid(), title:title, totalDays:totalDays, startDate:todayKey, createdAt:Date.now(), reminder:reminder||null });
+  await saveCountdowns();
+  renderCountdowns();
+  showToast("روزشمار اضافه شد");
+}
+async function deleteCountdown(id){
+  countdownData = countdownData.filter(function(x){ return x.id!==id; });
+  await saveCountdowns();
+  renderCountdowns();
+}
+
 /* ---------- Pinned notes ---------- */
 var pendingPinnedImages = [];
 var pendingPinnedType = "text";
@@ -2569,6 +2698,15 @@ async function checkAlarmsTick(){
       }
     });
     if(pinnedChanged){ await savePinnedNotes(); if(activeTab==="goals") renderPinnedNotes(); }
+
+    var cdChanged=false;
+    countdownData.forEach(function(c){
+      if(c.reminder && c.reminder.date && !c.reminder.fired && c.reminder.date===todayStr && (c.reminder.time||"09:00")===(hh+":"+mm)){
+        c.reminder.fired = true; cdChanged = true;
+        fireNotification("یادآوری روزشمار: "+(c.title||""), computeCountdownRemaining(c)+" روز مونده");
+      }
+    });
+    if(cdChanged){ await saveCountdowns(); if(activeTab==="practical") renderCountdowns(); }
   }
   await runCarryOverMigration();
 }
@@ -2603,7 +2741,7 @@ async function runCarryOverMigration(){
 }
 
 async function doBackup(){
-  var payload = { settings:settings, index:indexData, days:{}, goals:goalsData, pinnedNotes:pinnedNotesData, exportedAt:new Date().toISOString(), version:3 };
+  var payload = { settings:settings, index:indexData, days:{}, goals:goalsData, countdowns:countdownData, pinnedNotes:pinnedNotesData, exportedAt:new Date().toISOString(), version:3 };
   var keys = await storeListDayKeys();
   for(var i=0;i<keys.length;i++){ var v=await storeGet(keys[i]); if(v) payload.days[keys[i]]=v; }
   var blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -2627,12 +2765,14 @@ async function doRestore(file){
     await saveIndex();
     goalsData = payload.goals || [];
     await saveGoals();
+    countdownData = payload.countdowns || [];
+    await saveCountdowns();
     pinnedNotesData = payload.pinnedNotes || [];
     await savePinnedNotes();
     applyTheme(); syncSettingsUI(); applyTitles(); renderTitleEditList();
     initToToday();
     await loadAndRenderDay();
-    renderGoals(); renderPinnedNotes();
+    renderGoals(); renderPinnedNotes(); renderCountdowns();
     renderCalendarTab();
     showToast("بازیابی با موفقیت انجام شد");
   }catch(e){ console.error(e); showToast("فایل پشتیبان نامعتبر است"); }
@@ -2699,6 +2839,42 @@ function bindEvents(){
       if(v){ addGoal(v); el.newGoalTitle.value=""; }
     }
   });
+  function submitNewCountdown(){
+    var title = el.newCountdownTitle.value.trim();
+    var days = parseInt(el.newCountdownDays.value, 10);
+    if(!title){ showToast("عنوان روزشمار رو بنویس"); return; }
+    if(!days || days<1){ showToast("تعداد روز معتبر وارد کن"); return; }
+    var reminder = null;
+    if(el.cdReminderEnable.checked && el.cdReminderDate.value){
+      reminder = { date: el.cdReminderDate.value, time: el.cdReminderTime.value || "09:00", fired:false };
+    }
+    addCountdown(title, days, reminder);
+    el.newCountdownTitle.value = "";
+    el.newCountdownDays.value = "";
+    el.cdReminderEnable.checked = false;
+    el.cdReminderDate.hidden = true; el.cdReminderTime.hidden = true;
+    el.cdReminderDate.value = ""; el.cdReminderTime.value = "";
+  }
+  el.addCountdownBtn.addEventListener("click", submitNewCountdown);
+  el.newCountdownTitle.addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); el.newCountdownDays.focus(); } });
+  el.newCountdownDays.addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); submitNewCountdown(); } });
+  function updateCdReminderDefaultDate(){
+    if(!el.cdReminderEnable.checked) return;
+    var days = parseInt(el.newCountdownDays.value, 10);
+    if(!days || days<1) return;
+    el.cdReminderDate.value = addDaysToKey(todayKey, days);
+  }
+  el.cdReminderEnable.addEventListener("change", function(){
+    var on = el.cdReminderEnable.checked;
+    el.cdReminderDate.hidden = !on; el.cdReminderTime.hidden = !on;
+    if(on){
+      var days = parseInt(el.newCountdownDays.value, 10);
+      el.cdReminderDate.value = addDaysToKey(todayKey, (days && days>=1) ? days : 0);
+      if(!el.cdReminderTime.value) el.cdReminderTime.value = "09:00";
+    }
+  });
+  el.newCountdownDays.addEventListener("input", updateCdReminderDefaultDate);
+
   el.addPinnedBtn.addEventListener("click", addPinnedNote);
   el.newPinnedImage.addEventListener("change", function(e){ handlePinnedImageInput(e.target.files); e.target.value=""; });
   el.cancelPinnedEditBtn.addEventListener("click", function(){ resetPinnedForm(); renderPinnedNotes(); });
@@ -2871,6 +3047,7 @@ async function boot(){
   await runCarryOverMigration();
   await loadAndRenderDay();
   await loadGoals();
+  await loadCountdowns();
   await loadPinnedNotes();
   syncSettingsUI();
   setInterval(checkAlarmsTick, 20000);
