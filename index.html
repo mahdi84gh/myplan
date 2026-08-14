@@ -2822,9 +2822,23 @@ async function renderFinReport(){
 }
 
 /* ---------- Finance report: charts ---------- */
+function chartAvailWidth(wrapEl){
+  if(!wrapEl || !wrapEl.parentElement) return 0;
+  var w = wrapEl.parentElement.clientWidth;
+  return w>0 ? Math.max(w-4,0) : 0;
+}
+var chartResizeTimer = null;
+window.addEventListener("resize", function(){
+  clearTimeout(chartResizeTimer);
+  chartResizeTimer = setTimeout(function(){
+    if(activeTab==="finance" && finActiveSubtab==="report"){
+      renderFinDailyChart(finReportView.jy, finReportView.jm);
+      renderFinYearChart(finReportView.jy);
+    }
+  }, 200);
+});
 function chartBuildBars(categories, seriesList, opts){
   opts = opts || {};
-  var slot = opts.slot || 34;
   var barGap = opts.barGap || 2;
   var groupPad = opts.groupPad || 6;
   var chartH = opts.chartH || 120;
@@ -2832,7 +2846,15 @@ function chartBuildBars(categories, seriesList, opts){
   var topPad = 10;
   var n = categories.length;
   var nSeries = seriesList.length;
-  var barW = Math.max(3, (slot - groupPad - (nSeries-1)*barGap) / nSeries);
+  var minSlot = opts.slot || 34;
+  var floorSlot = opts.floorSlot || 10;
+  // اگر عرض واقعی محفظه در گوشی مشخص باشد، عرض هر میله را طوری تنظیم کن که
+  // همهٔ میله‌ها بدون نیاز به اسکرول افقی در همان عرض جا شوند (خودکار تنظیم می‌شود)
+  var slot = minSlot;
+  if(opts.availWidth && opts.availWidth>0 && n>0){
+    slot = Math.max(opts.availWidth / n, floorSlot);
+  }
+  var barW = Math.max(2, (slot - groupPad - (nSeries-1)*barGap) / nSeries);
   var width = Math.max(n*slot, opts.minWidth||0);
   var totalH = chartH + labelH + topPad;
 
@@ -2920,7 +2942,8 @@ function renderFinDailyChart(jy, jm){
   var seriesList = [
     {name:"درآمد", color:"var(--green)", values:incomeVals}
   ];
-  var opts = {slot:30, chartH:120, fullLabels:fullLabels};
+  var availWidth = chartAvailWidth(el.finDailyChartWrap);
+  var opts = {slot:30, chartH:120, fullLabels:fullLabels, availWidth:availWidth, floorSlot:9};
   var svgHtml = chartBuildBars(dayLabels, seriesList, opts);
   el.finDailyChartWrap.innerHTML = svgHtml;
   chartAttachTooltip(el.finDailyChartWrap, el.finDailyChartTip, dayLabels, seriesList, opts);
@@ -2934,7 +2957,8 @@ function renderFinYearChart(jy){
   }
   el.finChartYearTitle.textContent = "نمودار درآمد ماه‌های سال "+faDigits(jy);
   var seriesList = [{name:"درآمد", color:"var(--green)", values:incomeVals}];
-  var opts = {slot:56, chartH:120, fullLabels: JMONTHS.map(function(mn){ return mn+" "+faDigits(jy); })};
+  var availWidth = chartAvailWidth(el.finYearChartWrap);
+  var opts = {slot:56, chartH:120, fullLabels: JMONTHS.map(function(mn){ return mn+" "+faDigits(jy); }), availWidth:availWidth, floorSlot:22};
   var svgHtml = chartBuildBars(monthLabels, seriesList, opts);
   el.finYearChartWrap.innerHTML = svgHtml;
   chartAttachTooltip(el.finYearChartWrap, el.finYearChartTip, monthLabels, seriesList, opts);
