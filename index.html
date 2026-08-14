@@ -423,64 +423,73 @@
 
   /* ---------- Debts & claims ---------- */
   .debt-toggle-row{display:flex; align-items:center; justify-content:space-between; margin:6px 2px 16px; font-size:12px; color:var(--ink-soft);}
-  .debt-section-list{display:flex; flex-direction:column; gap:9px; margin-bottom:10px;}
+  .debt-section-list{display:flex; flex-direction:column; gap:10px; margin-bottom:10px;}
   .debt-item{
-    display:flex; align-items:flex-start; gap:9px; padding:11px 12px; border-radius:14px;
+    display:flex; align-items:flex-start; gap:10px; padding:13px 14px; border-radius:15px;
     border:1px solid var(--paper-line); background:var(--paper-deep); position:relative; overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.03);
   }
   .debt-item::before{content:""; position:absolute; top:0; bottom:0; right:0; width:4px; background:var(--green);}
   .debt-item.debt-type-debt::before{background:var(--red);}
   .debt-item.done{opacity:.55;}
   .debt-item.done .debt-person, .debt-item.done .debt-note{text-decoration:line-through;}
   .debt-num{
-    font-family:var(--font-ui); font-size:12px; font-weight:800; color:var(--blue-deep); width:20px; flex:none;
-    text-align:center; background:var(--paper); border-radius:7px; padding:3px 0; margin-top:2px;
+    font-family:var(--font-ui); font-size:11px; font-weight:800; color:var(--ink-faint); width:18px; flex:none;
+    text-align:center; margin-top:4px;
   }
   .debt-check{
-    width:21px; height:21px; border-radius:7px; border:2px solid var(--green); flex:none; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; background:var(--paper); color:#fff; font-size:12px; font-weight:800; margin-top:1px;
+    width:22px; height:22px; border-radius:7px; border:2px solid var(--green); flex:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; background:var(--paper); color:#fff; font-size:12px; font-weight:800; margin-top:2px;
   }
   .debt-item.debt-type-debt .debt-check{border-color:var(--red);}
   .debt-check.done{background:var(--green); border-color:var(--green);}
   .debt-item.debt-type-debt .debt-check.done{background:var(--red); border-color:var(--red);}
-  .debt-body{flex:1; min-width:0;}
-  .debt-top-row{display:flex; align-items:center; gap:8px;}
+  .debt-body{flex:1; min-width:0; display:flex; flex-direction:column; gap:6px;}
+  .debt-top-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .debt-person{
-    font-family:var(--font-ui); font-weight:800; font-size:13.5px; color:var(--ink); border:none;
-    background:transparent; flex:1; min-width:60px; padding:2px 0;
+    font-family:var(--font-ui); font-weight:800; font-size:14px; color:var(--ink); border:none;
+    background:transparent; flex:1; min-width:0; padding:3px 2px; border-radius:6px;
   }
-  .debt-person:focus{outline:none;}
+  .debt-person:focus{outline:none; background:var(--paper);}
   .debt-person::placeholder{color:var(--ink-faint); font-weight:400;}
+  .debt-amount-badge{
+    flex:none; display:flex; align-items:center; background:var(--green-tint); border-radius:9px; padding:1px 4px 1px 2px;
+  }
+  .debt-item.debt-type-debt .debt-amount-badge{background:var(--red-tint);}
   .debt-amount{
-    font-family:var(--font-ui); font-weight:800; font-size:12.5px; color:var(--green); border:none;
-    background:transparent; text-align:left; width:100px; flex:none; padding:2px 0;
+    font-family:var(--font-ui); font-weight:800; font-size:12px; color:var(--green); border:none;
+    background:transparent; text-align:left; width:68px; flex:none; padding:4px 2px; direction:ltr;
   }
   .debt-item.debt-type-debt .debt-amount{color:var(--red);}
   .debt-amount:focus{outline:none;}
   .debt-amount::placeholder{color:var(--ink-faint); font-weight:400;}
+  .debt-amount-unit{font-size:9.5px; font-weight:700; color:var(--ink-faint); flex:none; padding-left:3px;}
   .debt-note{
-    width:100%; border:none; background:transparent; font-size:12.5px; color:var(--ink-soft);
-    padding:3px 0; font-family:var(--font-ui); display:block;
+    width:100%; border:none; background:transparent; font-size:12.5px; line-height:1.65; color:var(--ink-soft);
+    padding:2px; font-family:var(--font-ui); display:block; resize:none; overflow:hidden; min-height:20px;
+    white-space:pre-wrap; word-break:break-word; border-radius:6px;
   }
-  .debt-note:focus{outline:none;}
+  .debt-note:focus{outline:none; background:var(--paper);}
   .debt-note::placeholder{color:var(--ink-faint);}
-  .debt-meta-row{display:flex; align-items:center; gap:8px; margin-top:5px; flex-wrap:wrap;}
+  .debt-meta-row{display:flex; align-items:center; justify-content:flex-start; gap:6px; margin-top:2px; flex-wrap:wrap;}
+  .debt-meta-row .debt-date-input.jdate-trigger{width:auto !important; flex:none; display:inline-flex;}
+  .debt-meta-row .debt-amount-badge{flex:none;}
   .debt-date-input{
     font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); border:1px dashed var(--paper-line);
-    background:var(--paper); border-radius:8px; padding:3px 7px;
+    background:var(--paper); border-radius:8px; padding:4px 8px;
   }
-  .debt-settled-tag{font-size:10px; color:var(--green); font-weight:700;}
-  .debt-item.debt-type-debt .debt-settled-tag{color:var(--red);}
-  .debt-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:14px; flex:none; padding:2px; margin-top:2px;}
-  .debt-del:hover{color:var(--red);}
+  .debt-settled-tag{font-size:10.5px; color:var(--green); font-weight:700; background:var(--green-tint); border-radius:7px; padding:3px 8px;}
+  .debt-item.debt-type-debt .debt-settled-tag{color:var(--red); background:var(--red-tint);}
+  .debt-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:14px; flex:none; padding:4px; margin-top:1px; border-radius:6px;}
+  .debt-del:hover{color:var(--red); background:var(--red-tint);}
   .kind-select{
     font-family:var(--font-ui); font-size:12.5px; font-weight:700; color:var(--ink); background:var(--paper);
     border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; cursor:pointer;
   }
   .kind-select:focus{outline:none; border-color:var(--blue);}
   .debt-kind-tag{
-    font-size:10px; font-weight:700; color:var(--ink-soft); background:var(--paper-deep);
-    border-radius:6px; padding:2px 7px; flex:none;
+    font-size:10.5px; font-weight:700; color:var(--ink-soft); background:var(--paper); border:1px solid var(--paper-line);
+    border-radius:7px; padding:3px 9px; flex:none;
   }
   .report-empty{font-size:12px; color:var(--ink-faint); text-align:center; padding:14px 0;}
   #finReportIncomeList, #finReportExpenseList{display:flex; flex-direction:column; gap:7px; margin-bottom:8px;}
@@ -3413,7 +3422,10 @@ function renderDebtLedgerList(containerEl, list, type){
     var typeClass = type==="debt" ? " debt-type-debt" : "";
     var isNonFin = it.kind==="nonfinancial";
     var amountInputHtml = isNonFin ? "" :
-      "<input type='text' inputmode='decimal' class='debt-amount' data-action='debt-amount' data-type='"+type+"' data-id='"+it.id+"' value='"+(it.amount?groupThousandsPlain(String(Math.round(it.amount))):"")+"' placeholder='مبلغ'>";
+      "<span class='debt-amount-badge'>"+
+        "<input type='text' inputmode='decimal' class='debt-amount' data-action='debt-amount' data-type='"+type+"' data-id='"+it.id+"' value='"+(it.amount?groupThousandsPlain(String(Math.round(it.amount))):"")+"' placeholder='مبلغ'>"+
+        (it.amount ? "<span class='debt-amount-unit'>تومان</span>" : "")+
+      "</span>";
     var kindTagHtml = isNonFin ? "<span class='debt-kind-tag'>غیر مالی</span>" : "";
     return "<div class='debt-item"+typeClass+(it.done?" done":"")+"' data-id='"+it.id+"'>"+
       "<span class='debt-num'>"+faDigits(idx+1)+"</span>"+
@@ -3421,11 +3433,12 @@ function renderDebtLedgerList(containerEl, list, type){
       "<div class='debt-body'>"+
         "<div class='debt-top-row'>"+
           "<input type='text' class='debt-person' data-action='debt-field' data-field='person' data-type='"+type+"' data-id='"+it.id+"' value='"+escapeAttr(it.person||"")+"' placeholder='اسم شخص'>"+
-          kindTagHtml+amountInputHtml+
+          kindTagHtml+
         "</div>"+
-        "<input type='text' class='debt-note' data-action='debt-field' data-field='note' data-type='"+type+"' data-id='"+it.id+"' value='"+escapeAttr(it.note||"")+"' placeholder='توضیح (اختیاری)'>"+
+        "<textarea class='debt-note' rows='1' data-action='debt-field' data-field='note' data-type='"+type+"' data-id='"+it.id+"' placeholder='توضیح (اختیاری)'>"+escapeHtml(it.note||"")+"</textarea>"+
         "<div class='debt-meta-row'>"+
           "<button type='button' class='jdate-trigger"+(it.date?"":" empty")+" debt-date-input' data-action='debt-date' data-type='"+type+"' data-id='"+it.id+"' data-value='"+(it.date||"")+"' style='width:auto; padding:5px 12px; font-size:11px;'>"+(it.date?fmtDebtDate(it.date):"تاریخ")+"</button>"+
+          amountInputHtml+
           (it.done ? "<span class='debt-settled-tag'>✓ تسویه شد</span>" : "")+
         "</div>"+
       "</div>"+
@@ -3433,6 +3446,11 @@ function renderDebtLedgerList(containerEl, list, type){
     "</div>";
   }).join("");
   bindDebtItemEvents(containerEl);
+  Array.prototype.forEach.call(containerEl.querySelectorAll(".debt-note"), autosizeDebtNote);
+}
+function autosizeDebtNote(ta){
+  ta.style.height = "auto";
+  ta.style.height = ta.scrollHeight + "px";
 }
 function bindDebtItemEvents(containerEl){
   Array.prototype.forEach.call(containerEl.querySelectorAll("[data-action='debt-toggle']"), function(b){
@@ -3443,6 +3461,7 @@ function bindDebtItemEvents(containerEl){
   });
   Array.prototype.forEach.call(containerEl.querySelectorAll("[data-action='debt-field']"), function(inp){
     inp.addEventListener("input", function(){
+      if(inp.tagName==="TEXTAREA") autosizeDebtNote(inp);
       debounceSaveDebtField(inp.getAttribute("data-type"), inp.getAttribute("data-id"), inp.getAttribute("data-field"), inp.value);
     });
   });
