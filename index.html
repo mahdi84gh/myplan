@@ -234,6 +234,10 @@
   .divider .lbl{font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:7px;}
   .divider .lbl .icon-badge{width:24px; height:24px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex:none;}
 
+  .soft-divider{display:flex; align-items:center; gap:10px; margin:22px 0 4px;}
+  .soft-divider .sd-line{flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--paper-line) 20%, var(--paper-line) 80%, transparent);}
+  .soft-divider .sd-dot{width:5px; height:5px; border-radius:50%; background:var(--gold); flex:none; opacity:.75;}
+
   .carry-banner{
     display:flex; align-items:center; gap:10px; background:var(--gold-tint); border:1px solid var(--gold);
     border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:12.5px; color:var(--ink-soft);
@@ -1195,6 +1199,8 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         </button>
       </div>
+
+      <div class="soft-divider"><span class="sd-line"></span><span class="sd-dot"></span><span class="sd-line"></span></div>
 
       <div class="lined-box">
         <div class="lined-box-label"><span class="tl-icon">✨</span><span class="tl-text" data-title-key="happened">اتفاقات امروز</span></div>
