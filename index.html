@@ -164,10 +164,15 @@
     display:flex; align-items:center; justify-content:center; gap:6px; transition:.15s; position:relative; top:2px;
     white-space:nowrap;
   }
-  .tab .dot{width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.55; flex:none;}
+  .tab .dot{width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.55; flex:none; --ring:var(--blue-tint); --dot-color:var(--blue);}
   .tab.active{background:var(--paper); color:var(--ink); box-shadow:0 -3px 10px rgba(0,0,0,.05);}
-  .tab.active .dot{background:var(--blue); opacity:1; box-shadow:0 0 0 3px var(--blue-tint);}
-  .tab[data-tab="calendar"].active .dot{background:var(--gold); box-shadow:0 0 0 3px var(--gold-tint);}
+  .tab.active .dot{background:var(--dot-color); opacity:1; box-shadow:0 0 0 3px var(--ring); animation:dotPulse 1.8s ease-in-out infinite;}
+  .tab[data-tab="calendar"].active .dot{--ring:var(--gold-tint); --dot-color:var(--gold);}
+  .tab[data-tab="finance"].active .dot{--ring:var(--green-tint); --dot-color:var(--green);}
+  @keyframes dotPulse{
+    0%,100%{ box-shadow:0 0 0 3px var(--ring), 0 0 0 0 var(--dot-color); }
+    50%{ box-shadow:0 0 0 3px var(--ring), 0 0 9px 3px var(--dot-color); }
+  }
   .tab:hover:not(.active){color:var(--ink-soft);}
   .tab:focus-visible{outline:2px solid var(--blue); outline-offset:-2px;}
   @media(max-width:560px){
@@ -345,17 +350,110 @@
   .cd-top{display:flex; align-items:center; gap:9px;}
   .cd-title{flex:1; font-family:var(--font-ui); font-weight:700; font-size:13.5px; color:var(--ink);}
   .cd-card.done .cd-title{text-decoration:line-through; color:var(--ink-faint);}
+  #newCountdownDays::placeholder{color:var(--ink-faint); font-weight:400;}
   .cd-del{background:none; border:none; cursor:pointer; color:var(--ink-faint); font-size:15px; flex:none; padding:2px;}
   .cd-del:hover{color:var(--red);}
   .cd-progress-row{display:flex; align-items:center; gap:8px; margin-top:11px;}
   .cd-progress-track{flex:1; height:8px; border-radius:20px; background:var(--paper-line); overflow:hidden;}
   .cd-progress-fill{height:100%; background:linear-gradient(90deg, var(--blue), var(--gold)); border-radius:20px; transition:width .3s ease;}
   .cd-meta-row{display:flex; align-items:center; justify-content:space-between; gap:7px; margin-top:9px;}
-  .cd-days-left{font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--blue-deep);}
+  .cd-days-left{font-family:var(--font-ui); font-weight:700; font-size:14.5px; color:var(--blue-deep);}
   .cd-card.done .cd-days-left{color:var(--green);}
   .cd-sub{font-size:11px; color:var(--ink-faint);}
   .cd-reminder-badge{ display:inline-flex; align-items:center; gap:3px; font-size:11px; background:var(--blue-tint); color:var(--blue-deep); border-radius:7px; padding:2px 7px; margin-top:8px; }
   .cd-card .gcal-link{ font-size:11px; color:var(--blue-deep); text-decoration:none; background:var(--blue-tint); border-radius:7px; padding:3px 8px; display:inline-block; margin-top:6px; margin-inline-start:6px; border-bottom:none; }
+
+  /* ---------- Practical tab: income ---------- */
+  .income-banner{margin:24px 0 4px; padding:6px 10px;}
+  .income-daynav{display:flex; align-items:center; justify-content:center; gap:14px; margin:4px 0 14px;}
+  .income-day-label{
+    font-family:var(--font-head); font-size:14.5px; font-weight:700; color:var(--ink); min-width:80px; text-align:center;
+    cursor:pointer; display:flex; align-items:center; gap:5px; padding:4px 10px; border-radius:20px; transition:.15s;
+  }
+  .income-day-label:hover{background:var(--paper-deep); color:var(--turquoise-deep);}
+  .income-day-label svg{flex:none; opacity:.6;}
+  .income-stats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px;}
+  .income-stats.cols-2{grid-template-columns:1fr 1fr;}
+  .income-stat-box{
+    background:var(--paper-deep); border:1px solid var(--paper-line); border-radius:12px;
+    padding:10px 6px; text-align:center;
+  }
+  .income-stat-box.highlight{background:linear-gradient(135deg, var(--green-tint), var(--gold-tint)); border-color:var(--green);}
+  .income-stat-label{font-size:10.5px; color:var(--ink-faint); font-weight:700; margin-bottom:5px;}
+  .income-stat-value{font-family:var(--font-ui); font-size:13.5px; font-weight:800; color:var(--green); word-break:break-word;}
+  .income-stat-box.highlight .income-stat-value{color:var(--blue-deep);}
+  #incomeList{display:flex; flex-direction:column; gap:7px; margin-bottom:8px;}
+  .income-item{
+    display:flex; align-items:center; gap:8px; padding:9px 11px; border-radius:11px;
+    border:1px solid var(--paper-line); background:var(--paper-deep);
+  }
+  .income-amount{font-family:var(--font-ui); font-weight:800; font-size:13px; color:var(--green); flex:none;}
+  .income-note{flex:1; min-width:0; font-size:12.5px; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .income-hint{font-size:11px; color:var(--ink-faint); line-height:1.8; margin-bottom:6px;}
+
+  /* ---------- Finance tab: balance hero + expenses ---------- */
+  .balance-hero{
+    background:linear-gradient(135deg, var(--green-tint), var(--gold-tint)); border:1px solid var(--green);
+    border-radius:14px; padding:16px; text-align:center; margin:10px 0 14px;
+  }
+  .balance-hero-label{font-size:11.5px; color:var(--ink-soft); font-weight:700; margin-bottom:4px;}
+  .balance-hero-value{font-family:var(--font-ui); font-size:27px; font-weight:800; color:var(--blue-deep); word-break:break-word;}
+  #expenseList{display:flex; flex-direction:column; gap:7px; margin-bottom:8px;}
+  .expense-item{
+    display:flex; align-items:center; gap:8px; padding:9px 11px; border-radius:11px;
+    border:1px solid var(--paper-line); background:var(--paper-deep);
+  }
+  .expense-amount{font-family:var(--font-ui); font-weight:800; font-size:13px; color:var(--red); flex:none;}
+  .expense-chip-row{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;}
+  .expense-chip{
+    font-family:var(--font-ui); font-size:11.5px; padding:6px 12px; border-radius:20px;
+    border:1px solid var(--paper-line); background:var(--paper-deep); color:var(--ink-soft); cursor:pointer; transition:.15s;
+  }
+  .expense-chip:hover, .expense-chip.active{border-color:var(--red); color:var(--red); background:var(--red-tint);}
+  .fin-daynav-wrap{margin-top:18px;}
+
+  /* ---------- Finance tab: report sub-view ---------- */
+  .fin-subtabs{margin:14px 0 16px;}
+  .fin-report-daylabel{min-width:150px;}
+  #finReportView .divider{margin-top:18px;}
+  .report-empty{font-size:12px; color:var(--ink-faint); text-align:center; padding:14px 0;}
+  #finReportIncomeList, #finReportExpenseList{display:flex; flex-direction:column; gap:7px; margin-bottom:8px;}
+  .report-item{
+    display:flex; align-items:center; gap:8px; padding:9px 11px; border-radius:11px;
+    border:1px solid var(--paper-line); background:var(--paper-deep); cursor:pointer; transition:.15s;
+  }
+  .report-item:hover{border-color:var(--blue); background:var(--blue-tint);}
+  .report-item .report-date{
+    font-family:var(--font-ui); font-size:11px; font-weight:800; color:var(--ink-soft);
+    background:var(--paper); border-radius:7px; padding:5px 7px; flex:none; text-align:center; line-height:1.3;
+  }
+  .report-item .report-note{flex:1; min-width:0; font-size:12.5px; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .report-item .report-amount{font-family:var(--font-ui); font-weight:800; font-size:13px; flex:none;}
+  .report-item.report-income .report-amount{color:var(--green);}
+  .report-item.report-expense .report-amount{color:var(--red);}
+
+  /* ---------- Finance report: charts ---------- */
+  .chart-card{
+    background:var(--paper-deep); border:1px solid var(--paper-line); border-radius:14px;
+    padding:14px 12px 10px; margin-bottom:14px; position:relative;
+  }
+  .chart-card-head{font-family:var(--font-ui); font-size:12.5px; font-weight:800; color:var(--ink); margin-bottom:8px; text-align:center;}
+  .chart-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .chart-wrap{position:relative; direction:ltr; margin:0 auto;}
+  .chart-wrap svg{display:block;}
+  .chart-bar{cursor:pointer; transition:opacity .12s;}
+  .chart-bar:hover, .chart-bar.hover-active{opacity:.72;}
+  .chart-tooltip{
+    position:absolute; pointer-events:none; background:var(--ink); color:var(--paper);
+    font-family:var(--font-ui); font-size:11px; font-weight:700; padding:5px 9px; border-radius:8px;
+    white-space:nowrap; transform:translate(-50%,-100%); margin-top:-8px; z-index:6; box-shadow:var(--shadow-sm);
+    opacity:0; transition:opacity .12s; direction:rtl; top:0; left:0;
+  }
+  .chart-tooltip.show{opacity:1;}
+  .chart-legend{display:flex; gap:16px; justify-content:center; margin-top:10px; font-size:11px; color:var(--ink-soft); font-weight:600;}
+  .legend-dot{width:9px; height:9px; border-radius:3px; display:inline-block; margin-inline-end:5px; vertical-align:middle;}
+  .legend-income{background:var(--green);}
+  .legend-expense{background:var(--red);}
   .goal-deadline{
     font-size:11.5px; color:var(--ink-soft); font-family:var(--font-mono); border:none; background:transparent; flex:1; padding:0;
   }
@@ -368,12 +466,17 @@
     border:1px solid var(--paper-line); background:var(--paper-deep);
   }
   .shop-item.done{background:var(--green-tint); border-color:var(--green);}
+  .shop-num{
+    font-family:var(--font-ui); font-size:12.5px; font-weight:800; color:var(--blue-deep);
+    width:20px; flex:none; text-align:center; background:var(--paper); border-radius:7px; padding:3px 0;
+  }
+  .shop-item.done .shop-num{color:var(--green);}
   .shop-check{
     width:19px; height:19px; border-radius:6px; border:2px solid var(--blue); flex:none; cursor:pointer;
     display:flex; align-items:center; justify-content:center; background:var(--paper); color:#fff; font-size:11px; font-weight:800;
   }
   .shop-check.done{background:var(--green); border-color:var(--green);}
-  .shop-text{flex:1; font-size:13px; color:var(--ink); border:none; background:transparent; font-family:var(--font-ui);}
+  .shop-text{flex:1; min-width:0; font-size:13px; color:var(--ink); border:none; background:transparent; font-family:var(--font-ui);}
   .shop-text:focus{outline:none;}
   .shop-text.done{text-decoration:line-through; color:var(--ink-faint);}
   .shop-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:15px; flex:none; padding:2px;}
@@ -801,6 +904,7 @@
       <button class="tab" data-tab="goals"><span class="dot"></span>اهداف</button>
       <button class="tab" data-tab="calendar"><span class="dot"></span>تقویم</button>
       <button class="tab" data-tab="practical"><span class="dot"></span>کاربردی</button>
+      <button class="tab" data-tab="finance"><span class="dot"></span>مالی</button>
     </div>
 
     <div class="page" id="pageToday">
@@ -1095,7 +1199,7 @@
       <div class="add-row-line" style="flex-direction:column; align-items:stretch; gap:8px;">
         <input type="text" class="lined-input" id="newCountdownTitle" placeholder="عنوان روزشمار (مثلاً: تا امتحان، تا سفر…)" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
         <div style="display:flex; gap:8px; align-items:center;">
-          <input type="number" min="1" id="newCountdownDays" placeholder="تعداد روز" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; font-family:var(--font-mono); text-align:center;">
+          <input type="number" min="1" id="newCountdownDays" placeholder="تعداد روز" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; font-family:var(--font-ui); font-weight:700; text-align:center;">
           <button class="btn primary" id="addCountdownBtn" style="flex:none;">افزودن</button>
         </div>
         <div class="pinned-reminder-row" style="margin:2px 0 0;">
@@ -1105,6 +1209,213 @@
           </label>
           <input type="date" id="cdReminderDate" class="pinned-reminder-input" hidden>
           <input type="time" id="cdReminderTime" class="pinned-reminder-input" hidden>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FINANCE PAGE ===== -->
+    <div class="page" id="pageFinance" hidden>
+      <div class="divider" style="margin-top:2px;">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--green-tint);">💰</span>
+          <span class="tl-text" data-title-key="financeTitle">مالی</span>
+        </span>
+        <span class="line"></span>
+      </div>
+
+      <div class="segmented fin-subtabs" id="finSubtabSeg">
+        <button type="button" data-fintab="daily" class="active">روزانه</button>
+        <button type="button" data-fintab="report">گزارش</button>
+      </div>
+
+      <div id="finDailyView">
+      <div class="income-banner" aria-hidden="true">
+        <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-height:82px; display:block;">
+          <circle cx="20" cy="18" r="3" fill="var(--gold)"/>
+          <circle cx="300" cy="20" r="3.5" fill="var(--gold)"/>
+          <circle cx="292" cy="36" r="2.5" fill="var(--green)"/>
+          <rect x="34" y="26" width="92" height="54" rx="13" fill="var(--green)"/>
+          <rect x="34" y="26" width="92" height="19" rx="9" fill="var(--blue-deep)" opacity=".22"/>
+          <circle cx="108" cy="53" r="9" fill="var(--gold)"/>
+          <ellipse cx="172" cy="76" rx="23" ry="7" fill="var(--gold-tint)"/>
+          <ellipse cx="172" cy="67" rx="23" ry="7" fill="var(--gold)"/>
+          <ellipse cx="172" cy="58" rx="23" ry="7" fill="var(--gold-tint)"/>
+          <ellipse cx="172" cy="49" rx="23" ry="7" fill="var(--gold)"/>
+          <text x="172" y="53" font-size="11" text-anchor="middle" fill="var(--paper)" font-weight="700" font-family="Vazirmatn">﷼</text>
+          <path d="M212 66 L230 47 L244 57 L268 24" stroke="var(--green)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M254 24 L268 24 L268 38" stroke="var(--green)" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="balance-hero">
+        <div class="balance-hero-label">موجودی کل</div>
+        <div class="balance-hero-value" id="finBalanceTotal">۰</div>
+      </div>
+
+      <div class="income-stats cols-2">
+        <div class="income-stat-box">
+          <div class="income-stat-label">درآمد امروز</div>
+          <div class="income-stat-value" id="finDayIncome">۰</div>
+        </div>
+        <div class="income-stat-box">
+          <div class="income-stat-label">هزینهٔ امروز</div>
+          <div class="income-stat-value" id="finDayExpense" style="color:var(--red);">۰</div>
+        </div>
+      </div>
+      <div class="income-stats">
+        <div class="income-stat-box">
+          <div class="income-stat-label">درآمد این ماه</div>
+          <div class="income-stat-value" id="finMonthIncome">۰</div>
+        </div>
+        <div class="income-stat-box">
+          <div class="income-stat-label">هزینهٔ این ماه</div>
+          <div class="income-stat-value" id="finMonthExpense" style="color:var(--red);">۰</div>
+        </div>
+        <div class="income-stat-box highlight">
+          <div class="income-stat-label">خالص این ماه</div>
+          <div class="income-stat-value" id="finMonthNet">۰</div>
+        </div>
+      </div>
+
+      <div class="income-daynav fin-daynav-wrap">
+        <button class="flip-btn" id="finPrevDay" aria-label="روز قبل">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+        </button>
+        <div class="income-day-label" id="finDayLabel" role="button" tabindex="0" title="باز کردن تقویم برای انتخاب هر تاریخی">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span id="finDayLabelText">امروز</span>
+        </div>
+        <button class="flip-btn" id="finNextDay" aria-label="روز بعد">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="divider">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--green-tint);">💵</span>
+          <span class="tl-text" data-title-key="incomeTitle">درآمد</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <div id="incomeList"></div>
+      <div class="add-row-line" style="flex-direction:column; align-items:stretch; gap:8px;">
+        <div style="display:flex; gap:8px;">
+          <input type="text" inputmode="decimal" id="newIncomeAmount" placeholder="مبلغ (تومان)" class="lined-input" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; font-weight:700; text-align:center;">
+          <input type="text" id="newIncomeNote" placeholder="بابت چی؟ (اختیاری)" class="lined-input" style="flex:1.4; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+        </div>
+        <button class="btn primary" id="addIncomeBtn">افزودن درآمد</button>
+      </div>
+
+      <div class="divider">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--red-tint);">💸</span>
+          <span class="tl-text" data-title-key="expenseTitle">هزینه‌ها</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <div class="expense-chip-row" id="expenseChipRow">
+        <button type="button" class="expense-chip" data-val="غذا">🍔 غذا</button>
+        <button type="button" class="expense-chip" data-val="حمل‌ونقل">🚕 حمل‌ونقل</button>
+        <button type="button" class="expense-chip" data-val="خرید">🛍 خرید</button>
+        <button type="button" class="expense-chip" data-val="قبض">🧾 قبض</button>
+        <button type="button" class="expense-chip" data-val="سلامت">💊 سلامت</button>
+        <button type="button" class="expense-chip" data-val="تفریح">🎬 تفریح</button>
+        <button type="button" class="expense-chip" data-val="سایر">🔖 سایر</button>
+      </div>
+      <div id="expenseList"></div>
+      <div class="add-row-line" style="flex-direction:column; align-items:stretch; gap:8px;">
+        <div style="display:flex; gap:8px;">
+          <input type="text" inputmode="decimal" id="newExpenseAmount" placeholder="مبلغ (تومان)" class="lined-input" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; font-weight:700; text-align:center;">
+          <input type="text" id="newExpenseNote" placeholder="بابت چی؟ (اختیاری)" class="lined-input" style="flex:1.4; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+        </div>
+        <button class="btn primary" id="addExpenseBtn" style="background:var(--red); border-color:var(--red);">افزودن هزینه</button>
+      </div>
+
+      <div class="section-label" style="margin-top:18px;">موجودی اولیهٔ حساب (اختیاری)</div>
+      <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+        <input type="text" inputmode="decimal" id="startingBalanceInput" placeholder="مثلاً ۵۰۰۰۰۰۰" class="lined-input" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; font-weight:700; text-align:center;">
+        <button class="btn" id="saveStartingBalanceBtn" style="flex:none;">ثبت</button>
+      </div>
+      <div class="income-hint">موجودی کل = موجودی اولیه + مجموع همهٔ درآمدها − مجموع همهٔ هزینه‌ها.</div>
+      </div>
+
+      <div id="finReportView" hidden>
+        <div class="income-daynav">
+          <button class="flip-btn" id="finReportPrevMonth" aria-label="ماه قبل">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <div class="income-day-label fin-report-daylabel" id="finReportMonthLabel">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            <span id="finReportMonthLabelText">این ماه</span>
+          </div>
+          <button class="flip-btn" id="finReportNextMonth" aria-label="ماه بعد">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <div class="income-stats">
+          <div class="income-stat-box">
+            <div class="income-stat-label">مجموع درآمد</div>
+            <div class="income-stat-value" id="finReportIncomeTotal">۰</div>
+          </div>
+          <div class="income-stat-box">
+            <div class="income-stat-label">مجموع هزینه</div>
+            <div class="income-stat-value" id="finReportExpenseTotal" style="color:var(--red);">۰</div>
+          </div>
+          <div class="income-stat-box highlight">
+            <div class="income-stat-label">خالص ماه</div>
+            <div class="income-stat-value" id="finReportNet">۰</div>
+          </div>
+        </div>
+
+        <div class="divider">
+          <span class="lbl">
+            <span class="icon-badge" style="background:var(--green-tint);">💵</span>
+            <span>درآمدهای این ماه</span>
+          </span>
+          <span class="line"></span>
+        </div>
+        <div id="finReportIncomeList"></div>
+
+        <div class="divider">
+          <span class="lbl">
+            <span class="icon-badge" style="background:var(--red-tint);">💸</span>
+            <span>هزینه‌های این ماه</span>
+          </span>
+          <span class="line"></span>
+        </div>
+        <div id="finReportExpenseList"></div>
+
+        <div class="income-hint">با زدن روی هر ردیف، همان روز در بخش «روزانه» باز می‌شود.</div>
+
+        <div class="divider" style="margin-top:22px;">
+          <span class="lbl">
+            <span class="icon-badge" style="background:var(--gold-tint);">📊</span>
+            <span>نمودار</span>
+          </span>
+          <span class="line"></span>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-head" id="finChartMonthTitle">نمودار روزانهٔ ماه</div>
+          <div class="chart-scroll">
+            <div class="chart-wrap" id="finDailyChartWrap"></div>
+          </div>
+          <div class="chart-tooltip" id="finDailyChartTip"></div>
+          <div class="chart-legend">
+            <span><span class="legend-dot legend-income"></span>درآمد</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-head" id="finChartYearTitle">نمودار درآمد ماه‌های سال</div>
+          <div class="chart-scroll">
+            <div class="chart-wrap" id="finYearChartWrap"></div>
+          </div>
+          <div class="chart-tooltip" id="finYearChartTip"></div>
+          <div class="chart-legend">
+            <span><span class="legend-dot legend-income"></span>درآمد</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1345,7 +1656,11 @@ var TITLE_DEFAULTS = {
   water:{icon:"💧", text:"ردیاب آب"},
   notesTitle:{icon:"📝", text:"یادداشت روز"},
   goalsTitle:{icon:"🎯", text:"اهداف بلندمدت"},
-  pinnedNotesTitle:{icon:"📌", text:"یادداشت‌های ثابت"}
+  pinnedNotesTitle:{icon:"📌", text:"یادداشت‌های ثابت"},
+  countdownTitle:{icon:"📅", text:"روزشمار"},
+  incomeTitle:{icon:"💵", text:"درآمد"},
+  financeTitle:{icon:"💰", text:"مالی"},
+  expenseTitle:{icon:"💸", text:"هزینه‌ها"}
 };
 
 var MOOD_OPTIONS = [
@@ -1458,6 +1773,7 @@ async function saveIndex(){ await storeSet("index", indexData); }
 var goalsData = [];
 var countdownData = [];
 var pinnedNotesData = [];
+var financeData = { startingBalance: 0 };
 async function loadGoals(){ var g = await storeGet("goals"); goalsData = g || []; }
 async function saveGoals(){ await storeSet("goals", goalsData); }
 
@@ -1465,13 +1781,19 @@ async function loadCountdowns(){ var c = await storeGet("countdowns"); countdown
 async function saveCountdowns(){ await storeSet("countdowns", countdownData); }
 async function loadPinnedNotes(){ var n = await storeGet("pinnedNotes"); pinnedNotesData = n || []; }
 async function savePinnedNotes(){ await storeSet("pinnedNotes", pinnedNotesData); }
-async function loadDay(key){ var d = await storeGet("day:"+key); return d || {tasks:[], notes:[], extraSlots:0, sections:Object.assign({},DEFAULT_SECTIONS), shopping:[], water:0}; }
+async function loadFinance(){ var f = await storeGet("finance"); if(f) financeData = Object.assign({startingBalance:0}, f); }
+async function saveFinance(){ await storeSet("finance", financeData); }
+async function loadDay(key){ var d = await storeGet("day:"+key); return d || {tasks:[], notes:[], extraSlots:0, sections:Object.assign({},DEFAULT_SECTIONS), shopping:[], water:0, income:[], expenses:[]}; }
 async function saveDay(key, data){
   if(data.extraSlots === undefined) data.extraSlots = 0;
   await storeSet("day:"+key, data);
   var t = data.tasks.length, td = data.tasks.filter(function(x){return x.done;}).length;
   var n = data.notes.length, hasImg = data.notes.some(function(nt){ return nt.images && nt.images.length; });
-  if(t===0 && n===0){ delete indexData[key]; } else { indexData[key] = {t:t, td:td, n:n, img:hasImg}; }
+  var shopCount = (data.shopping||[]).length;
+  var incTotal = (data.income||[]).reduce(function(s,it){ return s+(+it.amount||0); }, 0);
+  var expTotal = (data.expenses||[]).reduce(function(s,it){ return s+(+it.amount||0); }, 0);
+  if(t===0 && n===0 && shopCount===0 && incTotal===0 && expTotal===0){ delete indexData[key]; }
+  else { indexData[key] = {t:t, td:td, n:n, img:hasImg, inc:incTotal, exp:expTotal}; }
   await saveIndex();
 }
 
@@ -1480,6 +1802,7 @@ var view = { jy:0, jm:0, gy:0, gm:0 };
 var pageKey = null;
 var todayKey = null;
 var activeTab = "today";
+var calendarReturnTab = "today";
 var openMenuId = null;
 var openTimeId = null;
 
@@ -1518,7 +1841,17 @@ function cacheEls(){
    "pinnedTableActions",
    "pinnedReminderEnable","pinnedReminderDate","pinnedReminderTime","cancelPinnedEditBtn",
    "pagePractical","countdownList","newCountdownTitle","newCountdownDays","addCountdownBtn",
-   "cdReminderEnable","cdReminderDate","cdReminderTime"
+   "cdReminderEnable","cdReminderDate","cdReminderTime",
+   "pageFinance","finPrevDay","finNextDay","finDayLabel","finDayLabelText","finBalanceTotal","finDayIncome","finDayExpense","finMonthIncome","finMonthExpense","finMonthNet",
+   "incomeList","newIncomeAmount","newIncomeNote","addIncomeBtn",
+   "expenseList","newExpenseAmount","newExpenseNote","addExpenseBtn","expenseChipRow",
+   "startingBalanceInput","saveStartingBalanceBtn",
+   "finSubtabSeg","finDailyView","finReportView",
+   "finReportPrevMonth","finReportNextMonth","finReportMonthLabel","finReportMonthLabelText",
+   "finReportIncomeTotal","finReportExpenseTotal","finReportNet",
+   "finReportIncomeList","finReportExpenseList",
+   "finChartMonthTitle","finChartYearTitle",
+   "finDailyChartWrap","finDailyChartTip","finYearChartWrap","finYearChartTip"
   ].forEach(function(id){ el[id]=q(id); });
 }
 
@@ -1531,9 +1864,28 @@ function switchTab(name){
   q("pageGoals").hidden = name!=="goals";
   q("pageCalendar").hidden = name!=="calendar";
   q("pagePractical").hidden = name!=="practical";
+  q("pageFinance").hidden = name!=="finance";
   if(name==="calendar"){ setViewMonthFromKey(pageKey); renderCalendarTab(); }
   if(name==="goals"){ renderGoals(); renderPinnedNotes(); }
   if(name==="practical"){ renderCountdowns(); }
+  if(name==="finance"){ renderFinanceSection(); if(finActiveSubtab==="report"){ renderFinReport(); } }
+}
+
+var finActiveSubtab = "daily";
+var finReportView = { jy:0, jm:0 };
+function initFinReportView(){
+  var t = todayParts();
+  var j = toJalali(t.gy, t.gm, t.gd);
+  finReportView.jy = j[0]; finReportView.jm = j[1];
+}
+function switchFinSubtab(name){
+  finActiveSubtab = name;
+  Array.prototype.forEach.call(el.finSubtabSeg.querySelectorAll("button"), function(b){
+    b.classList.toggle("active", b.getAttribute("data-fintab")===name);
+  });
+  el.finDailyView.hidden = name!=="daily";
+  el.finReportView.hidden = name!=="report";
+  if(name==="report"){ renderFinReport(); }
 }
 
 var pendingImages = [];
@@ -1572,6 +1924,8 @@ async function loadAndRenderDay(){
   if(currentDayData.extraSlots===undefined) currentDayData.extraSlots = 0;
   currentDayData.sections = Object.assign({}, DEFAULT_SECTIONS, currentDayData.sections||{});
   if(!currentDayData.shopping) currentDayData.shopping = [];
+  if(!currentDayData.income) currentDayData.income = [];
+  if(!currentDayData.expenses) currentDayData.expenses = [];
   if(currentDayData.water===undefined) currentDayData.water = 0;
   pendingImages = [];
   el.newNoteThumbs.innerHTML = "";
@@ -1580,6 +1934,7 @@ async function loadAndRenderDay(){
   openTimeId = null;
   renderTasks(); renderNotes(); renderCarryBanner();
   renderWeekdayRow(); renderSectionInputs(); renderShopList(); renderWaterRow();
+  if(activeTab==="finance") renderFinanceSection();
 }
 
 function weekStartKey(key){
@@ -1645,8 +2000,9 @@ function bindSectionField(elKey, field){
 function renderShopList(){
   var items = currentDayData.shopping;
   if(items.length===0){ el.shopList.innerHTML = "<div class='empty-hint'>چیزی به لیست خرید اضافه نشده.</div>"; return; }
-  el.shopList.innerHTML = items.map(function(it){
+  el.shopList.innerHTML = items.map(function(it, idx){
     return "<div class='shop-item"+(it.done?" done":"")+"' data-id='"+it.id+"'>"+
+      "<span class='shop-num'>"+faDigits(idx+1)+"</span>"+
       "<button type='button' class='shop-check"+(it.done?" done":"")+"' data-action='shoptoggle' data-id='"+it.id+"'>"+(it.done?"✓":"")+"</button>"+
       "<input type='text' class='shop-text"+(it.done?" done":"")+"' data-action='shoptext' data-id='"+it.id+"' value='"+escapeAttr(it.text)+"'>"+
       "<button type='button' class='shop-del' data-action='shopdel' data-id='"+it.id+"'>✕</button>"+
@@ -1660,6 +2016,9 @@ function bindShopEvents(){
   });
   Array.prototype.forEach.call(el.shopList.querySelectorAll("[data-action='shoptext']"), function(inp){
     inp.addEventListener("input", function(){ debounceSaveShopText(inp.getAttribute("data-id"), inp.value); });
+    inp.addEventListener("keydown", function(e){
+      if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); inp.blur(); el.shopNewItem.focus(); }
+    });
     inp.addEventListener("blur", function(){ if(!inp.value.trim()) deleteShopItem(inp.getAttribute("data-id")); });
   });
   Array.prototype.forEach.call(el.shopList.querySelectorAll("[data-action='shopdel']"), function(b){
@@ -1670,6 +2029,12 @@ async function addShopItem(text){
   currentDayData.shopping.push({id:uid(), text:text, done:false});
   await saveDay(pageKey, currentDayData);
   renderShopList();
+}
+function submitShopNewItem(){
+  var v = el.shopNewItem.value.replace(/\n/g,"").trim();
+  el.shopNewItem.value = "";
+  if(v){ addShopItem(v); }
+  el.shopNewItem.focus();
 }
 async function toggleShopItem(id){
   var it = currentDayData.shopping.find(function(x){return x.id===id;});
@@ -2201,6 +2566,380 @@ async function deleteCountdown(id){
   renderCountdowns();
 }
 
+/* ---------- Finance tab: income + expenses ---------- */
+function formatMoney(n){
+  n = Math.round(+n||0);
+  var neg = n<0; n = Math.abs(n);
+  var s = String(n);
+  var parts = [];
+  while(s.length>3){ parts.unshift(s.slice(-3)); s = s.slice(0,-3); }
+  parts.unshift(s);
+  return (neg?"-":"") + faDigits(parts.join("٬"));
+}
+function groupThousandsPlain(raw){
+  if(!raw) return "";
+  return raw.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+function countDigitsIn(str){ return (str.match(/[0-9]/g)||[]).length; }
+function digitPositionInFormatted(formatted, digitCount){
+  if(digitCount<=0) return 0;
+  var count=0;
+  for(var i=0;i<formatted.length;i++){
+    if(/[0-9]/.test(formatted[i])) count++;
+    if(count===digitCount) return i+1;
+  }
+  return formatted.length;
+}
+function bindMoneyInputFormatting(input){
+  if(!input) return;
+  input.addEventListener("input", function(){
+    var caretDigits = countDigitsIn(input.value.slice(0, input.selectionStart));
+    var raw = input.value.replace(/[^0-9]/g, "");
+    var formatted = groupThousandsPlain(raw);
+    input.value = formatted;
+    var pos = digitPositionInFormatted(formatted, caretDigits);
+    input.setSelectionRange(pos, pos);
+  });
+}
+function moneyInputValue(input){
+  return parseFloat((input.value||"").replace(/,/g, "")) || 0;
+}
+function computeMonthTotal(key, field){
+  var p = keyToParts(key);
+  var j = toJalali(p.gy,p.gm,p.gd);
+  var total = 0;
+  Object.keys(indexData).forEach(function(k){
+    var info = indexData[k];
+    if(!info || !info[field]) return;
+    var kp = keyToParts(k);
+    var kj = toJalali(kp.gy,kp.gm,kp.gd);
+    if(kj[0]===j[0] && kj[1]===j[1]) total += info[field];
+  });
+  return total;
+}
+function computeMonthTotalByJalali(jy, jm, field){
+  var total = 0;
+  Object.keys(indexData).forEach(function(k){
+    var info = indexData[k];
+    if(!info || !info[field]) return;
+    var kp = keyToParts(k);
+    var kj = toJalali(kp.gy,kp.gm,kp.gd);
+    if(kj[0]===jy && kj[1]===jm) total += info[field];
+  });
+  return total;
+}
+function computeAllTimeTotal(field){
+  var total = 0;
+  Object.keys(indexData).forEach(function(k){ var info = indexData[k]; if(info && info[field]) total += info[field]; });
+  return total;
+}
+function renderFinDayLabel(){
+  if(!el.finDayLabelText) return;
+  var p = keyToParts(pageKey);
+  var j = toJalali(p.gy,p.gm,p.gd);
+  var label;
+  if(pageKey===todayKey){ label = "امروز"; }
+  else if(settings.calendarMode==="gregorian"){ label = p.gd+" "+GMONTHS_FA[p.gm-1]; }
+  else { label = faDigits(j[2])+" "+JMONTHS[j[1]-1]; }
+  el.finDayLabelText.textContent = label;
+}
+function renderIncomeList(){
+  if(!el.incomeList) return;
+  var items = currentDayData.income||[];
+  if(items.length===0){ el.incomeList.innerHTML = "<div class='empty-hint'>درآمدی برای این روز ثبت نشده.</div>"; return; }
+  el.incomeList.innerHTML = items.map(function(it){
+    return "<div class='income-item' data-id='"+it.id+"'>"+
+      "<span class='income-amount'>+"+formatMoney(it.amount)+"</span>"+
+      "<span class='income-note'>"+(it.note?escapeHtml(it.note):"")+"</span>"+
+      "<button type='button' class='shop-del' data-action='incdel' data-id='"+it.id+"'>✕</button>"+
+    "</div>";
+  }).join("");
+  Array.prototype.forEach.call(el.incomeList.querySelectorAll("[data-action='incdel']"), function(b){
+    b.addEventListener("click", function(){ deleteIncome(b.getAttribute("data-id")); });
+  });
+}
+function renderExpenseList(){
+  if(!el.expenseList) return;
+  var items = currentDayData.expenses||[];
+  if(items.length===0){ el.expenseList.innerHTML = "<div class='empty-hint'>هزینه‌ای برای این روز ثبت نشده.</div>"; return; }
+  el.expenseList.innerHTML = items.map(function(it){
+    return "<div class='expense-item' data-id='"+it.id+"'>"+
+      "<span class='expense-amount'>-"+formatMoney(it.amount)+"</span>"+
+      "<span class='income-note'>"+(it.note?escapeHtml(it.note):"")+"</span>"+
+      "<button type='button' class='shop-del' data-action='expdel' data-id='"+it.id+"'>✕</button>"+
+    "</div>";
+  }).join("");
+  Array.prototype.forEach.call(el.expenseList.querySelectorAll("[data-action='expdel']"), function(b){
+    b.addEventListener("click", function(){ deleteExpense(b.getAttribute("data-id")); });
+  });
+}
+function renderFinanceStats(){
+  if(!el.finBalanceTotal) return;
+  var dayIncome = (currentDayData.income||[]).reduce(function(s,it){ return s+(+it.amount||0); }, 0);
+  var dayExpense = (currentDayData.expenses||[]).reduce(function(s,it){ return s+(+it.amount||0); }, 0);
+  var monthIncome = computeMonthTotal(pageKey,"inc");
+  var monthExpense = computeMonthTotal(pageKey,"exp");
+  var monthNet = monthIncome - monthExpense;
+  var balance = (financeData.startingBalance||0) + computeAllTimeTotal("inc") - computeAllTimeTotal("exp");
+  el.finDayIncome.textContent = formatMoney(dayIncome);
+  el.finDayExpense.textContent = formatMoney(dayExpense);
+  el.finMonthIncome.textContent = formatMoney(monthIncome);
+  el.finMonthExpense.textContent = formatMoney(monthExpense);
+  el.finMonthNet.textContent = (monthNet<0?"-":"+")+formatMoney(monthNet);
+  el.finMonthNet.style.color = monthNet<0 ? "var(--red)" : "var(--blue-deep)";
+  el.finBalanceTotal.textContent = formatMoney(balance);
+  if(el.startingBalanceInput && document.activeElement!==el.startingBalanceInput){
+    el.startingBalanceInput.value = financeData.startingBalance ? groupThousandsPlain(String(Math.round(financeData.startingBalance))) : "";
+  }
+}
+function renderFinanceSection(){
+  if(!el.incomeList) return;
+  renderFinDayLabel();
+  renderIncomeList();
+  renderExpenseList();
+  renderFinanceStats();
+}
+async function addIncome(){
+  var amount = moneyInputValue(el.newIncomeAmount);
+  if(!amount || amount<=0){ showToast("مبلغ معتبر وارد کن"); return; }
+  var note = el.newIncomeNote.value.trim();
+  if(!currentDayData.income) currentDayData.income = [];
+  currentDayData.income.push({id:uid(), amount:amount, note:note, createdAt:Date.now()});
+  await saveDay(pageKey, currentDayData);
+  el.newIncomeAmount.value = ""; el.newIncomeNote.value = "";
+  renderFinanceSection();
+  showToast("درآمد ثبت شد");
+}
+async function deleteIncome(id){
+  currentDayData.income = (currentDayData.income||[]).filter(function(x){ return x.id!==id; });
+  await saveDay(pageKey, currentDayData);
+  renderFinanceSection();
+}
+async function addExpense(){
+  var amount = moneyInputValue(el.newExpenseAmount);
+  if(!amount || amount<=0){ showToast("مبلغ معتبر وارد کن"); return; }
+  var note = el.newExpenseNote.value.trim();
+  if(!currentDayData.expenses) currentDayData.expenses = [];
+  currentDayData.expenses.push({id:uid(), amount:amount, note:note, createdAt:Date.now()});
+  await saveDay(pageKey, currentDayData);
+  el.newExpenseAmount.value = ""; el.newExpenseNote.value = "";
+  renderFinanceSection();
+  showToast("هزینه ثبت شد");
+}
+async function deleteExpense(id){
+  currentDayData.expenses = (currentDayData.expenses||[]).filter(function(x){ return x.id!==id; });
+  await saveDay(pageKey, currentDayData);
+  renderFinanceSection();
+}
+async function saveStartingBalance(){
+  var v = moneyInputValue(el.startingBalanceInput);
+  financeData.startingBalance = v || 0;
+  await saveFinance();
+  renderFinanceStats();
+  showToast("موجودی اولیه ثبت شد");
+}
+
+/* ---------- Finance report (monthly) ---------- */
+function goFinReportPrevMonth(){
+  finReportView.jm--;
+  if(finReportView.jm<1){ finReportView.jm=12; finReportView.jy--; }
+  renderFinReport();
+}
+function goFinReportNextMonth(){
+  finReportView.jm++;
+  if(finReportView.jm>12){ finReportView.jm=1; finReportView.jy++; }
+  renderFinReport();
+}
+function finReportDayLabel(key){
+  var p = keyToParts(key);
+  var j = toJalali(p.gy,p.gm,p.gd);
+  if(key===todayKey) return "امروز";
+  return faDigits(j[2])+" "+JMONTHS[j[1]-1];
+}
+function renderFinReportTitle(){
+  var t = todayParts();
+  var tj = toJalali(t.gy,t.gm,t.gd);
+  el.finReportMonthLabelText.textContent = (tj[0]===finReportView.jy && tj[1]===finReportView.jm ? "این ماه · " : "")
+    + JMONTHS[finReportView.jm-1] + " " + faDigits(finReportView.jy);
+}
+async function renderFinReport(){
+  if(!el.finReportIncomeList) return;
+  renderFinReportTitle();
+  var jy = finReportView.jy, jm = finReportView.jm;
+
+  el.finReportIncomeTotal.textContent = formatMoney(computeMonthTotalByJalali(jy,jm,"inc"));
+  el.finReportExpenseTotal.textContent = formatMoney(computeMonthTotalByJalali(jy,jm,"exp"));
+  el.finReportNet.textContent = formatMoney(computeMonthTotalByJalali(jy,jm,"inc") - computeMonthTotalByJalali(jy,jm,"exp"));
+
+  var dayKeys = Object.keys(indexData).filter(function(k){
+    var info = indexData[k];
+    if(!info || (!info.inc && !info.exp)) return false;
+    var kp = keyToParts(k);
+    var kj = toJalali(kp.gy,kp.gm,kp.gd);
+    return kj[0]===jy && kj[1]===jm;
+  }).sort();
+
+  var allIncome = [], allExpense = [];
+  for(var i=0;i<dayKeys.length;i++){
+    var key = dayKeys[i];
+    var d = await loadDay(key);
+    (d.income||[]).forEach(function(it){ allIncome.push({key:key, item:it}); });
+    (d.expenses||[]).forEach(function(it){ allExpense.push({key:key, item:it}); });
+  }
+  allIncome.sort(function(a,b){ return a.key<b.key?-1:a.key>b.key?1:(a.item.createdAt||0)-(b.item.createdAt||0); });
+  allExpense.sort(function(a,b){ return a.key<b.key?-1:a.key>b.key?1:(a.item.createdAt||0)-(b.item.createdAt||0); });
+
+  el.finReportIncomeList.innerHTML = allIncome.length===0
+    ? "<div class='report-empty'>درآمدی برای این ماه ثبت نشده.</div>"
+    : allIncome.map(function(row){
+        return "<div class='report-item report-income' data-key='"+row.key+"'>"+
+          "<span class='report-date'>"+finReportDayLabel(row.key)+"</span>"+
+          "<span class='report-note'>"+(row.item.note?escapeHtml(row.item.note):"—")+"</span>"+
+          "<span class='report-amount'>+"+formatMoney(row.item.amount)+"</span>"+
+        "</div>";
+      }).join("");
+
+  el.finReportExpenseList.innerHTML = allExpense.length===0
+    ? "<div class='report-empty'>هزینه‌ای برای این ماه ثبت نشده.</div>"
+    : allExpense.map(function(row){
+        return "<div class='report-item report-expense' data-key='"+row.key+"'>"+
+          "<span class='report-date'>"+finReportDayLabel(row.key)+"</span>"+
+          "<span class='report-note'>"+(row.item.note?escapeHtml(row.item.note):"—")+"</span>"+
+          "<span class='report-amount'>-"+formatMoney(row.item.amount)+"</span>"+
+        "</div>";
+      }).join("");
+
+  Array.prototype.forEach.call(el.finReportView.querySelectorAll(".report-item"), function(rowEl){
+    rowEl.addEventListener("click", async function(){
+      pageKey = rowEl.getAttribute("data-key");
+      await loadAndRenderDay();
+      switchFinSubtab("daily");
+    });
+  });
+
+  renderFinDailyChart(jy, jm);
+  renderFinYearChart(jy);
+}
+
+/* ---------- Finance report: charts ---------- */
+function chartBuildBars(categories, seriesList, opts){
+  opts = opts || {};
+  var slot = opts.slot || 34;
+  var barGap = opts.barGap || 2;
+  var groupPad = opts.groupPad || 6;
+  var chartH = opts.chartH || 120;
+  var labelH = 20;
+  var topPad = 10;
+  var n = categories.length;
+  var nSeries = seriesList.length;
+  var barW = Math.max(3, (slot - groupPad - (nSeries-1)*barGap) / nSeries);
+  var width = Math.max(n*slot, opts.minWidth||0);
+  var totalH = chartH + labelH + topPad;
+
+  var maxVal = 0;
+  seriesList.forEach(function(s){ s.values.forEach(function(v){ if(v>maxVal) maxVal = v; }); });
+  if(maxVal<=0) maxVal = 1;
+
+  var svg = "<svg width='"+width+"' height='"+totalH+"' viewBox='0 0 "+width+" "+totalH+"' xmlns='http://www.w3.org/2000/svg'>";
+  svg += "<line x1='0' y1='"+(topPad+chartH)+"' x2='"+width+"' y2='"+(topPad+chartH)+"' stroke='var(--paper-line)' stroke-width='1'/>";
+
+  for(var i=0;i<n;i++){
+    var groupX = i*slot + groupPad/2;
+    for(var s=0;s<nSeries;s++){
+      var series = seriesList[s];
+      var val = series.values[i]||0;
+      var barH = maxVal>0 ? (val/maxVal)*(chartH-6) : 0;
+      var x = groupX + s*(barW+barGap);
+      var y = topPad + chartH - barH;
+      svg += "<rect class='chart-bar' data-idx='"+i+"' data-series='"+s+"' data-val='"+val+"' "+
+             "x='"+x.toFixed(1)+"' y='"+y.toFixed(1)+"' width='"+barW.toFixed(1)+"' height='"+Math.max(barH,val>0?2:0).toFixed(1)+"' "+
+             "rx='2' fill='"+series.color+"'></rect>";
+    }
+    var labelX = i*slot + slot/2;
+    svg += "<text x='"+labelX+"' y='"+(topPad+chartH+14)+"' font-size='9' text-anchor='middle' fill='var(--ink-faint)' font-family='Vazirmatn'>"+categories[i]+"</text>";
+  }
+  svg += "</svg>";
+  return svg;
+}
+function chartAttachTooltip(wrapEl, tipEl, categories, seriesList, opts){
+  var refEl = tipEl.parentElement;
+  wrapEl._chartCategories = categories;
+  wrapEl._chartSeries = seriesList;
+  wrapEl._chartOpts = opts;
+  if(wrapEl._chartTipBound) return;
+  wrapEl._chartTipBound = true;
+  function showTip(rect){
+    var idx = +rect.getAttribute("data-idx");
+    var si = +rect.getAttribute("data-series");
+    var val = +rect.getAttribute("data-val");
+    var curCategories = wrapEl._chartCategories, curSeries = wrapEl._chartSeries, curOpts = wrapEl._chartOpts;
+    var series = curSeries[si];
+    var label = (curOpts.fullLabels ? curOpts.fullLabels[idx] : curCategories[idx]);
+    tipEl.textContent = label+" — "+series.name+": "+formatMoney(val);
+    var refRect = refEl.getBoundingClientRect();
+    var barRect = rect.getBoundingClientRect();
+    var left = barRect.left - refRect.left + barRect.width/2;
+    var top = barRect.top - refRect.top;
+    tipEl.style.left = left+"px";
+    tipEl.style.top = top+"px";
+    tipEl.classList.add("show");
+    Array.prototype.forEach.call(wrapEl.querySelectorAll(".chart-bar.hover-active"), function(b){ b.classList.remove("hover-active"); });
+    rect.classList.add("hover-active");
+  }
+  function hideTip(){
+    tipEl.classList.remove("show");
+    Array.prototype.forEach.call(wrapEl.querySelectorAll(".chart-bar.hover-active"), function(b){ b.classList.remove("hover-active"); });
+  }
+  wrapEl.addEventListener("mousemove", function(e){
+    var t = e.target;
+    if(t && t.classList && t.classList.contains("chart-bar")){ showTip(t); } else { hideTip(); }
+  });
+  wrapEl.addEventListener("mouseleave", hideTip);
+  wrapEl.addEventListener("touchstart", function(e){
+    var t = e.target;
+    if(t && t.classList && t.classList.contains("chart-bar")){ e.preventDefault(); showTip(t); }
+    else { hideTip(); }
+  }, {passive:false});
+  document.addEventListener("touchstart", function(e){
+    if(!wrapEl.contains(e.target)) hideTip();
+  });
+}
+function renderFinDailyChart(jy, jm){
+  if(!el.finDailyChartWrap) return;
+  var nDays = jalaliMonthLength(jy,jm);
+  var dayLabels = [], fullLabels = [], incomeVals = [];
+  for(var d=1; d<=nDays; d++){
+    var g = toGregorian(jy,jm,d);
+    var key = dateKeyOf(g[0],g[1],g[2]);
+    var info = indexData[key];
+    dayLabels.push(faDigits(d));
+    fullLabels.push(faDigits(d)+" "+JMONTHS[jm-1]);
+    incomeVals.push(info ? (info.inc||0) : 0);
+  }
+  el.finChartMonthTitle.textContent = "نمودار درآمد روزانهٔ "+JMONTHS[jm-1]+" "+faDigits(jy);
+  var seriesList = [
+    {name:"درآمد", color:"var(--green)", values:incomeVals}
+  ];
+  var opts = {slot:30, chartH:120, fullLabels:fullLabels};
+  var svgHtml = chartBuildBars(dayLabels, seriesList, opts);
+  el.finDailyChartWrap.innerHTML = svgHtml;
+  chartAttachTooltip(el.finDailyChartWrap, el.finDailyChartTip, dayLabels, seriesList, opts);
+}
+function renderFinYearChart(jy){
+  if(!el.finYearChartWrap) return;
+  var monthLabels = [], incomeVals = [];
+  for(var m=1; m<=12; m++){
+    monthLabels.push(JMONTHS[m-1]);
+    incomeVals.push(computeMonthTotalByJalali(jy, m, "inc"));
+  }
+  el.finChartYearTitle.textContent = "نمودار درآمد ماه‌های سال "+faDigits(jy);
+  var seriesList = [{name:"درآمد", color:"var(--green)", values:incomeVals}];
+  var opts = {slot:56, chartH:120, fullLabels: JMONTHS.map(function(mn){ return mn+" "+faDigits(jy); })};
+  var svgHtml = chartBuildBars(monthLabels, seriesList, opts);
+  el.finYearChartWrap.innerHTML = svgHtml;
+  chartAttachTooltip(el.finYearChartWrap, el.finYearChartTip, monthLabels, seriesList, opts);
+}
+
 /* ---------- Pinned notes ---------- */
 var pendingPinnedImages = [];
 var pendingPinnedType = "text";
@@ -2636,7 +3375,9 @@ function renderGrid(){
   Array.prototype.forEach.call(el.calGrid.querySelectorAll(".day-cell"), function(node){
     node.addEventListener("click", function(){
       pageKey = node.getAttribute("data-key");
-      switchTab("today");
+      var target = calendarReturnTab || "today";
+      calendarReturnTab = "today";
+      switchTab(target);
       loadAndRenderDay();
     });
     node.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); node.click(); } });
@@ -2817,7 +3558,7 @@ function bindEvents(){
   })();
 
   Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
-    t.addEventListener("click", function(){ switchTab(t.getAttribute("data-tab")); });
+    t.addEventListener("click", function(){ calendarReturnTab = "today"; switchTab(t.getAttribute("data-tab")); });
   });
 
   el.prevDay.addEventListener("click", function(){ pageKey = addDaysToKey(pageKey,-1); loadAndRenderDay(); });
@@ -2898,11 +3639,65 @@ function bindEvents(){
   ].forEach(function(pair){ bindSectionField(pair[0], pair[1]); });
 
   el.shopNewItem.addEventListener("keydown", function(e){
-    if(e.key==="Enter"){
+    if(e.key==="Enter" || e.keyCode===13){
       e.preventDefault();
-      var v = el.shopNewItem.value.trim();
-      if(v){ addShopItem(v); el.shopNewItem.value=""; }
+      e.stopPropagation();
+      submitShopNewItem();
     }
+  });
+  el.shopNewItem.addEventListener("keypress", function(e){
+    if(e.key==="Enter" || e.keyCode===13){
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
+  el.shopNewItem.addEventListener("input", function(){
+    if(el.shopNewItem.value.indexOf("\n")!==-1){ submitShopNewItem(); }
+  });
+
+  el.finPrevDay.addEventListener("click", function(){ pageKey = addDaysToKey(pageKey,-1); loadAndRenderDay(); });
+  el.finNextDay.addEventListener("click", function(){ pageKey = addDaysToKey(pageKey,1); loadAndRenderDay(); });
+  Array.prototype.forEach.call(el.finSubtabSeg.querySelectorAll("button"), function(b){
+    b.addEventListener("click", function(){ switchFinSubtab(b.getAttribute("data-fintab")); });
+  });
+  el.finReportPrevMonth.addEventListener("click", goFinReportPrevMonth);
+  el.finReportNextMonth.addEventListener("click", goFinReportNextMonth);
+
+  el.finDayLabel.addEventListener("click", function(){
+    calendarReturnTab = "finance";
+    switchTab("calendar");
+  });
+  el.finDayLabel.addEventListener("keydown", function(e){
+    if(e.key==="Enter" || e.key===" "){ e.preventDefault(); el.finDayLabel.click(); }
+  });
+  el.addIncomeBtn.addEventListener("click", addIncome);
+  el.newIncomeAmount.addEventListener("keydown", function(e){
+    if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addIncome(); }
+  });
+  el.newIncomeNote.addEventListener("keydown", function(e){
+    if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addIncome(); }
+  });
+  el.addExpenseBtn.addEventListener("click", addExpense);
+  el.newExpenseAmount.addEventListener("keydown", function(e){
+    if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addExpense(); }
+  });
+  el.newExpenseNote.addEventListener("keydown", function(e){
+    if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addExpense(); }
+  });
+  bindMoneyInputFormatting(el.newIncomeAmount);
+  bindMoneyInputFormatting(el.newExpenseAmount);
+  bindMoneyInputFormatting(el.startingBalanceInput);
+  el.expenseChipRow.addEventListener("click", function(e){
+    var chip = e.target.closest(".expense-chip");
+    if(!chip) return;
+    el.newExpenseNote.value = chip.getAttribute("data-val");
+    Array.prototype.forEach.call(el.expenseChipRow.querySelectorAll(".expense-chip"), function(c){ c.classList.remove("active"); });
+    chip.classList.add("active");
+    el.newExpenseAmount.focus();
+  });
+  el.saveStartingBalanceBtn.addEventListener("click", saveStartingBalance);
+  el.startingBalanceInput.addEventListener("keydown", function(e){
+    if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); saveStartingBalance(); }
   });
 
   el.prevMonth.addEventListener("click", goPrevMonth);
@@ -3041,8 +3836,10 @@ async function boot(){
   applyTitles();
   renderTitleEditList();
   await loadIndex();
+  await loadFinance();
   applyTheme();
   initToToday();
+  initFinReportView();
   bindEvents();
   await runCarryOverMigration();
   await loadAndRenderDay();
