@@ -416,6 +416,68 @@
   .fin-subtabs{margin:14px 0 16px;}
   .fin-report-daylabel{min-width:150px;}
   #finReportView .divider{margin-top:18px;}
+
+  /* ---------- Debts & claims ---------- */
+  .debt-toggle-row{display:flex; align-items:center; justify-content:space-between; margin:6px 2px 16px; font-size:12px; color:var(--ink-soft);}
+  .debt-section-list{display:flex; flex-direction:column; gap:9px; margin-bottom:10px;}
+  .debt-item{
+    display:flex; align-items:flex-start; gap:9px; padding:11px 12px; border-radius:14px;
+    border:1px solid var(--paper-line); background:var(--paper-deep); position:relative; overflow:hidden;
+  }
+  .debt-item::before{content:""; position:absolute; top:0; bottom:0; right:0; width:4px; background:var(--green);}
+  .debt-item.debt-type-debt::before{background:var(--red);}
+  .debt-item.done{opacity:.55;}
+  .debt-item.done .debt-person, .debt-item.done .debt-note{text-decoration:line-through;}
+  .debt-num{
+    font-family:var(--font-ui); font-size:12px; font-weight:800; color:var(--blue-deep); width:20px; flex:none;
+    text-align:center; background:var(--paper); border-radius:7px; padding:3px 0; margin-top:2px;
+  }
+  .debt-check{
+    width:21px; height:21px; border-radius:7px; border:2px solid var(--green); flex:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; background:var(--paper); color:#fff; font-size:12px; font-weight:800; margin-top:1px;
+  }
+  .debt-item.debt-type-debt .debt-check{border-color:var(--red);}
+  .debt-check.done{background:var(--green); border-color:var(--green);}
+  .debt-item.debt-type-debt .debt-check.done{background:var(--red); border-color:var(--red);}
+  .debt-body{flex:1; min-width:0;}
+  .debt-top-row{display:flex; align-items:center; gap:8px;}
+  .debt-person{
+    font-family:var(--font-ui); font-weight:800; font-size:13.5px; color:var(--ink); border:none;
+    background:transparent; flex:1; min-width:60px; padding:2px 0;
+  }
+  .debt-person:focus{outline:none;}
+  .debt-person::placeholder{color:var(--ink-faint); font-weight:400;}
+  .debt-amount{
+    font-family:var(--font-ui); font-weight:800; font-size:12.5px; color:var(--green); border:none;
+    background:transparent; text-align:left; width:100px; flex:none; padding:2px 0;
+  }
+  .debt-item.debt-type-debt .debt-amount{color:var(--red);}
+  .debt-amount:focus{outline:none;}
+  .debt-amount::placeholder{color:var(--ink-faint); font-weight:400;}
+  .debt-note{
+    width:100%; border:none; background:transparent; font-size:12.5px; color:var(--ink-soft);
+    padding:3px 0; font-family:var(--font-ui); display:block;
+  }
+  .debt-note:focus{outline:none;}
+  .debt-note::placeholder{color:var(--ink-faint);}
+  .debt-meta-row{display:flex; align-items:center; gap:8px; margin-top:5px; flex-wrap:wrap;}
+  .debt-date-input{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); border:1px dashed var(--paper-line);
+    background:var(--paper); border-radius:8px; padding:3px 7px;
+  }
+  .debt-settled-tag{font-size:10px; color:var(--green); font-weight:700;}
+  .debt-item.debt-type-debt .debt-settled-tag{color:var(--red);}
+  .debt-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:14px; flex:none; padding:2px; margin-top:2px;}
+  .debt-del:hover{color:var(--red);}
+  .kind-select{
+    font-family:var(--font-ui); font-size:12.5px; font-weight:700; color:var(--ink); background:var(--paper);
+    border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; cursor:pointer;
+  }
+  .kind-select:focus{outline:none; border-color:var(--blue);}
+  .debt-kind-tag{
+    font-size:10px; font-weight:700; color:var(--ink-soft); background:var(--paper-deep);
+    border-radius:6px; padding:2px 7px; flex:none;
+  }
   .report-empty{font-size:12px; color:var(--ink-faint); text-align:center; padding:14px 0;}
   #finReportIncomeList, #finReportExpenseList{display:flex; flex-direction:column; gap:7px; margin-bottom:8px;}
   .report-item{
@@ -482,6 +544,12 @@
   .shop-del{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:15px; flex:none; padding:2px;}
   .shop-del:hover{color:var(--red);}
   .shop-add-row{margin-bottom:16px;}
+  .icon-add-btn{
+    width:38px; height:38px; border-radius:50%; border:none; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; flex:none; transition:.15s; box-shadow:var(--shadow-sm);
+  }
+  .icon-add-btn:hover{background:var(--blue-deep);}
+  .icon-add-btn:active{transform:scale(.92);}
 
   /* ---------- Water tracker ---------- */
   .water-row{display:flex; gap:9px; flex-wrap:wrap; justify-content:center; padding:4px 0 2px;}
@@ -672,6 +740,23 @@
   .weekdays{display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:4px;}
   .weekdays span{text-align:center; font-size:11.5px; color:var(--ink-faint); font-weight:700; padding-bottom:4px;}
   .grid{display:grid; grid-template-columns:repeat(7,1fr); gap:5px;}
+  .jdate-trigger{
+    display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;
+    font-family:var(--font-ui); font-size:12px; color:var(--ink); background:var(--paper-deep);
+    border:1px dashed var(--paper-line); border-radius:9px; padding:9px 10px; text-align:center; width:100%;
+  }
+  .jdate-trigger:hover{border-color:var(--blue); color:var(--blue-deep);}
+  .jdate-trigger.empty{color:var(--ink-faint);}
+  .jdate-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:4px;}
+  .jdate-cell{
+    aspect-ratio:1; border-radius:9px; border:1px solid var(--paper-line); background:var(--paper-deep);
+    display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:13px;
+    color:var(--ink); cursor:pointer; transition:.15s;
+  }
+  .jdate-cell:hover{border-color:var(--blue); background:var(--blue-tint);}
+  .jdate-cell.empty{visibility:hidden; cursor:default;}
+  .jdate-cell.today{box-shadow:inset 0 0 0 2px var(--gold);}
+  .jdate-cell.selected{background:var(--blue); border-color:var(--blue); color:#fff;}
   .day-cell{
     position:relative; min-height:64px; border-radius:9px; border:1px solid var(--paper-line);
     background:var(--paper-deep); padding:6px; cursor:pointer; transition:.15s; display:flex; flex-direction:column; gap:3px;
@@ -861,6 +946,61 @@
     65%{ transform:scale(1.1); }
     100%{ transform:scale(1); }
   }
+
+  /* ---------- Themed mascots: goals (bow), calendar (checklist), practical (hourglass), finance (coin) ---------- */
+  .cactus-wrap.small{ margin:2px 0 10px; }
+  .arrow-shoot{ animation:arrowShoot 2.6s ease-in infinite; transform-box:fill-box; transform-origin:0% 50%; }
+  @keyframes arrowShoot{
+    0%,55%{ transform:translateX(0); opacity:1; }
+    80%{ transform:translateX(22px); opacity:0; }
+    100%{ transform:translateX(0); opacity:0; }
+  }
+  .bow-string{ animation:bowPull 2.6s ease-in infinite; transform-box:fill-box; transform-origin:100% 50%; }
+  @keyframes bowPull{
+    0%,50%{ transform:translateX(0); }
+    58%{ transform:translateX(-3px); }
+    68%{ transform:translateX(0); }
+  }
+  .pencil-tap{ animation:pencilTap 3.6s ease-in-out infinite; transform-box:fill-box; transform-origin:88% 92%; }
+  @keyframes pencilTap{
+    0%,55%{ transform:rotate(0deg); }
+    64%{ transform:rotate(10deg); }
+    72%{ transform:rotate(0deg); }
+  }
+  .check-draw{ stroke-dasharray:9; stroke-dashoffset:9; animation:checkDraw 3.6s ease-in-out infinite; }
+  @keyframes checkDraw{
+    0%,64%{ stroke-dashoffset:9; opacity:1; }
+    76%,92%{ stroke-dashoffset:0; opacity:1; }
+    100%{ stroke-dashoffset:0; opacity:0; }
+  }
+  .hourglass-flip{ animation:hourglassFlip 4.6s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 50%; }
+  @keyframes hourglassFlip{
+    0%,78%{ transform:rotate(0deg); }
+    92%,100%{ transform:rotate(180deg); }
+  }
+  .sand-top{ animation:sandTopFade 4.6s ease-in-out infinite; }
+  @keyframes sandTopFade{
+    0%,68%{ opacity:1; }
+    82%,100%{ opacity:.25; }
+  }
+  .sand-bottom{ animation:sandBottomFade 4.6s ease-in-out infinite; }
+  @keyframes sandBottomFade{
+    0%,68%{ opacity:.25; }
+    82%,100%{ opacity:1; }
+  }
+  .fin-coin{ animation:coinDrop 4s ease-in infinite; }
+  @keyframes coinDrop{
+    0%,18%{ transform:translateY(0); opacity:0; }
+    28%{ opacity:1; }
+    68%{ transform:translateY(44px); opacity:1; }
+    78%,100%{ transform:translateY(46px); opacity:0; }
+  }
+  .fin-spark{ animation:coinSpark 4s ease-in-out infinite; transform-box:fill-box; transform-origin:50% 50%; }
+  @keyframes coinSpark{
+    0%,64%{ opacity:0; transform:scale(.4); }
+    72%{ opacity:1; transform:scale(1.15); }
+    86%,100%{ opacity:0; transform:scale(.4); }
+  }
 </style>
 </head>
 <body>
@@ -1049,8 +1189,11 @@
         <span class="line"></span>
       </div>
       <div id="shopList"></div>
-      <div class="shop-add-row">
-        <input type="text" class="lined-input" id="shopNewItem" placeholder="افزودن آیتم خرید و اینتر بزن…" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+      <div class="shop-add-row" style="display:flex; gap:8px; align-items:center;">
+        <input type="text" class="lined-input" id="shopNewItem" placeholder="افزودن آیتم خرید و اینتر بزن…" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+        <button type="button" class="icon-add-btn" id="shopAddBtn" aria-label="افزودن به لیست خرید" title="افزودن به لیست">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
       </div>
 
       <div class="lined-box">
@@ -1106,6 +1249,33 @@
     </div>
 
     <div class="page" id="pageGoals" hidden>
+      <div class="cactus-wrap small" id="cactusWrapGoals">
+        <svg class="cactus-mascot" id="cactusMascotGoals" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="90" rx="20" ry="6" fill="#00000014"/>
+          <rect x="30" y="72" width="40" height="16" rx="4" fill="#C97B4A"/>
+          <rect x="30" y="72" width="40" height="5" rx="2.5" fill="#DE9563"/>
+          <ellipse cx="38" cy="80" rx="3" ry="6" fill="#ffffff" opacity=".5"/>
+          <path class="arm-l arm-part" d="M38 58 C26 58 24 46 30 40 C32 44 34 48 40 50 Z" fill="#4F9A6B"/>
+          <path class="body-part" d="M35 72 C33 45 33 30 50 22 C67 30 67 45 65 72 Z" fill="#5FAE7F"/>
+          <path d="M42 70 C41 48 41.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <path d="M58 70 C59 48 58.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <ellipse cx="40" cy="45" rx="3.4" ry="2.2" fill="#F3A6A6" opacity=".55"/>
+          <ellipse cx="60" cy="45" rx="3.4" ry="2.2" fill="#F3A6A6" opacity=".55"/>
+          <path d="M39.5 41 Q43 36.5 46.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M53.5 41 Q57 36.5 60.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M44 46 Q50 55 56 46" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <circle cx="44" cy="30" r="1.1" fill="#EFD9A3"/>
+          <circle cx="52" cy="26" r="1.1" fill="#EFD9A3"/>
+          <circle cx="58" cy="58" r="1.1" fill="#EFD9A3"/>
+          <path class="arm-part" d="M62 62 C70 62 74 56 72 48 C69 51 66 54 60 54 Z" fill="#4F9A6B"/>
+          <path d="M73 24 Q84 44 73 64" stroke="#8B5A2B" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <line class="bow-string" x1="73" y1="24" x2="73" y2="64" stroke="#D8C7A6" stroke-width="1.2"/>
+          <g class="arrow-shoot">
+            <line x1="73" y1="44" x2="88" y2="44" stroke="#8B5A2B" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M88 44 L83.5 40.5 L83.5 47.5 Z" fill="#D6963E"/>
+          </g>
+        </svg>
+      </div>
       <div class="divider" style="margin-top:2px;">
         <span class="lbl">
           <span class="icon-badge" style="background:var(--gold-tint);">🎯</span>
@@ -1167,6 +1337,36 @@
 
 
     <div class="page" id="pageCalendar" hidden>
+      <div class="cactus-wrap small" id="cactusWrapCalendar">
+        <svg class="cactus-mascot" id="cactusMascotCalendar" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="90" rx="20" ry="6" fill="#00000014"/>
+          <rect x="30" y="72" width="40" height="16" rx="4" fill="#C97B4A"/>
+          <rect x="30" y="72" width="40" height="5" rx="2.5" fill="#DE9563"/>
+          <ellipse cx="38" cy="80" rx="3" ry="6" fill="#ffffff" opacity=".5"/>
+          <path class="arm-r arm-part" d="M62 62 C74 62 76 50 70 44 C68 48 66 52 60 54 Z" fill="#4F9A6B"/>
+          <path class="body-part" d="M35 72 C33 45 33 30 50 22 C67 30 67 45 65 72 Z" fill="#5FAE7F"/>
+          <path d="M42 70 C41 48 41.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <path d="M58 70 C59 48 58.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <ellipse cx="40" cy="45" rx="3.4" ry="2.2" fill="#F3A6A6" opacity=".55"/>
+          <ellipse cx="60" cy="45" rx="3.4" ry="2.2" fill="#F3A6A6" opacity=".55"/>
+          <path d="M39.5 41 Q43 36.5 46.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M53.5 41 Q57 36.5 60.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M44 46 Q50 55 56 46" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <circle cx="52" cy="26" r="1.1" fill="#EFD9A3"/>
+          <circle cx="47" cy="60" r="1.1" fill="#EFD9A3"/>
+          <path class="arm-part" d="M38 58 C27 58 23 48 28 41 C31 45 34 49 40 50 Z" fill="#4F9A6B"/>
+          <rect x="13" y="34" width="17" height="21" rx="2.5" fill="#FBF6E8" stroke="#B08A2E" stroke-width="1.2"/>
+          <line x1="16.5" y1="40" x2="26.5" y2="40" stroke="#B08A2E" stroke-width="1.1" stroke-linecap="round"/>
+          <line x1="16.5" y1="44.5" x2="23.5" y2="44.5" stroke="#B08A2E" stroke-width="1.1" stroke-linecap="round"/>
+          <rect x="16.5" y="48" width="4.4" height="4.4" rx=".8" fill="none" stroke="#5C6E52" stroke-width="1"/>
+          <path class="check-draw" d="M17.3 50.2 L18.6 51.8 L21 47.8" stroke="var(--blue)" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <g class="pencil-tap">
+            <line x1="80" y1="26" x2="66" y2="48" stroke="#D6963E" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="66" y1="48" x2="63.5" y2="52" stroke="#5C6E52" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M78.5 24 L81.5 27.5 L79.5 29.5 L76.5 26 Z" fill="#EFD9A3"/>
+          </g>
+        </svg>
+      </div>
       <div class="cal-toolbar">
         <div class="cal-nav">
           <button class="flip-btn" id="prevMonth" aria-label="ماه قبل">
@@ -1187,6 +1387,30 @@
     </div>
 
     <div class="page" id="pagePractical" hidden>
+      <div class="cactus-wrap small" id="cactusWrapPractical">
+        <svg class="cactus-mascot" id="cactusMascotPractical" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="90" rx="20" ry="6" fill="#00000014"/>
+          <rect x="30" y="72" width="40" height="16" rx="4" fill="#C97B4A"/>
+          <rect x="30" y="72" width="40" height="5" rx="2.5" fill="#DE9563"/>
+          <ellipse cx="38" cy="80" rx="3" ry="6" fill="#ffffff" opacity=".5"/>
+          <path class="arm-r arm-part" d="M64 62 C74 60 75 51 70 45 C68 49 65 53 60 55 Z" fill="#4F9A6B"/>
+          <path class="arm-l arm-part" d="M36 62 C26 60 25 51 30 45 C32 49 35 53 40 55 Z" fill="#4F9A6B"/>
+          <path class="body-part" d="M35 72 C33 45 33 30 50 22 C67 30 67 45 65 72 Z" fill="#5FAE7F"/>
+          <path d="M42 70 C41 48 41.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <path d="M58 70 C59 48 58.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <path d="M39.5 40.5 Q43 37 46.5 40.5" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M53.5 40.5 Q57 37 60.5 40.5" stroke="#2E3B32" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M45 46.5 Q50 49.5 55 46.5" stroke="#2E3B32" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <g class="hourglass-flip">
+            <rect x="39" y="49" width="22" height="2.8" rx="1.2" fill="#8B5A2B"/>
+            <rect x="39" y="69" width="22" height="2.8" rx="1.2" fill="#8B5A2B"/>
+            <path d="M41.5 51.8 L58.5 51.8 L50 61 Z" fill="none" stroke="#B08A2E" stroke-width="1.3"/>
+            <path d="M41.5 69 L58.5 69 L50 61 Z" fill="none" stroke="#B08A2E" stroke-width="1.3"/>
+            <path class="sand-top" d="M43.5 53.5 L56.5 53.5 L50 60.3 Z" fill="#D6963E"/>
+            <path class="sand-bottom" d="M50 61.8 L45 67.5 L55 67.5 Z" fill="#D6963E"/>
+          </g>
+        </svg>
+      </div>
       <div class="divider" style="margin-top:2px;">
         <span class="lbl">
           <span class="icon-badge" style="background:var(--gold-tint);">📅</span>
@@ -1215,6 +1439,35 @@
 
     <!-- ===== FINANCE PAGE ===== -->
     <div class="page" id="pageFinance" hidden>
+      <div class="cactus-wrap small" id="cactusWrapFinance">
+        <svg class="cactus-mascot" id="cactusMascotFinance" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="90" rx="20" ry="6" fill="#00000014"/>
+          <rect x="30" y="72" width="40" height="16" rx="4" fill="#C97B4A"/>
+          <rect x="30" y="72" width="40" height="5" rx="2.5" fill="#DE9563"/>
+          <ellipse cx="38" cy="80" rx="3" ry="6" fill="#ffffff" opacity=".5"/>
+          <path class="arm-r arm-part" d="M62 62 C74 62 76 50 70 44 C68 48 66 52 60 54 Z" fill="#4F9A6B"/>
+          <path class="arm-l arm-part" d="M38 58 C26 58 24 46 30 40 C32 44 34 48 40 50 Z" fill="#4F9A6B"/>
+          <path class="body-part" d="M35 72 C33 45 33 30 50 22 C67 30 67 45 65 72 Z" fill="#5FAE7F"/>
+          <path d="M42 70 C41 48 41.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <path d="M58 70 C59 48 58.5 34 50 27" stroke="#4A9268" stroke-width="1.6" fill="none" opacity=".6"/>
+          <ellipse cx="40" cy="45" rx="3.4" ry="2.2" fill="#F3A6A6" opacity=".55"/>
+          <ellipse cx="60" cy="45" rx="3.4" ry="2.2" fill="#F3A6A6" opacity=".55"/>
+          <path d="M39.5 41 Q43 36.5 46.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M53.5 41 Q57 36.5 60.5 41" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M44 46 Q50 55 56 46" stroke="#2E3B32" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <circle cx="44" cy="30" r="1.1" fill="#EFD9A3"/>
+          <circle cx="58" cy="58" r="1.1" fill="#EFD9A3"/>
+          <circle cx="40" cy="55" r="1.1" fill="#EFD9A3"/>
+          <g class="fin-spark">
+            <line x1="50" y1="68" x2="50" y2="76" stroke="#E3B564" stroke-width="1.4" stroke-linecap="round"/>
+            <line x1="46" y1="72" x2="54" y2="72" stroke="#E3B564" stroke-width="1.4" stroke-linecap="round"/>
+          </g>
+          <g class="fin-coin">
+            <circle cx="50" cy="26" r="5.2" fill="#E3B564" stroke="#B08A2E" stroke-width="1"/>
+            <line x1="46.8" y1="26" x2="53.2" y2="26" stroke="#B08A2E" stroke-width="1"/>
+          </g>
+        </svg>
+      </div>
       <div class="divider" style="margin-top:2px;">
         <span class="lbl">
           <span class="icon-badge" style="background:var(--green-tint);">💰</span>
@@ -1226,6 +1479,7 @@
       <div class="segmented fin-subtabs" id="finSubtabSeg">
         <button type="button" data-fintab="daily" class="active">روزانه</button>
         <button type="button" data-fintab="report">گزارش</button>
+        <button type="button" data-fintab="debts">طلب و بدهی</button>
       </div>
 
       <div id="finDailyView">
@@ -1417,6 +1671,106 @@
             <span><span class="legend-dot legend-income"></span>درآمد</span>
           </div>
         </div>
+      </div>
+
+      <div id="finDebtsView" hidden>
+        <div class="income-stats">
+          <div class="income-stat-box">
+            <div class="income-stat-label">مجموع طلب‌ها</div>
+            <div class="income-stat-value" id="debtClaimsTotal" style="color:var(--green);">۰</div>
+          </div>
+          <div class="income-stat-box">
+            <div class="income-stat-label">مجموع بدهی‌ها</div>
+            <div class="income-stat-value" id="debtDebtsTotal" style="color:var(--red);">۰</div>
+          </div>
+          <div class="income-stat-box highlight">
+            <div class="income-stat-label">تراز</div>
+            <div class="income-stat-value" id="debtNetTotal">۰</div>
+          </div>
+        </div>
+
+        <div class="debt-toggle-row">
+          <span>نمایش موارد تسویه‌شده</span>
+          <span class="switch"><input type="checkbox" id="debtShowSettled"><span class="track"></span><span class="thumb"></span></span>
+        </div>
+
+        <div class="divider">
+          <span class="lbl">
+            <span class="icon-badge" style="background:var(--green-tint);">🤝</span>
+            <span class="tl-text" data-title-key="claimsTitle">طلب‌ها</span>
+          </span>
+          <span class="line"></span>
+        </div>
+        <div id="claimsList" class="debt-section-list"></div>
+        <div class="add-row-line" style="flex-direction:column; align-items:stretch; gap:8px;">
+          <select id="newClaimKind" class="kind-select">
+            <option value="financial">مالی</option>
+            <option value="nonfinancial">غیر مالی</option>
+          </select>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="newClaimPerson" placeholder="اسم شخص" class="lined-input" style="flex:1.2; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+            <input type="text" inputmode="decimal" id="newClaimAmount" placeholder="مبلغ (اختیاری)" class="lined-input" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; text-align:center;">
+          </div>
+          <input type="text" id="newClaimNote" placeholder="توضیح (مثلاً بابت چی یا چی بهش دادی)" class="lined-input" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button type="button" class="jdate-trigger empty" id="newClaimDate" data-value="" style="flex:1;">انتخاب تاریخ</button>
+            <button class="btn primary" id="addClaimBtn" style="flex:none;">افزودن طلب</button>
+          </div>
+        </div>
+
+        <div class="divider" style="margin-top:22px;">
+          <span class="lbl">
+            <span class="icon-badge" style="background:var(--red-tint);">📤</span>
+            <span class="tl-text" data-title-key="debtsTitle">بدهی‌ها</span>
+          </span>
+          <span class="line"></span>
+        </div>
+        <div id="debtsList" class="debt-section-list"></div>
+        <div class="add-row-line" style="flex-direction:column; align-items:stretch; gap:8px;">
+          <select id="newDebtKind" class="kind-select">
+            <option value="financial">مالی</option>
+            <option value="nonfinancial">غیر مالی</option>
+          </select>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="newDebtPerson" placeholder="اسم شخص" class="lined-input" style="flex:1.2; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+            <input type="text" inputmode="decimal" id="newDebtAmount" placeholder="مبلغ (اختیاری)" class="lined-input" style="flex:1; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px; text-align:center;">
+          </div>
+          <input type="text" id="newDebtNote" placeholder="توضیح (مثلاً بابت چی یا چی ازش گرفتی)" class="lined-input" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+          <div style="display:flex; gap:8px; align-items:center;">
+            <button type="button" class="jdate-trigger empty" id="newDebtDate" data-value="" style="flex:1;">انتخاب تاریخ</button>
+            <button class="btn primary" id="addDebtBtn" style="flex:none; background:var(--red); border-color:var(--red);">افزودن بدهی</button>
+          </div>
+        </div>
+
+        <div class="income-hint">با زدن روی چک‌باکس هر مورد، به‌عنوان «تسویه‌شده» علامت می‌خوره. اسم، مبلغ، توضیح و تاریخ هر ردیف مستقیم قابل ویرایشه؛ برای حذف هم دکمهٔ ✕ کنارشه.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="jdateOverlay">
+  <div class="modal" style="max-width:340px;">
+    <div class="modal-head">
+      <h3>انتخاب تاریخ</h3>
+      <button class="close-x" id="closeJdateModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="cal-toolbar" style="margin-bottom:10px;">
+        <div class="cal-nav">
+          <button class="flip-btn" type="button" id="jdatePrevMonth" aria-label="ماه قبل">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="flip-btn" type="button" id="jdateNextMonth" aria-label="ماه بعد">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="cal-title" id="jdatePopupTitle">—</div>
+      </div>
+      <div class="weekdays" id="jdateWeekdays"></div>
+      <div class="jdate-grid" id="jdateGrid"></div>
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button type="button" class="btn" id="jdateTodayBtn" style="flex:1;">امروز</button>
+        <button type="button" class="btn danger" id="jdateClearBtn" style="flex:1;">پاک کردن تاریخ</button>
       </div>
     </div>
   </div>
@@ -1633,7 +1987,7 @@ async function storeListDayKeys(){
   } catch(e){ return []; }
 }
 
-var DEFAULT_SETTINGS = { calendarMode:"both", theme:"light", notifEnabled:false, titles:{}, boxSizes:{} };
+var DEFAULT_SETTINGS = { calendarMode:"both", theme:"light", notifEnabled:false, titles:{}, boxSizes:{}, debtShowSettled:false };
 var settings = Object.assign({}, DEFAULT_SETTINGS);
 var indexData = {};
 var DEFAULT_SECTIONS = { dailyProgram:"", expenses:"", calories:"", energy:"", gratitude:"", happened:"", breakfast:"", lunch:"", dinner:"", goal:"", sleepFrom:"", sleepTo:"" };
@@ -1660,7 +2014,9 @@ var TITLE_DEFAULTS = {
   countdownTitle:{icon:"📅", text:"روزشمار"},
   incomeTitle:{icon:"💵", text:"درآمد"},
   financeTitle:{icon:"💰", text:"مالی"},
-  expenseTitle:{icon:"💸", text:"هزینه‌ها"}
+  expenseTitle:{icon:"💸", text:"هزینه‌ها"},
+  claimsTitle:{icon:"🤝", text:"طلب‌ها"},
+  debtsTitle:{icon:"📤", text:"بدهی‌ها"}
 };
 
 var MOOD_OPTIONS = [
@@ -1774,6 +2130,8 @@ var goalsData = [];
 var countdownData = [];
 var pinnedNotesData = [];
 var financeData = { startingBalance: 0 };
+var claimsData = [];
+var debtsData = [];
 async function loadGoals(){ var g = await storeGet("goals"); goalsData = g || []; }
 async function saveGoals(){ await storeSet("goals", goalsData); }
 
@@ -1783,6 +2141,10 @@ async function loadPinnedNotes(){ var n = await storeGet("pinnedNotes"); pinnedN
 async function savePinnedNotes(){ await storeSet("pinnedNotes", pinnedNotesData); }
 async function loadFinance(){ var f = await storeGet("finance"); if(f) financeData = Object.assign({startingBalance:0}, f); }
 async function saveFinance(){ await storeSet("finance", financeData); }
+async function loadClaims(){ var c = await storeGet("claims"); claimsData = c || []; }
+async function saveClaims(){ await storeSet("claims", claimsData); }
+async function loadDebts(){ var d = await storeGet("debts"); debtsData = d || []; }
+async function saveDebts(){ await storeSet("debts", debtsData); }
 async function loadDay(key){ var d = await storeGet("day:"+key); return d || {tasks:[], notes:[], extraSlots:0, sections:Object.assign({},DEFAULT_SECTIONS), shopping:[], water:0, income:[], expenses:[]}; }
 async function saveDay(key, data){
   if(data.extraSlots === undefined) data.extraSlots = 0;
@@ -1832,7 +2194,7 @@ function cacheEls(){
    "btnCheckUpdate",
    "weekdayRow","secDailyProgram","secExpenses","secCalories","secEnergy","secGratitude","secHappened",
    "secBreakfast","secLunch","secDinner","secGoal","secSleepFrom","secSleepTo",
-   "waterRow","waterLabel","shopList","shopNewItem",
+   "waterRow","waterLabel","shopList","shopNewItem","shopAddBtn",
    "energyMoodSelect","energyTrigger","energyTriggerEmoji","energyTriggerLabel","energyMenu","cactusMascot",
    "titleEditList","btnResetTitles",
    "pageGoals","goalsList","newGoalTitle",
@@ -1851,7 +2213,11 @@ function cacheEls(){
    "finReportIncomeTotal","finReportExpenseTotal","finReportNet",
    "finReportIncomeList","finReportExpenseList",
    "finChartMonthTitle","finChartYearTitle",
-   "finDailyChartWrap","finDailyChartTip","finYearChartWrap","finYearChartTip"
+   "finDailyChartWrap","finDailyChartTip","finYearChartWrap","finYearChartTip",
+   "finDebtsView","debtClaimsTotal","debtDebtsTotal","debtNetTotal","debtShowSettled",
+   "jdateOverlay","closeJdateModal","jdatePrevMonth","jdateNextMonth","jdatePopupTitle","jdateWeekdays","jdateGrid","jdateTodayBtn","jdateClearBtn",
+   "claimsList","newClaimKind","newClaimPerson","newClaimAmount","newClaimNote","newClaimDate","addClaimBtn",
+   "debtsList","newDebtKind","newDebtPerson","newDebtAmount","newDebtNote","newDebtDate","addDebtBtn"
   ].forEach(function(id){ el[id]=q(id); });
 }
 
@@ -1885,7 +2251,9 @@ function switchFinSubtab(name){
   });
   el.finDailyView.hidden = name!=="daily";
   el.finReportView.hidden = name!=="report";
+  el.finDebtsView.hidden = name!=="debts";
   if(name==="report"){ renderFinReport(); }
+  if(name==="debts"){ renderDebtsSection(); }
 }
 
 var pendingImages = [];
@@ -2964,6 +3332,202 @@ function renderFinYearChart(jy){
   chartAttachTooltip(el.finYearChartWrap, el.finYearChartTip, monthLabels, seriesList, opts);
 }
 
+/* ---------- Finance tab: debts & claims ---------- */
+function fmtDebtDate(d){
+  if(!d) return "";
+  var parts = d.split("-");
+  if(parts.length!==3) return d;
+  var gy=+parts[0], gm=+parts[1], gd=+parts[2];
+  var j = toJalali(gy,gm,gd);
+  return faDigits(j[2])+" "+JMONTHS[j[1]-1]+" "+faDigits(j[0]);
+}
+
+/* ---------- Reusable Jalali date picker (used by claims/debts date fields) ---------- */
+var jdateState = { viewJy:0, viewJm:0, selectedIso:"", onSelect:null };
+function resetJdateTrigger(triggerEl){
+  triggerEl.setAttribute("data-value","");
+  triggerEl.textContent = "انتخاب تاریخ";
+  triggerEl.classList.add("empty");
+}
+function jdateOpen(triggerEl, initialIso, onSelect){
+  var base = initialIso ? keyToParts(initialIso) : todayParts();
+  var j = toJalali(base.gy, base.gm, base.gd);
+  jdateState.viewJy = j[0]; jdateState.viewJm = j[1];
+  jdateState.selectedIso = initialIso || "";
+  jdateState.onSelect = onSelect;
+  renderJdatePopup();
+  el.jdateOverlay.classList.add("open");
+}
+function jdateClose(){
+  el.jdateOverlay.classList.remove("open");
+  jdateState.onSelect = null;
+}
+function renderJdatePopup(){
+  el.jdatePopupTitle.textContent = JMONTHS[jdateState.viewJm-1]+" "+faDigits(jdateState.viewJy);
+  el.jdateWeekdays.innerHTML = WEEKDAYS_SAT.map(function(w){ return "<span>"+w[0]+"</span>"; }).join("");
+  var jy=jdateState.viewJy, jm=jdateState.viewJm;
+  var len = jalaliMonthLength(jy,jm);
+  var firstG = toGregorian(jy,jm,1);
+  var firstIdx = satWeekdayIndex(firstG[0],firstG[1],firstG[2]);
+  var todayIso = dateKeyOf(todayParts().gy, todayParts().gm, todayParts().gd);
+  var html = "";
+  for(var i=0;i<firstIdx;i++){ html += "<span class='jdate-cell empty'></span>"; }
+  for(var d=1; d<=len; d++){
+    var g = toGregorian(jy,jm,d);
+    var iso = dateKeyOf(g[0],g[1],g[2]);
+    var cls = "jdate-cell";
+    if(iso===todayIso) cls += " today";
+    if(iso===jdateState.selectedIso) cls += " selected";
+    html += "<button type='button' class='"+cls+"' data-iso='"+iso+"'>"+faDigits(d)+"</button>";
+  }
+  el.jdateGrid.innerHTML = html;
+  Array.prototype.forEach.call(el.jdateGrid.querySelectorAll("[data-iso]"), function(btn){
+    btn.addEventListener("click", function(){
+      var iso = btn.getAttribute("data-iso");
+      if(jdateState.onSelect) jdateState.onSelect(iso);
+      jdateClose();
+    });
+  });
+}
+function jdateGoPrevMonth(){ jdateState.viewJm--; if(jdateState.viewJm<1){jdateState.viewJm=12; jdateState.viewJy--;} renderJdatePopup(); }
+function jdateGoNextMonth(){ jdateState.viewJm++; if(jdateState.viewJm>12){jdateState.viewJm=1; jdateState.viewJy++;} renderJdatePopup(); }
+
+function renderDebtLedgerList(containerEl, list, type){
+  var showSettled = !!settings.debtShowSettled;
+  var visible = list.filter(function(it){ return showSettled || !it.done; });
+  var sorted = visible.slice().sort(function(a,b){
+    if(!!a.done!==!!b.done) return a.done?1:-1;
+    return (b.createdAt||0)-(a.createdAt||0);
+  });
+  if(sorted.length===0){
+    containerEl.innerHTML = "<div class='empty-hint'>"+(type==="claim" ? "هنوز طلبی ثبت نشده." : "هنوز بدهی‌ای ثبت نشده.")+"</div>";
+    return;
+  }
+  containerEl.innerHTML = sorted.map(function(it, idx){
+    var typeClass = type==="debt" ? " debt-type-debt" : "";
+    var isNonFin = it.kind==="nonfinancial";
+    var amountInputHtml = isNonFin ? "" :
+      "<input type='text' inputmode='decimal' class='debt-amount' data-action='debt-amount' data-type='"+type+"' data-id='"+it.id+"' value='"+(it.amount?groupThousandsPlain(String(Math.round(it.amount))):"")+"' placeholder='مبلغ'>";
+    var kindTagHtml = isNonFin ? "<span class='debt-kind-tag'>غیر مالی</span>" : "";
+    return "<div class='debt-item"+typeClass+(it.done?" done":"")+"' data-id='"+it.id+"'>"+
+      "<span class='debt-num'>"+faDigits(idx+1)+"</span>"+
+      "<button type='button' class='debt-check"+(it.done?" done":"")+"' data-action='debt-toggle' data-type='"+type+"' data-id='"+it.id+"' aria-label='تسویه شد'>"+(it.done?"✓":"")+"</button>"+
+      "<div class='debt-body'>"+
+        "<div class='debt-top-row'>"+
+          "<input type='text' class='debt-person' data-action='debt-field' data-field='person' data-type='"+type+"' data-id='"+it.id+"' value='"+escapeAttr(it.person||"")+"' placeholder='اسم شخص'>"+
+          kindTagHtml+amountInputHtml+
+        "</div>"+
+        "<input type='text' class='debt-note' data-action='debt-field' data-field='note' data-type='"+type+"' data-id='"+it.id+"' value='"+escapeAttr(it.note||"")+"' placeholder='توضیح (اختیاری)'>"+
+        "<div class='debt-meta-row'>"+
+          "<button type='button' class='jdate-trigger"+(it.date?"":" empty")+" debt-date-input' data-action='debt-date' data-type='"+type+"' data-id='"+it.id+"' data-value='"+(it.date||"")+"' style='width:auto; padding:5px 12px; font-size:11px;'>"+(it.date?fmtDebtDate(it.date):"تاریخ")+"</button>"+
+          (it.done ? "<span class='debt-settled-tag'>✓ تسویه شد</span>" : "")+
+        "</div>"+
+      "</div>"+
+      "<button type='button' class='debt-del' data-action='debt-delete' data-type='"+type+"' data-id='"+it.id+"' title='حذف'>✕</button>"+
+    "</div>";
+  }).join("");
+  bindDebtItemEvents(containerEl);
+}
+function bindDebtItemEvents(containerEl){
+  Array.prototype.forEach.call(containerEl.querySelectorAll("[data-action='debt-toggle']"), function(b){
+    b.addEventListener("click", function(){ toggleDebtItem(b.getAttribute("data-type"), b.getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(containerEl.querySelectorAll("[data-action='debt-delete']"), function(b){
+    b.addEventListener("click", function(){ deleteDebtItem(b.getAttribute("data-type"), b.getAttribute("data-id")); });
+  });
+  Array.prototype.forEach.call(containerEl.querySelectorAll("[data-action='debt-field']"), function(inp){
+    inp.addEventListener("input", function(){
+      debounceSaveDebtField(inp.getAttribute("data-type"), inp.getAttribute("data-id"), inp.getAttribute("data-field"), inp.value);
+    });
+  });
+  Array.prototype.forEach.call(containerEl.querySelectorAll("[data-action='debt-date']"), function(btn){
+    btn.addEventListener("click", function(){
+      jdateOpen(btn, btn.getAttribute("data-value"), function(iso){
+        btn.setAttribute("data-value", iso);
+        btn.textContent = iso ? fmtDebtDate(iso) : "تاریخ";
+        btn.classList.toggle("empty", !iso);
+        setDebtField(btn.getAttribute("data-type"), btn.getAttribute("data-id"), "date", iso);
+      });
+    });
+  });
+  Array.prototype.forEach.call(containerEl.querySelectorAll("[data-action='debt-amount']"), function(inp){
+    bindMoneyInputFormatting(inp);
+    inp.addEventListener("input", function(){
+      debounceSaveDebtField(inp.getAttribute("data-type"), inp.getAttribute("data-id"), "amount", moneyInputValue(inp));
+    });
+  });
+}
+function getDebtStore(type){ return type==="claim" ? claimsData : debtsData; }
+async function saveDebtStore(type){ if(type==="claim"){ await saveClaims(); } else { await saveDebts(); } }
+function findDebtItem(type, id){ return getDebtStore(type).find(function(x){ return x.id===id; }); }
+async function setDebtField(type, id, field, value){
+  var it = findDebtItem(type, id); if(!it) return;
+  it[field] = value;
+  await saveDebtStore(type);
+  if(field==="amount") renderDebtsSection();
+}
+var debtFieldDebounce = {};
+function debounceSaveDebtField(type, id, field, value){
+  var key = type+":"+id+":"+field;
+  clearTimeout(debtFieldDebounce[key]);
+  debtFieldDebounce[key] = setTimeout(function(){ setDebtField(type, id, field, value); }, 260);
+}
+async function toggleDebtItem(type, id){
+  var it = findDebtItem(type, id); if(!it) return;
+  it.done = !it.done;
+  await saveDebtStore(type);
+  renderDebtsSection();
+}
+async function deleteDebtItem(type, id){
+  if(type==="claim"){ claimsData = claimsData.filter(function(x){ return x.id!==id; }); }
+  else { debtsData = debtsData.filter(function(x){ return x.id!==id; }); }
+  await saveDebtStore(type);
+  renderDebtsSection();
+}
+async function addClaim(){
+  var person = el.newClaimPerson.value.trim();
+  var kind = el.newClaimKind.value==="nonfinancial" ? "nonfinancial" : "financial";
+  var amount = kind==="nonfinancial" ? 0 : moneyInputValue(el.newClaimAmount);
+  var note = el.newClaimNote.value.trim();
+  var date = el.newClaimDate.getAttribute("data-value") || "";
+  if(!person && !note){ showToast("اسم شخص یا توضیح رو بنویس"); return; }
+  claimsData.push({id:uid(), person:person, kind:kind, amount:amount||0, note:note, date:date, done:false, createdAt:Date.now()});
+  await saveClaims();
+  el.newClaimPerson.value=""; el.newClaimAmount.value=""; el.newClaimNote.value="";
+  el.newClaimKind.value="financial"; el.newClaimAmount.style.display="";
+  resetJdateTrigger(el.newClaimDate);
+  renderDebtsSection();
+  showToast("طلب ثبت شد");
+}
+async function addDebt(){
+  var person = el.newDebtPerson.value.trim();
+  var kind = el.newDebtKind.value==="nonfinancial" ? "nonfinancial" : "financial";
+  var amount = kind==="nonfinancial" ? 0 : moneyInputValue(el.newDebtAmount);
+  var note = el.newDebtNote.value.trim();
+  var date = el.newDebtDate.getAttribute("data-value") || "";
+  if(!person && !note){ showToast("اسم شخص یا توضیح رو بنویس"); return; }
+  debtsData.push({id:uid(), person:person, kind:kind, amount:amount||0, note:note, date:date, done:false, createdAt:Date.now()});
+  await saveDebts();
+  el.newDebtPerson.value=""; el.newDebtAmount.value=""; el.newDebtNote.value="";
+  el.newDebtKind.value="financial"; el.newDebtAmount.style.display="";
+  resetJdateTrigger(el.newDebtDate);
+  renderDebtsSection();
+  showToast("بدهی ثبت شد");
+}
+function renderDebtsSection(){
+  if(!el.claimsList) return;
+  renderDebtLedgerList(el.claimsList, claimsData, "claim");
+  renderDebtLedgerList(el.debtsList, debtsData, "debt");
+  var claimsTotal = claimsData.filter(function(x){ return !x.done; }).reduce(function(s,x){ return s+(+x.amount||0); }, 0);
+  var debtsTotal = debtsData.filter(function(x){ return !x.done; }).reduce(function(s,x){ return s+(+x.amount||0); }, 0);
+  el.debtClaimsTotal.textContent = formatMoney(claimsTotal);
+  el.debtDebtsTotal.textContent = formatMoney(debtsTotal);
+  var net = claimsTotal - debtsTotal;
+  el.debtNetTotal.textContent = (net>=0?"+":"") + formatMoney(net);
+  el.debtNetTotal.style.color = net>=0 ? "var(--green)" : "var(--red)";
+  el.debtShowSettled.checked = !!settings.debtShowSettled;
+}
+
 /* ---------- Pinned notes ---------- */
 var pendingPinnedImages = [];
 var pendingPinnedType = "text";
@@ -3563,23 +4127,29 @@ function showToast(msg){
 }
 
 function bindEvents(){
-  (function(){
-    var cWrap = document.getElementById("cactusWrap");
-    var cMascot = document.getElementById("cactusMascot");
+  function bindCactusPoke(wrapId, mascotId, withHappyFace){
+    var cWrap = document.getElementById(wrapId);
+    var cMascot = document.getElementById(mascotId);
     var pokeTimer = null;
-    if(cWrap && cMascot){
-      cWrap.addEventListener("click", function(){
-        cWrap.classList.remove("poked"); void cWrap.offsetWidth;
-        cWrap.classList.add("poked");
+    if(!cWrap || !cMascot) return;
+    cWrap.addEventListener("click", function(){
+      cWrap.classList.remove("poked"); void cWrap.offsetWidth;
+      cWrap.classList.add("poked");
+      if(withHappyFace){
         cMascot.classList.add("happy-face");
         clearTimeout(pokeTimer);
         pokeTimer = setTimeout(function(){ cMascot.classList.remove("happy-face"); }, 650);
-      });
-      cWrap.addEventListener("animationend", function(e){
-        if(e.animationName === "cactusPoke") cWrap.classList.remove("poked");
-      });
-    }
-  })();
+      }
+    });
+    cWrap.addEventListener("animationend", function(e){
+      if(e.animationName === "cactusPoke") cWrap.classList.remove("poked");
+    });
+  }
+  bindCactusPoke("cactusWrap","cactusMascot", true);
+  bindCactusPoke("cactusWrapGoals","cactusMascotGoals", false);
+  bindCactusPoke("cactusWrapCalendar","cactusMascotCalendar", false);
+  bindCactusPoke("cactusWrapPractical","cactusMascotPractical", false);
+  bindCactusPoke("cactusWrapFinance","cactusMascotFinance", false);
 
   Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
     t.addEventListener("click", function(){ calendarReturnTab = "today"; switchTab(t.getAttribute("data-tab")); });
@@ -3669,6 +4239,7 @@ function bindEvents(){
       submitShopNewItem();
     }
   });
+  el.shopAddBtn.addEventListener("click", function(){ submitShopNewItem(); });
   el.shopNewItem.addEventListener("keypress", function(e){
     if(e.key==="Enter" || e.keyCode===13){
       e.preventDefault();
@@ -3722,6 +4293,63 @@ function bindEvents(){
   el.saveStartingBalanceBtn.addEventListener("click", saveStartingBalance);
   el.startingBalanceInput.addEventListener("keydown", function(e){
     if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); saveStartingBalance(); }
+  });
+
+  el.addClaimBtn.addEventListener("click", addClaim);
+  el.addDebtBtn.addEventListener("click", addDebt);
+  el.newClaimKind.addEventListener("change", function(){
+    var isNonFin = el.newClaimKind.value==="nonfinancial";
+    el.newClaimAmount.style.display = isNonFin ? "none" : "";
+    if(isNonFin) el.newClaimAmount.value = "";
+  });
+  el.newDebtKind.addEventListener("change", function(){
+    var isNonFin = el.newDebtKind.value==="nonfinancial";
+    el.newDebtAmount.style.display = isNonFin ? "none" : "";
+    if(isNonFin) el.newDebtAmount.value = "";
+  });
+  [el.newClaimPerson, el.newClaimNote].forEach(function(inp){
+    inp.addEventListener("keydown", function(e){ if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addClaim(); } });
+  });
+  el.newClaimAmount.addEventListener("keydown", function(e){ if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addClaim(); } });
+  [el.newDebtPerson, el.newDebtNote].forEach(function(inp){
+    inp.addEventListener("keydown", function(e){ if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addDebt(); } });
+  });
+  el.newDebtAmount.addEventListener("keydown", function(e){ if(e.key==="Enter" || e.keyCode===13){ e.preventDefault(); e.stopPropagation(); addDebt(); } });
+  bindMoneyInputFormatting(el.newClaimAmount);
+  bindMoneyInputFormatting(el.newDebtAmount);
+  el.debtShowSettled.addEventListener("change", async function(){
+    settings.debtShowSettled = el.debtShowSettled.checked;
+    await saveSettings();
+    renderDebtsSection();
+  });
+
+  el.newClaimDate.addEventListener("click", function(){
+    jdateOpen(el.newClaimDate, el.newClaimDate.getAttribute("data-value"), function(iso){
+      el.newClaimDate.setAttribute("data-value", iso);
+      el.newClaimDate.textContent = iso ? fmtDebtDate(iso) : "انتخاب تاریخ";
+      el.newClaimDate.classList.toggle("empty", !iso);
+    });
+  });
+  el.newDebtDate.addEventListener("click", function(){
+    jdateOpen(el.newDebtDate, el.newDebtDate.getAttribute("data-value"), function(iso){
+      el.newDebtDate.setAttribute("data-value", iso);
+      el.newDebtDate.textContent = iso ? fmtDebtDate(iso) : "انتخاب تاریخ";
+      el.newDebtDate.classList.toggle("empty", !iso);
+    });
+  });
+  el.closeJdateModal.addEventListener("click", jdateClose);
+  el.jdateOverlay.addEventListener("click", function(e){ if(e.target===el.jdateOverlay) jdateClose(); });
+  el.jdatePrevMonth.addEventListener("click", jdateGoPrevMonth);
+  el.jdateNextMonth.addEventListener("click", jdateGoNextMonth);
+  el.jdateTodayBtn.addEventListener("click", function(){
+    var t = todayParts();
+    var iso = dateKeyOf(t.gy,t.gm,t.gd);
+    if(jdateState.onSelect) jdateState.onSelect(iso);
+    jdateClose();
+  });
+  el.jdateClearBtn.addEventListener("click", function(){
+    if(jdateState.onSelect) jdateState.onSelect("");
+    jdateClose();
   });
 
   el.prevMonth.addEventListener("click", goPrevMonth);
@@ -3786,7 +4414,7 @@ function bindEvents(){
     if(el.energyMoodSelect && !el.energyMoodSelect.contains(e.target)) closeEnergyMenu();
   });
 
-  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ el.settingsOverlay.classList.remove("open"); closeEnergyMenu(); openMenuId=null; openTimeId=null; renderTasks(); } });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ el.settingsOverlay.classList.remove("open"); jdateClose(); closeEnergyMenu(); openMenuId=null; openTimeId=null; renderTasks(); } });
 }
 
 /* ---------- Persist resizable box heights ---------- */
@@ -3870,6 +4498,8 @@ async function boot(){
   await loadGoals();
   await loadCountdowns();
   await loadPinnedNotes();
+  await loadClaims();
+  await loadDebts();
   syncSettingsUI();
   setInterval(checkAlarmsTick, 20000);
 }
