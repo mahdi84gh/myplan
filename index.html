@@ -98,6 +98,7 @@
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
+  input,button,select,textarea{font-family:inherit;}
   body{
     font-family:var(--font-ui);
     color:var(--ink);
@@ -169,6 +170,9 @@
   .tab.active .dot{background:var(--dot-color); opacity:1; box-shadow:0 0 0 3px var(--ring); animation:dotPulse 1.8s ease-in-out infinite;}
   .tab[data-tab="calendar"].active .dot{--ring:var(--gold-tint); --dot-color:var(--gold);}
   .tab[data-tab="finance"].active .dot{--ring:var(--green-tint); --dot-color:var(--green);}
+  .tabs-row2{display:flex; gap:4px; padding:3px 18px 0; position:relative; z-index:2;}
+  @media(max-width:560px){ .tabs-row2{padding:3px 10px 0; gap:2px;} }
+  @media(max-width:390px){ .tabs-row2{padding:3px 6px 0;} }
   @keyframes dotPulse{
     0%,100%{ box-shadow:0 0 0 3px var(--ring), 0 0 0 0 var(--dot-color); }
     50%{ box-shadow:0 0 0 3px var(--ring), 0 0 9px 3px var(--dot-color); }
@@ -229,10 +233,28 @@
   .progress-fill{height:100%; background:linear-gradient(90deg, var(--blue), var(--gold)); border-radius:20px; transition:width .35s ease; width:0%;}
   .progress-label{font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--blue-deep); flex:none; min-width:48px; text-align:left;}
 
-  .divider{display:flex; align-items:center; gap:10px; margin:22px 0 13px; color:var(--ink-faint);}
-  .divider .line{flex:1; height:1px; background:var(--paper-line);}
-  .divider .lbl{font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:7px;}
-  .divider .lbl .icon-badge{width:24px; height:24px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex:none;}
+  .divider{display:flex; align-items:center; gap:11px; margin:24px 0 14px; color:var(--ink-faint);}
+  .divider .line{
+    flex:1; height:1px; position:relative;
+    background:linear-gradient(to left, var(--paper-line) 0%, var(--paper-line) 45%, transparent 100%);
+  }
+  .divider .line::after{
+    content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
+    width:4px; height:4px; border-radius:50%; background:var(--gold); opacity:.55;
+  }
+  .divider .lbl{font-family:var(--font-head); font-size:15px; font-weight:700; color:var(--ink); display:flex; align-items:center; gap:8px; letter-spacing:.2px;}
+  .btn-routine-import{
+    font-family:var(--font-ui); font-size:11px; font-weight:700; color:var(--blue-deep);
+    background:var(--blue-tint); border:1px solid var(--blue); border-radius:20px;
+    padding:5px 11px; cursor:pointer; display:inline-flex; align-items:center; gap:4px; flex:none; white-space:nowrap;
+    transition:.15s;
+  }
+  .btn-routine-import:hover{background:var(--blue); color:#fff;}
+  .divider .lbl .icon-badge{
+    width:26px; height:26px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex:none; font-size:13px;
+    box-shadow:0 1px 3px rgba(0,0,0,.07), inset 0 0 0 1px rgba(255,255,255,.35);
+  }
+  [data-theme="dark"] .divider .lbl .icon-badge{box-shadow:0 1px 3px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.06);}
 
   .soft-divider{display:flex; align-items:center; gap:10px; margin:22px 0 4px;}
   .soft-divider .sd-line{flex:1; height:1px; background:linear-gradient(90deg, transparent, var(--paper-line) 20%, var(--paper-line) 80%, transparent);}
@@ -355,6 +377,7 @@
   .cd-title{flex:1; font-family:var(--font-ui); font-weight:700; font-size:13.5px; color:var(--ink);}
   .cd-card.done .cd-title{text-decoration:line-through; color:var(--ink-faint);}
   #newCountdownDays::placeholder{color:var(--ink-faint); font-weight:400;}
+  #newRoutineEstTime::placeholder{color:var(--ink-faint); font-weight:400;}
   .cd-del{background:none; border:none; cursor:pointer; color:var(--ink-faint); font-size:15px; flex:none; padding:2px;}
   .cd-del:hover{color:var(--red);}
   .cd-progress-row{display:flex; align-items:center; gap:8px; margin-top:11px;}
@@ -366,6 +389,94 @@
   .cd-sub{font-size:11px; color:var(--ink-faint);}
   .cd-reminder-badge{ display:inline-flex; align-items:center; gap:3px; font-size:11px; background:var(--blue-tint); color:var(--blue-deep); border-radius:7px; padding:2px 7px; margin-top:8px; }
   .cd-card .gcal-link{ font-size:11px; color:var(--blue-deep); text-decoration:none; background:var(--blue-tint); border-radius:7px; padding:3px 8px; display:inline-block; margin-top:6px; margin-inline-start:6px; border-bottom:none; }
+
+  /* ---------- Routine tab ---------- */
+  .routine-day-row{display:flex; justify-content:space-between; gap:5px; margin:0 0 16px;}
+  .routine-day-chip{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 2px 8px;
+    border-radius:14px; border:1px solid var(--paper-line); background:var(--paper-deep); cursor:pointer; transition:.15s;
+  }
+  .routine-day-chip:hover{border-color:var(--blue);}
+  .routine-day-chip.selected{background:var(--blue-tint); border-color:var(--blue-deep);}
+  .routine-day-chip .rd-name{font-size:10px; color:var(--ink-faint); font-weight:700;}
+  .routine-day-chip.selected .rd-name{color:var(--blue-deep);}
+  .routine-day-chip .rd-count{
+    min-width:20px; height:20px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:10.5px; font-weight:800; color:var(--ink-faint); padding:0 4px;
+  }
+  .routine-day-chip.selected .rd-count{background:var(--blue); color:#fff;}
+  @media(max-width:400px){ .routine-day-chip{padding:7px 1px 6px;} .routine-day-chip .rd-name{font-size:8.5px;} .routine-day-chip .rd-count{min-width:17px; height:17px; font-size:9px;} }
+
+  .routine-table{
+    background:var(--paper); border:1px solid var(--paper-line); border-radius:16px; overflow:hidden;
+    box-shadow:0 3px 16px rgba(0,0,0,.05); margin-bottom:18px;
+  }
+  [data-theme="dark"] .routine-table{box-shadow:0 3px 16px rgba(0,0,0,.22);}
+  .routine-table-head{
+    display:grid; grid-template-columns:28px 1fr 1.35fr 62px 18px; gap:0; align-items:center;
+    padding:11px 14px; background:linear-gradient(180deg, var(--paper-deep), var(--paper));
+    border-bottom:1px solid var(--paper-line);
+  }
+  .routine-table-head span{
+    font-family:var(--font-ui); font-size:10px; font-weight:700; color:var(--ink-faint);
+    letter-spacing:.15px; text-align:center; line-height:1.35;
+  }
+  .routine-table-head span:nth-child(2), .routine-table-head span:nth-child(3){text-align:right;}
+  .routine-table-head > *, .routine-row > *{padding-inline-start:8px; padding-inline-end:8px;}
+  .routine-table-head > *:first-child, .routine-row > *:first-child{padding-inline-start:0;}
+  .routine-table-head > *:last-child, .routine-row > *:last-child{padding-inline-end:0;}
+  .routine-table-head > *:not(:first-child), .routine-row > *:not(:first-child){border-inline-start:1px solid var(--paper-line);}
+  .routine-row{
+    display:grid; grid-template-columns:28px 1fr 1.35fr 62px 18px; gap:0; align-items:start;
+    padding:13px 14px; border-bottom:1px dashed var(--paper-line); transition:background .15s;
+  }
+  .routine-row:last-child{border-bottom:none;}
+  .routine-row:hover, .routine-row:focus-within{background:var(--paper-deep);}
+  .rt-num{
+    min-width:22px; height:22px; border-radius:7px; margin-top:1px; padding:0 3px;
+    background:var(--paper); border:1px solid var(--paper-line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-ui); font-weight:800; font-size:11px; color:var(--gold); flex:none;
+  }
+  .rt-title-input{
+    font-family:var(--font-ui); font-weight:700; font-size:13px; color:var(--ink);
+    border:none; border-bottom:1px dashed var(--paper-line); background:transparent; padding:3px 0; width:100%; line-height:1.5; min-width:0;
+    resize:none; overflow:hidden; min-height:0; transition:border-color .15s;
+  }
+  .rt-title-input:hover{border-color:var(--blue);}
+  .rt-title-input:focus{outline:none; border-bottom-style:solid; border-color:var(--blue);}
+  .rt-title-input::placeholder{color:var(--ink-faint); font-weight:400; font-family:var(--font-ui); font-size:11.5px;}
+  .rt-desc-input{
+    width:100%; min-width:0; border:none; border-bottom:1px dashed var(--paper-line); background:transparent; font-family:var(--font-ui); font-size:11.5px; color:var(--ink-soft);
+    resize:none; padding:3px 0; line-height:1.7; overflow:hidden; min-height:0; transition:border-color .15s;
+  }
+  .rt-desc-input:hover{border-color:var(--blue);}
+  .rt-desc-input:focus{outline:none; border-bottom-style:solid; border-color:var(--blue);}
+  .rt-desc-input::placeholder{color:var(--ink-faint);}
+  .rt-time-input{
+    width:100%; border:1px solid var(--paper-line); border-radius:8px; background:var(--paper-deep); color:var(--blue-deep);
+    font-family:var(--font-ui); font-weight:700; font-size:10px; text-align:center; padding:6px 2px; margin-top:1px;
+    resize:none; overflow:hidden; min-height:0; line-height:1.4;
+  }
+  .rt-time-input:focus{outline:none; border-color:var(--blue);}
+  .rt-time-input::placeholder{color:var(--ink-faint); font-weight:400; font-family:var(--font-ui); font-size:9.5px;}
+  .rt-del-btn{background:none; border:none; color:var(--ink-faint); opacity:.35; cursor:pointer; font-size:12px; padding:2px 0; margin-top:3px; flex:none; transition:.15s;}
+  .rt-del-btn:hover{opacity:1; color:var(--red);}
+  #routineTaskList .empty-hint{background:transparent; border:none; padding:26px 10px; text-align:center;}
+  @media(max-width:400px){
+    .routine-table-head, .routine-row{grid-template-columns:24px 1fr 1.15fr 52px 16px; gap:0; padding:11px 9px;}
+    .routine-table-head > *, .routine-row > *{padding-inline-start:6px; padding-inline-end:6px;}
+    .routine-table-head span{font-size:9px;}
+    .rt-num{min-width:19px; height:19px; font-size:9.5px;}
+    .rt-title-input{font-size:12px;}
+    .rt-desc-input{font-size:11px;}
+    .rt-time-input{font-size:9px; padding:5px 1px;}
+  }
+  #routineDayNotes{
+    width:100%; resize:vertical; font-family:var(--font-ui); font-size:12.5px; color:var(--ink); line-height:1.8; min-height:90px;
+    border:1px dashed var(--paper-line); border-radius:9px; padding:10px 12px; background:var(--paper-deep);
+  }
+  #routineDayNotes:focus{outline:none; border-color:var(--blue);}
 
   /* ---------- Practical tab: income ---------- */
   .income-banner{margin:24px 0 4px; padding:6px 10px;}
@@ -1064,11 +1175,14 @@
       <button class="tab" data-tab="practical"><span class="dot"></span>کاربردی</button>
       <button class="tab" data-tab="finance"><span class="dot"></span>مالی</button>
     </div>
+    <div class="tabs tabs-row2">
+      <button class="tab" data-tab="routine"><span class="dot"></span>روتین</button>
+    </div>
 
     <div class="page" id="pageToday">
       <div class="day-head">
-        <button class="flip-btn" id="prevDay" aria-label="روز قبل">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+        <button class="flip-btn" id="nextDay" aria-label="روز بعد">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
         </button>
         <div class="day-head-center">
           <div class="day-weekday" id="dWeekday">—</div>
@@ -1077,8 +1191,8 @@
           <div class="day-alt-line" id="dAltLine"></div>
           <div id="dBadgeSlot"></div>
         </div>
-        <button class="flip-btn" id="nextDay" aria-label="روز بعد">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+        <button class="flip-btn" id="prevDay" aria-label="روز قبل">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
         </button>
       </div>
 
@@ -1194,6 +1308,7 @@
           <span class="tl-text" data-title-key="tasksTitle">کارهای انجام‌دادنی</span>
         </span>
         <span class="line"></span>
+        <button type="button" class="btn-routine-import" id="importRoutineBtn" title="انتقال کارهای روتین همین روز هفته">📥 روتین</button>
       </div>
       <div id="carryBannerSlot"></div>
       <div id="taskList"></div>
@@ -1389,11 +1504,11 @@
       </div>
       <div class="cal-toolbar">
         <div class="cal-nav">
-          <button class="flip-btn" id="prevMonth" aria-label="ماه قبل">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
-          </button>
           <button class="flip-btn" id="nextMonth" aria-label="ماه بعد">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <button class="flip-btn" id="prevMonth" aria-label="ماه قبل">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
           </button>
         </div>
         <div class="cal-title" id="calTitle">—</div>
@@ -1552,15 +1667,15 @@
       </div>
 
       <div class="income-daynav fin-daynav-wrap">
-        <button class="flip-btn" id="finPrevDay" aria-label="روز قبل">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+        <button class="flip-btn" id="finNextDay" aria-label="روز بعد">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
         </button>
         <div class="income-day-label" id="finDayLabel" role="button" tabindex="0" title="باز کردن تقویم برای انتخاب هر تاریخی">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
           <span id="finDayLabelText">امروز</span>
         </div>
-        <button class="flip-btn" id="finNextDay" aria-label="روز بعد">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+        <button class="flip-btn" id="finPrevDay" aria-label="روز قبل">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
         </button>
       </div>
 
@@ -1615,15 +1730,15 @@
 
       <div id="finReportView" hidden>
         <div class="income-daynav">
-          <button class="flip-btn" id="finReportPrevMonth" aria-label="ماه قبل">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+          <button class="flip-btn" id="finReportNextMonth" aria-label="ماه بعد">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
           </button>
           <div class="income-day-label fin-report-daylabel" id="finReportMonthLabel">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
             <span id="finReportMonthLabelText">این ماه</span>
           </div>
-          <button class="flip-btn" id="finReportNextMonth" aria-label="ماه بعد">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+          <button class="flip-btn" id="finReportPrevMonth" aria-label="ماه قبل">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
           </button>
         </div>
 
@@ -1765,6 +1880,47 @@
         <div class="income-hint">با زدن روی چک‌باکس هر مورد، به‌عنوان «تسویه‌شده» علامت می‌خوره. اسم، مبلغ، توضیح و تاریخ هر ردیف مستقیم قابل ویرایشه؛ برای حذف هم دکمهٔ ✕ کنارشه.</div>
       </div>
     </div>
+
+    <div class="page" id="pageRoutine" hidden>
+      <div class="divider" style="margin-top:2px;">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--gold-tint);">🗓️</span>
+          <span class="tl-text" data-title-key="routineTitle">روتین هفتگی</span>
+        </span>
+        <span class="line"></span>
+      </div>
+
+      <div class="routine-day-row" id="routineDayRow"></div>
+
+      <div class="routine-table" id="routineTableWrap">
+        <div class="routine-table-head">
+          <span>شماره</span>
+          <span>عنوان کار</span>
+          <span>شرح یا توضیح</span>
+          <span>تایم تخمینی</span>
+          <span></span>
+        </div>
+        <div id="routineTaskList"></div>
+      </div>
+
+      <div class="add-row-line" style="flex-direction:column; align-items:stretch; gap:8px;">
+        <input type="text" class="lined-input" id="newRoutineTitle" placeholder="عنوان کار (مثلاً: ورزش صبحگاهی)…" style="border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;">
+        <textarea id="newRoutineDesc" class="lined-input" placeholder="شرح یا توضیح (اختیاری)…" rows="2" style="width:100%; resize:vertical; font-family:var(--font-ui); border:1px dashed var(--paper-line); border-radius:9px; padding:9px 12px;"></textarea>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input type="text" id="newRoutineEstTime" placeholder="تایم تخمینی" style="flex:0 0 130px; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 8px; font-family:var(--font-ui); font-weight:700; font-size:12.5px; text-align:center;">
+          <button class="btn primary" id="addRoutineBtn" style="flex:none;">افزودن</button>
+        </div>
+      </div>
+
+      <div class="divider" style="margin-top:22px;">
+        <span class="lbl">
+          <span class="icon-badge" style="background:var(--blue-tint);">📝</span>
+          <span class="tl-text" data-title-key="routineNotesTitle">یادداشت این روز</span>
+        </span>
+        <span class="line"></span>
+      </div>
+      <textarea id="routineDayNotes" placeholder="یادداشت یا توضیح کلی برای این روز…"></textarea>
+    </div>
   </div>
 </div>
 
@@ -1777,11 +1933,11 @@
     <div class="modal-body">
       <div class="cal-toolbar" style="margin-bottom:10px;">
         <div class="cal-nav">
-          <button class="flip-btn" type="button" id="jdatePrevMonth" aria-label="ماه قبل">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
-          </button>
           <button class="flip-btn" type="button" id="jdateNextMonth" aria-label="ماه بعد">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <button class="flip-btn" type="button" id="jdatePrevMonth" aria-label="ماه قبل">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
           </button>
         </div>
         <div class="cal-title" id="jdatePopupTitle">—</div>
@@ -2148,6 +2304,8 @@ async function loadIndex(){ var idx = await storeGet("index"); indexData = idx |
 async function saveIndex(){ await storeSet("index", indexData); }
 var goalsData = [];
 var countdownData = [];
+var routineData = null;
+var routineSelectedDay = 0;
 var pinnedNotesData = [];
 var financeData = { startingBalance: 0 };
 var claimsData = [];
@@ -2206,7 +2364,7 @@ var el = {};
 function q(id){ return document.getElementById(id); }
 function cacheEls(){
   ["dWeekday","dNumBig","dMonthLine","dAltLine","dBadgeSlot","prevDay","nextDay",
-   "taskList","addSlotBtn","progressFill","progressLabel","carryBannerSlot",
+   "taskList","addSlotBtn","importRoutineBtn","progressFill","progressLabel","carryBannerSlot",
    "newNoteText","newNoteImage","newNoteThumbs","addNoteBtn","noteList",
    "calTitle","weekdaysRow","calGrid","agendaList","prevMonth","nextMonth",
    "settingsOverlay","closeSettingsModal","calModeSeg","darkToggle","btnEnableNotif","btnClearAll",
@@ -2237,7 +2395,8 @@ function cacheEls(){
    "finDebtsView","debtClaimsTotal","debtDebtsTotal","debtNetTotal","debtShowSettled",
    "jdateOverlay","closeJdateModal","jdatePrevMonth","jdateNextMonth","jdatePopupTitle","jdateWeekdays","jdateGrid","jdateTodayBtn","jdateClearBtn",
    "claimsList","newClaimKind","newClaimPerson","newClaimAmount","newClaimNote","newClaimDate","addClaimBtn",
-   "debtsList","newDebtKind","newDebtPerson","newDebtAmount","newDebtNote","newDebtDate","addDebtBtn"
+   "debtsList","newDebtKind","newDebtPerson","newDebtAmount","newDebtNote","newDebtDate","addDebtBtn",
+   "pageRoutine","routineDayRow","routineTaskList","newRoutineTitle","newRoutineDesc","newRoutineEstTime","addRoutineBtn","routineDayNotes"
   ].forEach(function(id){ el[id]=q(id); });
 }
 
@@ -2251,10 +2410,12 @@ function switchTab(name){
   q("pageCalendar").hidden = name!=="calendar";
   q("pagePractical").hidden = name!=="practical";
   q("pageFinance").hidden = name!=="finance";
+  q("pageRoutine").hidden = name!=="routine";
   if(name==="calendar"){ setViewMonthFromKey(pageKey); renderCalendarTab(); }
   if(name==="goals"){ renderGoals(); renderPinnedNotes(); }
   if(name==="practical"){ renderCountdowns(); }
   if(name==="finance"){ renderFinanceSection(); if(finActiveSubtab==="report"){ renderFinReport(); } }
+  if(name==="routine"){ renderRoutineDayRow(); renderRoutineTasks(); }
 }
 
 var finActiveSubtab = "daily";
@@ -2496,7 +2657,7 @@ function renderTasks(){
         "<span class='drag-handle'>⋮⋮</span>"+
         "<span class='task-num'>"+num+"</span>"+
         "<div class='task-check' aria-hidden='true'></div>"+
-        "<div class='task-body'><input class='task-text-input' data-action='newtext' data-idx='"+idx+"' type='text' placeholder='عنوان کار #"+num+" را بنویس…'></div>"+
+        "<div class='task-body'><input class='task-text-input' data-action='newtext' data-idx='"+idx+"' type='text' placeholder=''></div>"+
       "</div>";
     }
     var pClass = "p"+(t.priority||0);
@@ -2545,7 +2706,7 @@ function renderTasks(){
       "<span class='task-num'>"+num+"</span>"+
       "<button class='task-check "+(t.done?"done":"")+"' data-action='toggle' data-id='"+t.id+"' aria-label='انجام شد'>"+(t.done?"✓":"")+"</button>"+
       "<div class='task-body'>"+
-        "<input class='task-text-input "+(t.done?"done":"")+"' data-action='text' data-id='"+t.id+"' type='text' value='"+escapeAttr(t.text)+"' placeholder='عنوان کار…'>"+
+        "<input class='task-text-input "+(t.done?"done":"")+"' data-action='text' data-id='"+t.id+"' type='text' value='"+escapeAttr(t.text)+"' placeholder=''>"+
         descBox+
         timeMeta+
       "</div>"+
@@ -2700,6 +2861,36 @@ async function commitNewText(inp){
   if(activeTab==="calendar") renderCalendarTab();
   var nextInput = el.taskList.querySelector("[data-idx='"+(idx+1)+"'][data-action='newtext']");
   if(nextInput) nextInput.focus();
+}
+async function importRoutineIntoToday(){
+  if(!routineData) await loadRoutine();
+  var p = keyToParts(pageKey);
+  var dayIdx = satWeekdayIndex(p.gy, p.gm, p.gd);
+  var routineDay = routineData[dayIdx];
+  var routineTasks = (routineDay && routineDay.tasks) ? routineDay.tasks : [];
+  if(routineTasks.length===0){
+    showToast("روتین «"+WEEKDAYS_SAT[dayIdx]+"» خالیه، کاری برای انتقال نیست");
+    return;
+  }
+  var existingTexts = currentDayData.tasks.map(function(t){ return (t.text||"").trim(); });
+  var added = 0;
+  routineTasks.forEach(function(rt){
+    var title = (rt.title||"").trim();
+    if(!title) return;
+    if(existingTexts.indexOf(title)!==-1) return;
+    var isFirstTask = currentDayData.tasks.length===0;
+    currentDayData.tasks.push({
+      id:uid(), text:title, desc:rt.desc||"", start:isFirstTask?"09:00":"", end:"",
+      priority:0, alarm:false, fired:false, carryOver:false, done:false, migrated:false
+    });
+    existingTexts.push(title);
+    added++;
+  });
+  if(added===0){ showToast("همهٔ کارهای روتین این روز قبلاً اضافه شدن"); return; }
+  await saveDay(pageKey, currentDayData);
+  renderTasks();
+  if(activeTab==="calendar") renderCalendarTab();
+  showToast(faDigits(added)+" کار از روتین «"+WEEKDAYS_SAT[dayIdx]+"» اضافه شد");
 }
 async function setTaskField(id, field, value){
   var t = findTask(id); if(!t) return;
@@ -2952,6 +3143,120 @@ async function deleteCountdown(id){
   countdownData = countdownData.filter(function(x){ return x.id!==id; });
   await saveCountdowns();
   renderCountdowns();
+}
+
+/* ---------- Routine tab ---------- */
+function defaultRoutineData(){
+  var arr = [];
+  for(var i=0;i<7;i++) arr.push({ tasks:[], notes:"" });
+  return arr;
+}
+async function loadRoutine(){
+  var r = await storeGet("routine");
+  routineData = (r && Array.isArray(r) && r.length===7) ? r : defaultRoutineData();
+  routineData.forEach(function(day){
+    (day.tasks||[]).forEach(function(tk){
+      if(tk.estTime===undefined){ tk.estTime = tk.time || ""; }
+    });
+  });
+}
+async function saveRoutine(){ await storeSet("routine", routineData); }
+
+function renderRoutineDayRow(){
+  var t = todayParts();
+  var todayIdx = satWeekdayIndex(t.gy, t.gm, t.gd);
+  el.routineDayRow.innerHTML = WEEKDAYS_SAT.map(function(name, i){
+    var count = routineData[i].tasks.length;
+    return "<div class='routine-day-chip"+(i===routineSelectedDay?" selected":"")+(i===todayIdx?" today":"")+"' data-day='"+i+"'>"+
+      "<span class='rd-name'>"+name+"</span>"+
+      "<span class='rd-count'>"+faDigits(count)+"</span>"+
+    "</div>";
+  }).join("");
+  Array.prototype.forEach.call(el.routineDayRow.querySelectorAll(".routine-day-chip"), function(chip){
+    chip.addEventListener("click", function(){
+      routineSelectedDay = +chip.getAttribute("data-day");
+      renderRoutineDayRow();
+      renderRoutineTasks();
+    });
+  });
+}
+
+function autoGrowTextarea(ta){
+  ta.style.height = "auto";
+  ta.style.height = (ta.scrollHeight+2)+"px";
+}
+
+function renderRoutineTasks(){
+  var day = routineData[routineSelectedDay];
+  if(day.tasks.length===0){
+    el.routineTaskList.innerHTML = "<div class='empty-hint'>هنوز کاری برای این روز اضافه نشده.</div>";
+  } else {
+    el.routineTaskList.innerHTML = day.tasks.map(function(tk, idx){
+      return "<div class='routine-row' data-id='"+tk.id+"'>"+
+        "<span class='rt-num'>"+faDigits(idx+1)+"</span>"+
+        "<textarea class='rt-title-input' data-action='rt-title' data-id='"+tk.id+"' placeholder='عنوان کار' rows='1'>"+escapeHtml(tk.title||"")+"</textarea>"+
+        "<textarea class='rt-desc-input' data-action='rt-desc' data-id='"+tk.id+"' placeholder='شرح یا توضیح…' rows='1'>"+escapeHtml(tk.desc||"")+"</textarea>"+
+        "<textarea class='rt-time-input' data-action='rt-esttime' data-id='"+tk.id+"' placeholder='۳۰د' rows='1'>"+escapeHtml(tk.estTime||"")+"</textarea>"+
+        "<button type='button' class='rt-del-btn' data-action='rt-del' data-id='"+tk.id+"' title='حذف'>✕</button>"+
+      "</div>";
+    }).join("");
+  }
+  el.routineDayNotes.value = day.notes || "";
+  autoGrowTextarea(el.routineDayNotes);
+  bindRoutineTaskEvents();
+}
+
+function bindRoutineTaskEvents(){
+  Array.prototype.forEach.call(el.routineTaskList.querySelectorAll("[data-action='rt-title']"), function(ta){
+    autoGrowTextarea(ta);
+    ta.addEventListener("input", function(){ autoGrowTextarea(ta); debounceSaveRoutineField(ta.getAttribute("data-id"), "title", ta.value); });
+  });
+  Array.prototype.forEach.call(el.routineTaskList.querySelectorAll("[data-action='rt-desc']"), function(ta){
+    autoGrowTextarea(ta);
+    ta.addEventListener("input", function(){ autoGrowTextarea(ta); debounceSaveRoutineField(ta.getAttribute("data-id"), "desc", ta.value); });
+  });
+  Array.prototype.forEach.call(el.routineTaskList.querySelectorAll("[data-action='rt-esttime']"), function(ta){
+    autoGrowTextarea(ta);
+    ta.addEventListener("input", function(){ autoGrowTextarea(ta); debounceSaveRoutineField(ta.getAttribute("data-id"), "estTime", ta.value); });
+  });
+  Array.prototype.forEach.call(el.routineTaskList.querySelectorAll("[data-action='rt-del']"), function(btn){
+    btn.addEventListener("click", function(){ deleteRoutineTask(btn.getAttribute("data-id")); });
+  });
+}
+var routineDebounceTimers = {};
+function debounceSaveRoutineField(id, field, value){
+  var key = id+":"+field;
+  clearTimeout(routineDebounceTimers[key]);
+  routineDebounceTimers[key] = setTimeout(function(){ saveRoutineTaskField(id, field, value); }, 260);
+}
+async function saveRoutineTaskField(id, field, value){
+  var day = routineData[routineSelectedDay];
+  var tk = day.tasks.find(function(x){return x.id===id;});
+  if(!tk) return;
+  tk[field] = value;
+  await saveRoutine();
+}
+async function addRoutineTask(title, desc, estTime){
+  routineData[routineSelectedDay].tasks.push({ id:uid(), title:title, desc:desc||"", estTime:estTime||"", createdAt:Date.now() });
+  await saveRoutine();
+  renderRoutineDayRow();
+  renderRoutineTasks();
+  showToast("به روتین اضافه شد");
+}
+async function deleteRoutineTask(id){
+  var day = routineData[routineSelectedDay];
+  day.tasks = day.tasks.filter(function(x){ return x.id!==id; });
+  await saveRoutine();
+  renderRoutineDayRow();
+  renderRoutineTasks();
+}
+var routineNotesDebounce = null;
+function debounceSaveRoutineNotes(value){
+  clearTimeout(routineNotesDebounce);
+  routineNotesDebounce = setTimeout(async function(){
+    routineData[routineSelectedDay].notes = value;
+    await saveRoutine();
+  }, 260);
 }
 
 /* ---------- Finance tab: income + expenses ---------- */
@@ -4148,7 +4453,7 @@ async function runCarryOverMigration(){
 }
 
 async function doBackup(){
-  var payload = { settings:settings, index:indexData, days:{}, goals:goalsData, countdowns:countdownData, pinnedNotes:pinnedNotesData, exportedAt:new Date().toISOString(), version:3 };
+  var payload = { settings:settings, index:indexData, days:{}, goals:goalsData, countdowns:countdownData, pinnedNotes:pinnedNotesData, routine:routineData, exportedAt:new Date().toISOString(), version:3 };
   var keys = await storeListDayKeys();
   for(var i=0;i<keys.length;i++){ var v=await storeGet(keys[i]); if(v) payload.days[keys[i]]=v; }
   var blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
@@ -4176,6 +4481,8 @@ async function doRestore(file){
     await saveCountdowns();
     pinnedNotesData = payload.pinnedNotes || [];
     await savePinnedNotes();
+    routineData = (payload.routine && Array.isArray(payload.routine) && payload.routine.length===7) ? payload.routine : defaultRoutineData();
+    await saveRoutine();
     applyTheme(); syncSettingsUI(); applyTitles(); renderTitleEditList();
     initToToday();
     await loadAndRenderDay();
@@ -4241,6 +4548,7 @@ function bindEvents(){
     await saveDay(pageKey, currentDayData);
     renderTasks();
   });
+  el.importRoutineBtn.addEventListener("click", importRoutineIntoToday);
 
   el.addNoteBtn.addEventListener("click", addNote);
   el.newNoteImage.addEventListener("change", function(e){ handleNoteImageInput(e.target.files); e.target.value=""; });
@@ -4287,6 +4595,22 @@ function bindEvents(){
     }
   });
   el.newCountdownDays.addEventListener("input", updateCdReminderDefaultDate);
+
+  function submitNewRoutine(){
+    var title = el.newRoutineTitle.value.trim();
+    if(!title){ showToast("عنوان کار رو بنویس"); return; }
+    var desc = el.newRoutineDesc.value.trim();
+    var estTime = el.newRoutineEstTime.value.trim();
+    addRoutineTask(title, desc, estTime);
+    el.newRoutineTitle.value = "";
+    el.newRoutineDesc.value = ""; autoGrowTextarea(el.newRoutineDesc);
+    el.newRoutineEstTime.value = "";
+  }
+  el.addRoutineBtn.addEventListener("click", submitNewRoutine);
+  el.newRoutineTitle.addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); el.newRoutineDesc.focus(); } });
+  el.newRoutineDesc.addEventListener("input", function(){ autoGrowTextarea(el.newRoutineDesc); });
+  el.newRoutineEstTime.addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); submitNewRoutine(); } });
+  el.routineDayNotes.addEventListener("input", function(){ autoGrowTextarea(el.routineDayNotes); debounceSaveRoutineNotes(el.routineDayNotes.value); });
 
   el.addPinnedBtn.addEventListener("click", addPinnedNote);
   el.newPinnedImage.addEventListener("change", function(e){ handlePinnedImageInput(e.target.files); e.target.value=""; });
@@ -4575,6 +4899,8 @@ async function boot(){
   await loadAndRenderDay();
   await loadGoals();
   await loadCountdowns();
+  await loadRoutine();
+  routineSelectedDay = satWeekdayIndex(todayParts().gy, todayParts().gm, todayParts().gd);
   await loadPinnedNotes();
   await loadClaims();
   await loadDebts();
