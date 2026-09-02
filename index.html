@@ -390,7 +390,11 @@
   }
   .wish-check.done{background:var(--gold); border-color:var(--gold);}
   .wish-body{flex:1; min-width:0;}
-  .wish-title{width:100%; font-family:var(--font-ui); font-weight:700; font-size:13.5px; color:var(--ink); border:none; background:transparent; padding:2px;}
+  .wish-title{
+    width:100%; font-family:var(--font-ui); font-weight:700; font-size:13.5px; line-height:1.6; color:var(--ink);
+    border:none; background:transparent; padding:2px; display:block; resize:none; overflow:hidden;
+    white-space:pre-wrap; word-break:break-word; border-radius:6px;
+  }
   .wish-title:focus{outline:none;}
   .wish-title::placeholder{color:var(--ink-faint); font-weight:400;}
   .wish-meta{font-size:10.5px; color:var(--ink-faint); margin-top:3px; font-family:var(--font-ui);}
@@ -3202,7 +3206,7 @@ function renderWishes(){
       "<span class='wish-num'>"+faDigits(idx+1)+"</span>"+
       "<button type='button' class='wish-check"+(w.done?" done":"")+"' data-action='wish-toggle' aria-label='تحقق پیدا کرد'>"+(w.done?"✓":"")+"</button>"+
       "<div class='wish-body'>"+
-        "<input type='text' class='wish-title' data-action='wish-title' value='"+escapeAttr(w.title||"")+"' placeholder='آرزو یا خواسته…'>"+
+        "<textarea class='wish-title' rows='1' data-action='wish-title' placeholder='آرزو یا خواسته…'>"+escapeHtml(w.title||"")+"</textarea>"+
         metaHtml+
       "</div>"+
       "<button type='button' class='wish-del' data-action='wish-delete' title='حذف'>✕</button>"+
@@ -3216,7 +3220,8 @@ function renderWishes(){
     b.addEventListener("click", function(){ deleteWish(b.closest(".wish-item").getAttribute("data-id")); });
   });
   Array.prototype.forEach.call(el.wishList.querySelectorAll("[data-action='wish-title']"), function(inp){
-    inp.addEventListener("input", function(){ debounceSaveWishTitle(inp.closest(".wish-item").getAttribute("data-id"), inp.value); });
+    autosizeDebtNote(inp);
+    inp.addEventListener("input", function(){ autosizeDebtNote(inp); debounceSaveWishTitle(inp.closest(".wish-item").getAttribute("data-id"), inp.value); });
   });
 }
 var wishDebounceTimers = {};
