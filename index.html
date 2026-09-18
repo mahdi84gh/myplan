@@ -449,7 +449,7 @@
   }
   [data-theme="dark"] .routine-table{box-shadow:0 3px 16px rgba(0,0,0,.22);}
   .routine-table-head{
-    display:grid; grid-template-columns:28px 1fr 1.35fr 62px 18px; gap:0; align-items:center;
+    display:grid; grid-template-columns:28px 1fr 1.35fr 62px 34px 18px; gap:0; align-items:center;
     padding:11px 14px; background:linear-gradient(180deg, var(--paper-deep), var(--paper));
     border-bottom:1px solid var(--paper-line);
   }
@@ -463,7 +463,7 @@
   .routine-table-head > *:last-child, .routine-row > *:last-child{padding-inline-end:0;}
   .routine-table-head > *:not(:first-child), .routine-row > *:not(:first-child){border-inline-start:1px solid var(--paper-line);}
   .routine-row{
-    display:grid; grid-template-columns:28px 1fr 1.35fr 62px 18px; gap:0; align-items:start;
+    display:grid; grid-template-columns:28px 1fr 1.35fr 62px 34px 18px; gap:0; align-items:start;
     padding:13px 14px; border-bottom:1px dashed var(--paper-line); transition:background .15s;
   }
   .routine-row:last-child{border-bottom:none;}
@@ -498,15 +498,31 @@
   .rt-time-input::placeholder{color:var(--ink-faint); font-weight:400; font-family:var(--font-ui); font-size:9.5px;}
   .rt-del-btn{background:none; border:none; color:var(--ink-faint); opacity:.35; cursor:pointer; font-size:12px; padding:2px 0; margin-top:3px; flex:none; transition:.15s;}
   .rt-del-btn:hover{opacity:1; color:var(--red);}
+  .rt-drag-handle{
+    position:relative; width:16px; height:22px; margin-top:2px; flex:none;
+    cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none;
+  }
+  .rt-drag-handle::before{
+    content:""; position:absolute; top:2px; left:4px; width:3px; height:3px; border-radius:50%;
+    background:var(--ink-faint); opacity:.55;
+    box-shadow:0 5px 0 var(--ink-faint), 0 10px 0 var(--ink-faint),
+               7px 0 0 var(--ink-faint), 7px 5px 0 var(--ink-faint), 7px 10px 0 var(--ink-faint);
+  }
+  .rt-drag-handle:hover::before{opacity:.9;}
+  .rt-drag-handle:active{cursor:grabbing;}
+  .routine-row.dragging{opacity:.55; background:var(--paper-deep); box-shadow:var(--shadow-sm); border-radius:8px; position:relative; z-index:4;}
+  .routine-row.drag-over-top{box-shadow:inset 0 2px 0 var(--blue);}
+  .routine-row.drag-over-bottom{box-shadow:inset 0 -2px 0 var(--blue);}
   #routineTaskList .empty-hint{background:transparent; border:none; padding:26px 10px; text-align:center;}
   @media(max-width:400px){
-    .routine-table-head, .routine-row{grid-template-columns:24px 1fr 1.15fr 52px 16px; gap:0; padding:11px 9px;}
+    .routine-table-head, .routine-row{grid-template-columns:24px 1fr 1.15fr 52px 26px 16px; gap:0; padding:11px 9px;}
     .routine-table-head > *, .routine-row > *{padding-inline-start:6px; padding-inline-end:6px;}
     .routine-table-head span{font-size:9px;}
     .rt-num{min-width:19px; height:19px; font-size:9.5px;}
     .rt-title-input{font-size:12px;}
     .rt-desc-input{font-size:11px;}
     .rt-time-input{font-size:9px; padding:5px 1px;}
+    .rt-drag-handle{width:14px;}
   }
   #routineDayNotes{
     width:100%; resize:vertical; font-family:var(--font-ui); font-size:12.5px; color:var(--ink); line-height:1.8; min-height:90px;
@@ -1999,6 +2015,7 @@
           <span>شرح یا توضیح</span>
           <span>تایم تخمینی</span>
           <span></span>
+          <span></span>
         </div>
         <div id="routineTaskList"></div>
       </div>
@@ -3380,6 +3397,7 @@ function renderRoutineTasks(){
         "<textarea class='rt-title-input' data-action='rt-title' data-id='"+tk.id+"' placeholder='عنوان کار' rows='1'>"+escapeHtml(tk.title||"")+"</textarea>"+
         "<textarea class='rt-desc-input' data-action='rt-desc' data-id='"+tk.id+"' placeholder='شرح یا توضیح…' rows='1'>"+escapeHtml(tk.desc||"")+"</textarea>"+
         "<textarea class='rt-time-input' data-action='rt-esttime' data-id='"+tk.id+"' placeholder='۳۰د' rows='1'>"+escapeHtml(tk.estTime||"")+"</textarea>"+
+        "<span class='rt-drag-handle' data-action='rt-drag' data-id='"+tk.id+"' title='بکش تا جابه‌جا کنی'></span>"+
         "<button type='button' class='rt-del-btn' data-action='rt-del' data-id='"+tk.id+"' title='حذف'>✕</button>"+
       "</div>";
     }).join("");
@@ -3402,9 +3420,57 @@ function bindRoutineTaskEvents(){
     autoGrowTextarea(ta);
     ta.addEventListener("input", function(){ autoGrowTextarea(ta); debounceSaveRoutineField(ta.getAttribute("data-id"), "estTime", ta.value); });
   });
+  Array.prototype.forEach.call(el.routineTaskList.querySelectorAll("[data-action='rt-drag']"), function(handle){
+    handle.addEventListener("pointerdown", function(e){ startRoutineDrag(e, handle); });
+  });
   Array.prototype.forEach.call(el.routineTaskList.querySelectorAll("[data-action='rt-del']"), function(btn){
     btn.addEventListener("click", function(){ deleteRoutineTask(btn.getAttribute("data-id")); });
   });
+}
+
+function startRoutineDrag(e, handle){
+  if(e.pointerType==="mouse" && e.button!==0) return;
+  var row = handle.closest(".routine-row");
+  var list = el.routineTaskList;
+  if(!row || !list) return;
+  e.preventDefault();
+  row.classList.add("dragging");
+  try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+
+  function onMove(ev){
+    ev.preventDefault();
+    var y = ev.clientY;
+    var rows = Array.prototype.slice.call(list.querySelectorAll(".routine-row:not(.dragging)"));
+    var target = null;
+    for(var i=0;i<rows.length;i++){
+      var r = rows[i].getBoundingClientRect();
+      if(y < r.top + r.height/2){ target = rows[i]; break; }
+    }
+    if(target){ if(target!==row.nextSibling) list.insertBefore(row, target); }
+    else if(list.lastElementChild!==row){ list.appendChild(row); }
+  }
+  function onUp(ev){
+    handle.removeEventListener("pointermove", onMove);
+    handle.removeEventListener("pointerup", onUp);
+    handle.removeEventListener("pointercancel", onUp);
+    row.classList.remove("dragging");
+    try{ handle.releasePointerCapture(ev.pointerId); }catch(err){}
+    commitRoutineOrder();
+  }
+  handle.addEventListener("pointermove", onMove);
+  handle.addEventListener("pointerup", onUp);
+  handle.addEventListener("pointercancel", onUp);
+}
+
+function commitRoutineOrder(){
+  var day = routineData[routineSelectedDay];
+  var ids = Array.prototype.map.call(el.routineTaskList.querySelectorAll(".routine-row"), function(r){ return r.getAttribute("data-id"); });
+  var map = {};
+  day.tasks.forEach(function(t){ map[t.id]=t; });
+  var reordered = ids.map(function(id){ return map[id]; }).filter(Boolean);
+  if(reordered.length===day.tasks.length) day.tasks = reordered;
+  saveRoutine();
+  renderRoutineTasks();
 }
 var routineDebounceTimers = {};
 function debounceSaveRoutineField(id, field, value){
