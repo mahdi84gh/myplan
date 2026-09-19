@@ -506,6 +506,14 @@
   .rt-drag-handle svg{display:block; width:15px; height:15px;}
   .rt-drag-handle:hover{opacity:1; color:var(--blue-deep);}
   .rt-drag-handle:active{cursor:grabbing;}
+  .rt-days-picker{display:flex; flex-wrap:wrap; gap:6px;}
+  .rt-day-toggle{
+    border:1px solid var(--paper-line); background:var(--paper); color:var(--ink-faint);
+    font-family:var(--font-ui); font-size:11.5px; font-weight:700; border-radius:20px;
+    padding:6px 12px; cursor:pointer; transition:.15s;
+  }
+  .rt-day-toggle:hover{border-color:var(--blue);}
+  .rt-day-toggle.active{background:var(--blue); border-color:var(--blue); color:#fff;}
   .routine-row.dragging{opacity:.55; background:var(--paper-deep); box-shadow:var(--shadow-sm); border-radius:8px; position:relative; z-index:4;}
   .routine-row.drag-over-top{box-shadow:inset 0 2px 0 var(--blue);}
   .routine-row.drag-over-bottom{box-shadow:inset 0 -2px 0 var(--blue);}
@@ -2023,6 +2031,10 @@
           <input type="text" id="newRoutineEstTime" placeholder="تایم تخمینی" style="flex:0 0 130px; border:1px dashed var(--paper-line); border-radius:9px; padding:9px 8px; font-family:var(--font-ui); font-weight:700; font-size:12.5px; text-align:center;">
           <button class="btn primary" id="addRoutineBtn" style="flex:none;">افزودن</button>
         </div>
+        <div>
+          <span style="font-size:11px; color:var(--ink-faint); display:block; margin-bottom:6px;">اضافه شود به این روزها:</span>
+          <div class="rt-days-picker" id="rtDaysPicker"></div>
+        </div>
       </div>
 
       <div class="divider" style="margin-top:22px;">
@@ -2419,6 +2431,7 @@ var goalsData = [];
 var countdownData = [];
 var routineData = null;
 var routineSelectedDay = 0;
+var routineNewTaskDays = new Set([routineSelectedDay]);
 var pinnedNotesData = [];
 var financeData = { startingBalance: 0 };
 var claimsData = [];
@@ -2510,7 +2523,7 @@ function cacheEls(){
    "jdateOverlay","closeJdateModal","jdatePrevMonth","jdateNextMonth","jdatePopupTitle","jdateWeekdays","jdateGrid","jdateTodayBtn","jdateClearBtn",
    "claimsList","newClaimKind","newClaimPerson","newClaimAmount","newClaimNote","newClaimDate","addClaimBtn",
    "debtsList","newDebtKind","newDebtPerson","newDebtAmount","newDebtNote","newDebtDate","addDebtBtn",
-   "pageRoutine","routineDayRow","routineTaskList","newRoutineTitle","newRoutineDesc","newRoutineEstTime","addRoutineBtn","routineDayNotes"
+   "pageRoutine","routineDayRow","routineTaskList","newRoutineTitle","newRoutineDesc","newRoutineEstTime","addRoutineBtn","routineDayNotes","rtDaysPicker"
   ].forEach(function(id){ el[id]=q(id); });
 }
 
@@ -2529,7 +2542,7 @@ function switchTab(name){
   if(name==="goals"){ renderGoals(); renderPinnedNotes(); renderWishes(); }
   if(name==="practical"){ renderCountdowns(); }
   if(name==="finance"){ renderFinanceSection(); if(finActiveSubtab==="report"){ renderFinReport(); } }
-  if(name==="routine"){ renderRoutineDayRow(); renderRoutineTasks(); }
+  if(name==="routine"){ renderRoutineDayRow(); renderRoutineTasks(); renderRoutineNewDaysPicker(); }
 }
 
 var finActiveSubtab = "daily";
@@ -3371,8 +3384,29 @@ function renderRoutineDayRow(){
   Array.prototype.forEach.call(el.routineDayRow.querySelectorAll(".routine-day-chip"), function(chip){
     chip.addEventListener("click", function(){
       routineSelectedDay = +chip.getAttribute("data-day");
+      routineNewTaskDays = new Set([routineSelectedDay]);
       renderRoutineDayRow();
       renderRoutineTasks();
+      renderRoutineNewDaysPicker();
+    });
+  });
+}
+
+function renderRoutineNewDaysPicker(){
+  if(!el.rtDaysPicker) return;
+  el.rtDaysPicker.innerHTML = WEEKDAYS_SAT.map(function(name, i){
+    var active = routineNewTaskDays.has(i);
+    return "<button type='button' class='rt-day-toggle"+(active?" active":"")+"' data-day='"+i+"'>"+name+"</button>";
+  }).join("");
+  Array.prototype.forEach.call(el.rtDaysPicker.querySelectorAll(".rt-day-toggle"), function(btn){
+    btn.addEventListener("click", function(){
+      var d = +btn.getAttribute("data-day");
+      if(routineNewTaskDays.has(d)){
+        if(routineNewTaskDays.size>1) routineNewTaskDays.delete(d);
+      } else {
+        routineNewTaskDays.add(d);
+      }
+      renderRoutineNewDaysPicker();
     });
   });
 }
@@ -3495,12 +3529,15 @@ async function saveRoutineTaskField(id, field, value){
   tk[field] = value;
   await saveRoutine();
 }
-async function addRoutineTask(title, desc, estTime){
-  routineData[routineSelectedDay].tasks.push({ id:uid(), title:title, desc:desc||"", estTime:estTime||"", createdAt:Date.now() });
+async function addRoutineTask(title, desc, estTime, dayIndices){
+  var days = (dayIndices && dayIndices.length) ? dayIndices : [routineSelectedDay];
+  days.forEach(function(d){
+    routineData[d].tasks.push({ id:uid(), title:title, desc:desc||"", estTime:estTime||"", createdAt:Date.now() });
+  });
   await saveRoutine();
   renderRoutineDayRow();
   renderRoutineTasks();
-  showToast("به روتین اضافه شد");
+  showToast(days.length>1 ? "به "+faDigits(days.length)+" روز اضافه شد" : "به روتین اضافه شد");
 }
 async function deleteRoutineTask(id){
   var day = routineData[routineSelectedDay];
@@ -4879,7 +4916,8 @@ function bindEvents(){
     if(!title){ showToast("عنوان کار رو بنویس"); return; }
     var desc = el.newRoutineDesc.value.trim();
     var estTime = el.newRoutineEstTime.value.trim();
-    addRoutineTask(title, desc, estTime);
+    var days = Array.from(routineNewTaskDays);
+    addRoutineTask(title, desc, estTime, days);
     el.newRoutineTitle.value = "";
     el.newRoutineDesc.value = ""; autoGrowTextarea(el.newRoutineDesc);
     el.newRoutineEstTime.value = "";
@@ -5180,6 +5218,7 @@ async function boot(){
   await loadCountdowns();
   await loadRoutine();
   routineSelectedDay = satWeekdayIndex(todayParts().gy, todayParts().gm, todayParts().gd);
+  routineNewTaskDays = new Set([routineSelectedDay]);
   await loadPinnedNotes();
   await loadWishes();
   await loadClaims();
